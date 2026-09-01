@@ -1,0 +1,3472 @@
+{
+  "0.760": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.09"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.40"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.70"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.72"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+1.10"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.18"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.78"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.70"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-4.57"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-6.40"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-8.22"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.97"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.70"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-13.39"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-15.05"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.68"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-17.09"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-12.00"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.84"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.63"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+3.57"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+7.75"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+5.83"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+3.98"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.27"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.95"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.03"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-0.63"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-0.82"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-0.58"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "+0.04"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "+1.13"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+2.71"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+4.91"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+7.06"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+7.85"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.36"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.63"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+5.77"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+4.84"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+3.89"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+2.93"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+1.99"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.07"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.18"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.71"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.57"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-2.47"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-3.41"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-4.47"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-5.74"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-7.62"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-8.98"
+    }
+  ],
+  "0.765": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.09"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.41"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.70"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.73"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+1.08"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.29"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.67"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.59"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-4.47"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-6.30"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-8.12"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.87"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.61"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-13.30"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.97"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.60"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-17.01"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.92"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.75"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.54"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+3.66"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+7.83"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+5.89"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.03"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.32"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.94"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.11"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-0.77"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-0.99"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-0.81"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-0.27"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "+0.76"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+2.26"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+4.34"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+6.42"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+7.80"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.38"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.70"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+5.86"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+4.95"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+3.99"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.04"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.09"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.17"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.26"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.62"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.50"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-2.38"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-3.30"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-4.33"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-5.51"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-6.98"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.03"
+    }
+  ],
+  "0.770": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.09"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.41"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.70"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.74"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+1.06"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.40"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.56"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.48"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-4.36"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-6.20"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-8.02"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.78"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.52"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-13.21"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.88"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.51"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.92"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.83"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.67"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.46"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+3.74"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+7.91"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+5.96"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.08"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.36"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.93"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.17"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-0.87"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.14"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-1.03"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-0.56"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "+0.41"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+1.82"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+3.77"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+5.80"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+7.74"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.39"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.76"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+5.95"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.05"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.10"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.14"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.19"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.26"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.35"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.54"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.42"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-2.29"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-3.20"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-4.19"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-5.31"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-6.68"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-8.90"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.09"
+    }
+  ],
+  "0.775": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.09"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.41"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.71"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.74"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+1.04"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.52"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.45"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.37"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-4.26"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-6.10"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.92"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.68"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.43"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-13.12"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.80"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.43"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.84"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.75"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.59"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.38"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+3.82"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+7.99"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.03"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.14"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.40"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.92"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.23"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-0.97"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.29"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-1.24"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-0.82"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "+0.07"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+1.41"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+3.26"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+5.21"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+7.46"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.38"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.81"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.04"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.15"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.21"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.25"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.30"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.36"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.44"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.45"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.34"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-2.21"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-3.11"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-4.07"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-5.14"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-6.40"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-8.01"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.15"
+    }
+  ],
+  "0.780": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.41"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.71"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.75"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+1.02"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.63"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.34"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.27"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-4.15"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-6.00"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.82"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.58"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.33"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-13.03"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.71"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.35"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.76"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.67"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.51"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.30"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+3.90"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.07"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.10"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.20"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.45"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.91"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.28"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.05"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.43"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-1.44"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-1.07"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-0.27"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+0.99"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+2.76"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+4.62"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+6.80"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.36"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.85"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.12"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.25"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.32"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.36"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.40"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.46"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.53"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.37"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.26"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-2.13"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-3.02"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.95"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.98"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-6.17"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-7.65"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.21"
+    }
+  ],
+  "0.785": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.41"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.71"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.76"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+1.00"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.74"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.23"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.16"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-4.05"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.90"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.71"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.49"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.24"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.94"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.62"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.27"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.68"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.59"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.42"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.22"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+3.98"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.15"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.17"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.26"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.50"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.91"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.31"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.12"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.56"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-1.64"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-1.31"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-0.59"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+0.59"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+2.25"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+4.05"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+6.16"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.32"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.88"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.19"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.35"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.42"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.47"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.51"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.56"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.63"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.28"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.17"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-2.06"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.93"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.85"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.84"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.97"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-7.34"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-9.09"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.27"
+    }
+  ],
+  "0.790": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.41"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.71"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.76"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.98"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.86"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.12"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-2.05"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.94"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.80"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.61"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.39"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.15"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.85"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.54"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.18"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.59"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.51"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.34"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.14"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.06"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.23"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.23"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.32"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.55"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.90"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.33"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.20"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.70"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-1.84"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-1.56"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-0.90"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "+0.21"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+1.80"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+3.49"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+5.53"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.26"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.89"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.25"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.44"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.53"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.58"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.62"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.66"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.73"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.19"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.09"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.97"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.85"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.75"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.71"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.79"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-7.07"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-8.68"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.33"
+    }
+  ],
+  "0.795": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.72"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.77"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.96"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+1.97"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "-0.01"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.94"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.84"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.70"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.52"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.30"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-11.05"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.76"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.45"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.10"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.51"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.42"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.26"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-1.05"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.14"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.31"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.31"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.39"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.59"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.93"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.35"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.27"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.84"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.02"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-1.80"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-1.21"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-0.16"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+1.36"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+2.93"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+4.93"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+7.20"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.89"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.31"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.53"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.63"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.69"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.73"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.77"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.82"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.10"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-1.00"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.89"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.77"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.66"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.60"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.63"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-6.83"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-8.32"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.39"
+    }
+  ],
+  "0.800": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.72"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.78"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.94"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.08"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.10"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.84"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.73"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.60"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.42"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.20"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.95"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.67"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.36"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-16.02"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.43"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.34"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.18"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.97"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.22"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.39"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.38"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.46"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.64"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.96"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.36"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.35"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-1.97"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.19"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-2.02"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-1.50"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-0.51"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+0.92"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+2.42"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+4.34"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+6.55"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.88"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.35"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.60"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.73"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.80"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.84"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.88"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+0.93"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "-0.01"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.91"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.81"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.69"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.57"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.50"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.50"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-6.63"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-8.01"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-9.76"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.45"
+    }
+  ],
+  "0.805": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.72"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.78"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.93"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.19"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.21"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.73"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.63"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.49"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.32"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.11"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.86"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.58"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.27"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-15.93"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.34"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.26"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.09"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.89"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.30"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.47"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.45"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.53"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.69"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+0.99"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.37"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.42"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-2.07"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.35"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-2.23"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-1.76"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-0.86"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+0.48"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+1.93"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+3.75"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+5.90"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.84"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.38"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.68"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.83"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+3.91"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+2.95"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+1.99"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+1.03"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "+0.10"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.82"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.72"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.61"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.49"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.40"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.36"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-6.45"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-7.73"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-9.35"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.51"
+    }
+  ],
+  "0.810": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.72"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.79"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.91"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.31"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.32"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.62"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.52"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.39"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.22"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-9.01"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.76"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.49"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.18"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-15.85"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.26"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.17"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-6.01"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.81"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.39"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.55"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.53"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.60"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.73"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+1.02"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.37"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.49"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-2.17"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.50"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-2.44"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-2.03"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-1.19"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "+0.05"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+1.43"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+3.19"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+5.27"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.79"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.40"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.74"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+4.92"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+4.01"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+3.06"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+2.10"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+1.14"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "+0.19"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.73"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.63"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.52"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.41"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.30"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.25"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-6.29"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-7.49"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-8.99"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.57"
+    }
+  ],
+  "0.815": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.73"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.79"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.89"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.42"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.43"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.51"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.41"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.29"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.11"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-8.91"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.67"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.40"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.09"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-15.77"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.18"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.09"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-5.93"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.72"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.47"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.63"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.61"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.67"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.79"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+1.07"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.38"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.57"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-2.27"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.64"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-2.65"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-2.28"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-1.52"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "-0.32"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+0.98"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+2.64"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+4.65"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.73"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.40"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.80"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+5.01"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+4.12"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+3.17"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+2.21"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+1.24"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "+0.29"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.63"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.55"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.44"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.32"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.21"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.14"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-6.15"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-7.28"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-8.67"
+    },
+    {
+      "fuelWeight": "113000",
+      "index": "-10.43"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.63"
+    }
+  ],
+  "0.820": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.25"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.73"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.80"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.87"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.53"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.54"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.40"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.31"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.18"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-7.01"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-8.82"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.57"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.31"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-14.00"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-15.68"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.09"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-11.00"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-5.84"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.64"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.55"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.72"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.69"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.74"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.84"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+1.12"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.39"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.60"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-2.35"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.77"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-2.85"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-2.53"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-1.83"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "-0.70"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+0.54"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+2.09"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+4.06"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+6.31"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.39"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.85"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+5.09"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+4.22"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+3.28"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+2.32"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+1.35"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "+0.40"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.54"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.45"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.35"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.24"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.12"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-5.04"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-6.01"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-7.10"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-8.40"
+    },
+    {
+      "fuelWeight": "113000",
+      "index": "-10.02"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.68"
+    }
+  ],
+  "0.825": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.24"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.42"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.73"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.80"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.86"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.65"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.66"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.29"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.20"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-5.08"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-6.91"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-8.72"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.47"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.22"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-13.91"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-15.60"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-16.01"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-10.92"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-5.76"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.55"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.64"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.80"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.77"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.80"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.90"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+1.17"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.40"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.63"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-2.43"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-2.91"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-3.04"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-2.77"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-2.14"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "-1.08"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "+0.10"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+1.58"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+3.47"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+5.65"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.36"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.88"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+5.17"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+4.32"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+3.39"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+2.43"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+1.46"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "+0.50"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.44"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.36"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.26"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.16"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-4.04"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-4.94"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-5.89"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-6.95"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-8.16"
+    },
+    {
+      "fuelWeight": "113000",
+      "index": "-9.66"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.74"
+    }
+  ],
+  "0.830": [
+    {
+      "fuelWeight": "2000",
+      "index": "-2.08"
+    },
+    {
+      "fuelWeight": "4000",
+      "index": "-4.24"
+    },
+    {
+      "fuelWeight": "6000",
+      "index": "-6.35"
+    },
+    {
+      "fuelWeight": "8000",
+      "index": "-8.43"
+    },
+    {
+      "fuelWeight": "10000",
+      "index": "-7.73"
+    },
+    {
+      "fuelWeight": "12000",
+      "index": "-3.81"
+    },
+    {
+      "fuelWeight": "14000",
+      "index": "+0.84"
+    },
+    {
+      "fuelWeight": "16000",
+      "index": "+2.76"
+    },
+    {
+      "fuelWeight": "18000",
+      "index": "+0.77"
+    },
+    {
+      "fuelWeight": "20000",
+      "index": "-1.18"
+    },
+    {
+      "fuelWeight": "22000",
+      "index": "-3.10"
+    },
+    {
+      "fuelWeight": "24000",
+      "index": "-4.97"
+    },
+    {
+      "fuelWeight": "26000",
+      "index": "-6.81"
+    },
+    {
+      "fuelWeight": "28000",
+      "index": "-8.62"
+    },
+    {
+      "fuelWeight": "30000",
+      "index": "-10.38"
+    },
+    {
+      "fuelWeight": "32000",
+      "index": "-12.12"
+    },
+    {
+      "fuelWeight": "34000",
+      "index": "-13.82"
+    },
+    {
+      "fuelWeight": "36000",
+      "index": "-15.51"
+    },
+    {
+      "fuelWeight": "36500",
+      "index": "-15.92"
+    },
+    {
+      "fuelWeight": "37000",
+      "index": "-10.84"
+    },
+    {
+      "fuelWeight": "37500",
+      "index": "-5.67"
+    },
+    {
+      "fuelWeight": "38000",
+      "index": "-0.47"
+    },
+    {
+      "fuelWeight": "38500",
+      "index": "+4.72"
+    },
+    {
+      "fuelWeight": "39000",
+      "index": "+8.88"
+    },
+    {
+      "fuelWeight": "41500",
+      "index": "+6.85"
+    },
+    {
+      "fuelWeight": "44000",
+      "index": "+4.87"
+    },
+    {
+      "fuelWeight": "46500",
+      "index": "+2.96"
+    },
+    {
+      "fuelWeight": "49000",
+      "index": "+1.22"
+    },
+    {
+      "fuelWeight": "51500",
+      "index": "-0.39"
+    },
+    {
+      "fuelWeight": "54000",
+      "index": "-1.64"
+    },
+    {
+      "fuelWeight": "56500",
+      "index": "-2.50"
+    },
+    {
+      "fuelWeight": "59000",
+      "index": "-3.04"
+    },
+    {
+      "fuelWeight": "61500",
+      "index": "-3.23"
+    },
+    {
+      "fuelWeight": "64000",
+      "index": "-3.00"
+    },
+    {
+      "fuelWeight": "66500",
+      "index": "-2.43"
+    },
+    {
+      "fuelWeight": "69000",
+      "index": "-1.44"
+    },
+    {
+      "fuelWeight": "71000",
+      "index": "-0.33"
+    },
+    {
+      "fuelWeight": "73000",
+      "index": "+1.11"
+    },
+    {
+      "fuelWeight": "75000",
+      "index": "+2.89"
+    },
+    {
+      "fuelWeight": "77000",
+      "index": "+5.00"
+    },
+    {
+      "fuelWeight": "79000",
+      "index": "+6.32"
+    },
+    {
+      "fuelWeight": "81000",
+      "index": "+5.90"
+    },
+    {
+      "fuelWeight": "83000",
+      "index": "+5.23"
+    },
+    {
+      "fuelWeight": "85000",
+      "index": "+4.41"
+    },
+    {
+      "fuelWeight": "87000",
+      "index": "+3.50"
+    },
+    {
+      "fuelWeight": "89000",
+      "index": "+2.54"
+    },
+    {
+      "fuelWeight": "91000",
+      "index": "+1.58"
+    },
+    {
+      "fuelWeight": "93000",
+      "index": "+0.61"
+    },
+    {
+      "fuelWeight": "95000",
+      "index": "-0.34"
+    },
+    {
+      "fuelWeight": "97000",
+      "index": "-1.27"
+    },
+    {
+      "fuelWeight": "99000",
+      "index": "-2.17"
+    },
+    {
+      "fuelWeight": "101000",
+      "index": "-3.07"
+    },
+    {
+      "fuelWeight": "103000",
+      "index": "-3.96"
+    },
+    {
+      "fuelWeight": "105000",
+      "index": "-4.85"
+    },
+    {
+      "fuelWeight": "107000",
+      "index": "-5.78"
+    },
+    {
+      "fuelWeight": "109000",
+      "index": "-6.80"
+    },
+    {
+      "fuelWeight": "111000",
+      "index": "-7.95"
+    },
+    {
+      "fuelWeight": "113000",
+      "index": "-9.34"
+    },
+    {
+      "fuelWeight": "115000",
+      "index": "-11.09"
+    },
+    {
+      "fuelWeight": "FULL",
+      "index": "-9.80"
+    }
+  ]
+}

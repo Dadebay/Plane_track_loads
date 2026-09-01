@@ -1,0 +1,502 @@
+{
+  "app": {
+    "name": "Система управления загрузкой TUA"
+  },
+  "nav": {
+    "flightSelection": "Выбор рейса",
+    "flightSchedule": "Расписание рейсов",
+    "flightDocument": "Документы рейса",
+    "uldStock": "Склад ULD",
+    "admin": "Администрирование",
+    "validation": "Валидация",
+    "messages": "Сообщения",
+    "account": "Мой аккаунт"
+  },
+  "documents": {
+    "generate": {
+      "title": "Создать документ",
+      "documentType": "Тип документа",
+      "leg": "Рейс",
+      "checkedBy": "Проверил",
+      "specialInformation": "SI (Особая информация)",
+      "generate": "Создать",
+      "generating": "Создание…",
+      "success": "{type} создан(а)",
+      "noFinalizedPlans": "Нет рейсов с завершённым загрузочным планом",
+      "errors": {
+        "loadPlanNotFinalized": "Загрузочный план этого рейса ещё не завершён",
+        "preparedEqualsChecked": "Подготовивший и проверивший должны быть разными людьми",
+        "notFound": "Не найдено",
+        "validation": "Проверьте поля"
+      }
+    },
+    "list": {
+      "title": "Созданные документы",
+      "empty": "Документы ещё не созданы",
+      "type": "Тип",
+      "flight": "Рейс",
+      "edition": "Издание",
+      "superseded": "Устарел",
+      "preparedBy": "Подготовил",
+      "checkedBy": "Проверил",
+      "issuedAt": "Дата",
+      "download": "Скачать"
+    }
+  },
+  "common": {
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "clear": "Очистить",
+    "add": "Добавить",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "loading": "Загрузка…",
+    "noResults": "Нет результатов",
+    "useFiltersAbove": "Используйте фильтры выше для поиска записей",
+    "itemsPerPage": "Записей на странице",
+    "total": "Всего",
+    "page": "Страница {current} из {total}",
+    "status": "Статус",
+    "actions": "Действия",
+    "from": "Откуда",
+    "to": "Куда",
+    "date": "Дата",
+    "time": "Время",
+    "type": "Тип",
+    "file": "Файл",
+    "detail": "Подробности",
+    "ok": "OK",
+    "error": "Ошибка",
+    "station": "Станция",
+    "local": "Местное",
+    "utc": "UTC",
+    "today": "Сегодня"
+  },
+  "theme": {
+    "label": "Тема",
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "system": "Системная"
+  },
+  "locale": {
+    "label": "Язык",
+    "tk": "Türkmençe",
+    "ru": "Русский",
+    "en": "English"
+  },
+  "flights": {
+    "list": {
+      "title": "Выбор рейса",
+      "startDateTime": "Дата и время начала",
+      "endDateTime": "Дата и время окончания",
+      "routes": "Маршруты",
+      "flightNumber": "Номер рейса",
+      "dayOfWeek": "День недели",
+      "allDays": "Все дни",
+      "aircraftRegistration": "Регистрационный номер ВС",
+      "allAircraft": "Все воздушные суда",
+      "serviceType": "Тип обслуживания",
+      "allTypes": "Все типы",
+      "schTimeDep": "Выл. по расп.",
+      "estTimeDep": "Выл. расч.",
+      "actTimeDep": "Выл. факт.",
+      "schTimeArr": "Приб. по расп.",
+      "allStations": "Все станции",
+      "noStations": "Нет станций"
+    },
+    "schedule": {
+      "title": "Расписание рейсов",
+      "addFlight": "Добавить рейс",
+      "editFlight": "Изменить рейс",
+      "exportPdf": "PDF"
+    },
+    "form": {
+      "flightNo": "Номер рейса",
+      "date": "Дата",
+      "serviceType": "Тип обслуживания",
+      "aircraft": "Воздушное судно",
+      "legs": "Участки",
+      "leg": "Участок {n}",
+      "addLeg": "Добавить участок",
+      "removeLeg": "Удалить участок",
+      "from": "Откуда",
+      "via": "Через (необязательно)",
+      "to": "Куда",
+      "stdDep": "Выл. по расп. (STD)",
+      "staArr": "Приб. по расп. (STA)",
+      "save": "Сохранить рейс",
+      "saving": "Сохранение…",
+      "requiredField": "Обязательное поле",
+      "sameStationError": "Пункты отправления и назначения должны отличаться",
+      "arrivalBeforeDepartureError": "Прибытие должно быть позже вылета",
+      "conflictError": "Это воздушное судно уже назначено на рейс {flightNo} в это время",
+      "atLeastOneLeg": "Нужен хотя бы один участок",
+      "createSuccess": "Рейс создан",
+      "updateSuccess": "Рейс обновлён"
+    },
+    "status": {
+      "reserved": "Зарезервирован",
+      "planned": "Запланирован",
+      "loading": "Загружается",
+      "finalized": "Завершён",
+      "departed": "Вылетел",
+      "arrived": "Прибыл",
+      "cancelled": "Отменён"
+    }
+  },
+  "uld": {
+    "title": "Учёт и отслеживание ULD",
+    "code": "Код ULD",
+    "typeCode": "Код типа ULD",
+    "serialNumber": "Серийный номер",
+    "ownerCode": "Код владельца",
+    "assignedStation": "Закреплённая станция",
+    "currentStation": "Текущая станция",
+    "condition": "Состояние",
+    "baseplateCode": "Код основания",
+    "addUld": "Добавить ULD",
+    "editUld": "Изменить ULD",
+    "deleteConfirm": "Удалить этот ULD?",
+    "namingConvention": "Правила наименования ULD",
+    "statusValue": {
+      "available": "Доступен",
+      "assigned": "Назначен",
+      "damaged": "Повреждён",
+      "lost": "Утерян"
+    },
+    "conditionValue": {
+      "serviceable": "Исправен",
+      "damaged": "Повреждён",
+      "unserviceable": "Непригоден"
+    },
+    "list": {
+      "allStations": "Все станции",
+      "allTypes": "Все типы",
+      "allStatuses": "Все статусы",
+      "allConditions": "Все состояния",
+      "flight": "Рейс",
+      "selected": "Выбрано: {count}",
+      "setStatus": "Изменить статус",
+      "exportPdf": "PDF",
+      "scan": "Сканировать",
+      "scanClose": "Закрыть сканер",
+      "scanning": "Сканирование…",
+      "scanNotSupported": "Сканирование штрих-кода недоступно на этом устройстве/браузере",
+      "scanPrompt": "Наведите камеру на QR-код или штрих-код"
+    },
+    "form": {
+      "invalidCode": "Код ULD не соответствует стандарту IATA (пример: PMC12345TU)",
+      "duplicateCode": "Такой код ULD уже существует",
+      "requiredField": "Обязательное поле",
+      "codeHint": "3 буквы + 4-5 цифр + 2-3 буквы, например PMC12345TU"
+    },
+    "movement": {
+      "title": "История перемещений",
+      "recordMovement": "Записать перемещение",
+      "station": "Станция",
+      "flight": "Рейс (необязательно)",
+      "note": "Примечание (необязательно)",
+      "recordedAt": "Время",
+      "recordedBy": "Кем внесено",
+      "noMovements": "Записей о перемещении пока нет"
+    },
+    "naming": {
+      "description": "Правило IATA для ULD: 3-буквенный код типа + 4-5-значный серийный номер + 2-3-буквенный код владельца.",
+      "generate": "Сгенерировать код",
+      "valid": "Код ULD верный",
+      "invalid": "Код ULD неверный"
+    }
+  },
+  "wnb": {
+    "zfw": "ZFW (Вес без топлива)",
+    "tow": "TOW (Взлётный вес)",
+    "ldw": "LDW (Посадочный вес)",
+    "ttl": "TTL (Общий вес груза)",
+    "taxiWeight": "Вес при рулении",
+    "dow": "DOW (Сухой снаряжённый вес)",
+    "doi": "DOI (Индекс сухого веса)",
+    "lizfw": "LIZFW",
+    "litow": "LITOW",
+    "lilaw": "LILAW",
+    "maczfw": "MACZFW (%MAC)",
+    "mactow": "MACTOW (%MAC)",
+    "maclaw": "MACLAW (%MAC)",
+    "stab": "STAB (Триммер стабилизатора)",
+    "underload": "Недогруз",
+    "errors": {
+      "cgOutOfEnvelope": "Центр тяжести вне утверждённых пределов",
+      "weightLimitExceeded": "Превышен предел веса",
+      "cumulativeLoadExceeded": "Превышен предел суммарной нагрузки зоны"
+    }
+  },
+  "loadPlan": {
+    "title": "Загрузочный план",
+    "version": "Версия {version}",
+    "status": {
+      "draft": "Черновик",
+      "finalized": "Завершён",
+      "superseded": "Заменён"
+    },
+    "save": "Сохранить черновик",
+    "finalize": "Завершить",
+    "saving": "Сохранение…",
+    "saveSuccess": "Загрузочный план сохранён",
+    "saveBlockedEnvelope": "Не удалось сохранить — центр тяжести вне предела для {phase}",
+    "saveBlockedWeight": "Не удалось сохранить — превышен {limitName} ({actual} кг > {max} кг)",
+    "offlineQueued": "Нет связи — сохранение произойдёт автоматически при восстановлении интернета",
+    "positions": {
+      "title": "Позиции",
+      "mainDeck": "Верхняя палуба",
+      "lowerDeck": "Нижняя палуба",
+      "empty": "Свободно",
+      "occupied": "{weight} кг",
+      "overloaded": "Перегружено",
+      "selectVariant": "Размер ULD"
+    },
+    "assignment": {
+      "title": "Позиция {position}",
+      "uldCode": "Код ULD",
+      "awb": "AWB",
+      "weight": "Вес (кг)",
+      "contentCode": "Код содержимого",
+      "maxGross": "Макс. вес: {max} кг",
+      "remove": "Удалить",
+      "contentCodes": {
+        "B": "Багаж",
+        "C": "Груз",
+        "M": "Почта",
+        "P": "Паллет/ULD",
+        "S": "Досмотровый груз",
+        "E": "Оборудование"
+      }
+    },
+    "panel": {
+      "title": "Вес и центровка",
+      "envelope": "Предел центра тяжести",
+      "withinEnvelope": "В пределах",
+      "outsideEnvelope": "Вне предела",
+      "landingApproximate": "Предел для посадки не опубликован — используется предел ZFW как приближение",
+      "notEnoughLoad": "Недостаточно груза для проверки предела центра тяжести — продолжайте добавлять груз"
+    },
+    "violations": {
+      "title": "Нарушения",
+      "none": "Нарушений нет",
+      "positionOverload": "{position}: {actual} кг превышает максимум {max} кг",
+      "compartmentExceeded": "{target}: {actual} кг превышает {max} кг",
+      "combinedLoadExceeded": "Зона {zone}: суммарно {load} кг превышает {max} кг",
+      "combinedLoadUnavailable": "Проверка суммарной нагрузки недоступна: {reason}",
+      "lateralImbalanceUnavailable": "Данные о боковом дисбалансе недоступны (AHM 560 s.74 не извлекается)"
+    },
+    "fuel": {
+      "title": "Топливо",
+      "density": "Плотность",
+      "takeoffFuel": "Взлётное топливо",
+      "tripFuel": "Путевое топливо",
+      "taxiFuel": "Топливо на руление"
+    },
+    "crew": {
+      "title": "Экипаж",
+      "cockpit": "Лётный экипаж (1-4)",
+      "courier": "Экипаж-курьер (0-6)",
+      "notSet": "Укажите экипаж для расчёта DOW/DOI"
+    },
+    "trim": {
+      "optimize": "Автотрим",
+      "optimizing": "Оптимизация…",
+      "success": "Распределение груза приведено в пределы центра тяжести",
+      "noSolution": "Не удалось найти распределение в пределах допуска"
+    }
+  },
+  "auth": {
+    "signIn": "Войти",
+    "signOut": "Выйти",
+    "email": "Эл. почта",
+    "password": "Пароль",
+    "invalidCredentials": "Неверный email или пароль",
+    "footer": "© {year} Turkmenistan Airlines — система Weight & Balance / Load Control",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль"
+  },
+  "admin": {
+    "ahm": {
+      "title": "Мастер-данные AHM",
+      "list": {
+        "aircraftType": "Тип воздушного судна",
+        "edition": "Издание",
+        "revision": "Ревизия",
+        "effectiveDate": "Дата вступления в силу",
+        "approvedBy": "Утвердил",
+        "viewDetail": "Просмотр",
+        "compare": "Сравнить ревизии",
+        "uploadNew": "Загрузить новую ревизию",
+        "empty": "Документы AHM отсутствуют"
+      },
+      "detail": {
+        "back": "Назад к списку",
+        "sections": {
+          "aircraft": "Воздушное судно и ограничения по весу",
+          "indexFormula": "Формула индекса",
+          "dowDoiMatrix": "Матрица DOW/DOI",
+          "fuelIndex": "Таблицы индекса топлива",
+          "cgLimits": "Пределы центровки",
+          "compartments": "Грузовые отсеки",
+          "positions": "Позиции",
+          "combinedLoad": "Суммарные ограничения загрузки",
+          "zoneMapping": "Распределение по зонам",
+          "uldTypes": "Типы ULD",
+          "crewIndex": "Индекс экипажа"
+        },
+        "zfwForward": "ZFW передний предел",
+        "zfwAft": "ZFW задний предел",
+        "takeoffForward": "Взлёт передний предел",
+        "takeoffAft": "Взлёт задний предел"
+      },
+      "diff": {
+        "title": "Сравнение ревизий",
+        "before": "До",
+        "after": "После",
+        "run": "Сравнить",
+        "noChanges": "Различий между этими ревизиями нет",
+        "field": "Поле",
+        "addedLabel": "Добавлено",
+        "removedLabel": "Удалено",
+        "changedLabel": "Изменено",
+        "changeType": "Изменение"
+      },
+      "upload": {
+        "title": "Загрузка новой ревизии",
+        "selectFiles": "Выбрать файлы JSON",
+        "aircraftType": "Тип воздушного судна",
+        "edition": "Издание",
+        "revision": "Ревизия",
+        "effectiveDate": "Дата вступления в силу",
+        "approvedBy": "Утвердил",
+        "validate": "Проверить",
+        "preview": "Предпросмотр",
+        "confirm": "Подтвердить и сохранить",
+        "cancel": "Отмена",
+        "validationErrors": "Ошибки проверки",
+        "validationOk": "Все файлы корректны",
+        "missingFile": "Отсутствует обязательный файл",
+        "success": "Новая ревизия сохранена",
+        "alreadyExists": "Это издание/ревизия уже существует"
+      },
+      "calculations": {
+        "title": "Расчёты по ревизии AHM",
+        "flight": "Рейс",
+        "leg": "Участок",
+        "ahmRevision": "Ревизия AHM",
+        "calculatedAt": "Время расчёта",
+        "empty": "Расчёты ещё не зафиксированы"
+      }
+    },
+    "validation": {
+      "title": "Досье валидации",
+      "coverage": "{withReference} из {total} сценариев имеют эталон для сравнения.",
+      "scenariosHeading": "Тестовые сценарии",
+      "scenario": "Сценарий",
+      "description": "Описание",
+      "status": "Статус",
+      "statusAvailable": "Эталон доступен",
+      "statusPending": "Ожидается",
+      "summaryColumn": "Результат",
+      "summaryValue": "{match} совпадает, {ourFix} наше исправление, {investigate} требует проверки",
+      "noScenarios": "Сценарии не определены",
+      "detailHeading": "{scenario} — сравнение по полям",
+      "field": "Поле",
+      "aerometa": "Aerometa",
+      "ours": "Наше",
+      "difference": "Разница",
+      "classification": "Оценка",
+      "classificationMATCH": "Совпадает",
+      "classificationOUR_FIX": "Наше исправление",
+      "classificationINVESTIGATE": "Требует проверки",
+      "note": "Примечание",
+      "noFields": "Поля ещё не сравнивались"
+    }
+  },
+  "messages": {
+    "generate": {
+      "title": "Создать сообщение",
+      "messageType": "Тип сообщения",
+      "leg": "Рейс",
+      "event": "Событие",
+      "address": "Адрес",
+      "generate": "Создать и отправить",
+      "generating": "Отправка…",
+      "success": "{type} отправлено",
+      "noFinalizedPlans": "Нет рейсов с завершённым загрузочным планом",
+      "errors": {
+        "unauthorized": "Нет доступа",
+        "validation": "Проверьте поля",
+        "notFound": "Не найдено",
+        "loadPlanNotFinalized": "Загрузочный план этого рейса ещё не завершён",
+        "invalidAddress": "Неверный адрес (нужен SITA или email)"
+      }
+    },
+    "addressBook": {
+      "title": "Адресная книга",
+      "label": "Название",
+      "sita": "SITA адрес",
+      "email": "Email",
+      "add": "Добавить",
+      "success": "Адрес добавлен",
+      "errors": {
+        "unauthorized": "Нет доступа",
+        "validation": "Проверьте поля",
+        "invalidAddress": "Неверный адрес (нужен SITA или email)"
+      }
+    },
+    "incomingCpm": {
+      "title": "Разбор входящего CPM (acceptance)",
+      "placeholder": "Вставьте текст входящего CPM сюда",
+      "parse": "Разобрать"
+    },
+    "list": {
+      "title": "Отправленные сообщения",
+      "type": "Тип",
+      "flight": "Рейс",
+      "address": "Адрес",
+      "status": "Статус",
+      "attempts": "Попытки",
+      "retry": "Повторить",
+      "createdBy": "Кто",
+      "createdAt": "Дата",
+      "empty": "Сообщения ещё не отправлялись"
+    }
+  },
+  "account": {
+    "title": "Мой аккаунт",
+    "fields": {
+      "name": "Имя",
+      "email": "Email",
+      "role": "Роль",
+      "station": "Станция"
+    },
+    "noStation": "Не назначена",
+    "roles": {
+      "ADMIN": "Администратор",
+      "LOAD_CONTROLLER": "Диспетчер загрузки",
+      "CHECKER": "Проверяющий",
+      "RAMP": "Работник перрона",
+      "VIEWER": "Наблюдатель"
+    },
+    "history": {
+      "title": "История действий",
+      "subtitle": "Последние 50 действий",
+      "empty": "Действий пока нет",
+      "action": "Действие",
+      "entity": "Тип",
+      "entityId": "ID",
+      "at": "Время"
+    },
+    "menu": {
+      "myAccount": "Мой аккаунт",
+      "history": "История действий",
+      "signOut": "Выйти"
+    }
+  }
+}

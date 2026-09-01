@@ -1,0 +1,103 @@
+# Production compose (Faz 15 task 2) — web + postgres + caddy (automatic
+# HTTPS) + a daily-backup sidecar. Not for local development; see
+# compose.yaml for that. Requires a .env file (or exported env vars) with
+# POSTGRES_PASSWORD, AUTH_SECRET, and DOMAIN — see docs/DEPLOYMENT.md.
+#
+#   docker compose -f compose.prod.yaml up -d
+#
+# Only Caddy publishes ports; postgres and web are reachable only on the
+# compose network, so the DB and app are never directly internet-facing.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tua
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: tua_load_control
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tua -d tua_load_control"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://tua:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/tua_load_control?schema=public"
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
+      NEXT_PUBLIC_APP_URL: "https://${DOMAIN:?set DOMAIN in .env}"
+      DOCUMENTS_WATERMARK: ${DOCUMENTS_WATERMARK:-true}
+      NEXT_PUBLIC_DEFAULT_LOCALE: "tk"
+      NODE_ENV: production
+    # Generated LIR/LS/ENV PDFs (document-storage.ts) and the message
+    # outbox (message-transport.ts) live under /app/.data on local disk —
+    # without this volume they're lost on every redeploy. Not covered by
+    # tools/backup/ (that backs up postgres only); back this volume up
+    # separately, same caveat as the "backups/" note below.
+    volumes:
+      - web_data:/app/.data
+
+  # Runs `prisma migrate deploy` from the full-toolchain `migrator` build
+  # target (the `web` service's runtime image is a pruned standalone build
+  # with neither the prisma CLI nor the schema/migrations directory — see
+  # apps/web/Dockerfile). Not part of the default `up`; run explicitly:
+  #   docker compose -f compose.prod.yaml run --rm migrate
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: migrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://tua:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/tua_load_control?schema=public"
+    profiles: ["tools"]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+    volumes:
+      - ./tools/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  backup:
+    build:
+      context: ./tools/backup
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGUSER: tua
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      PGDATABASE: tua_load_control
+      RETENTION_DAYS: "30"
+      BACKUP_HOUR_UTC: "03"
+    volumes:
+      - ./backups:/backups
+
+volumes:
+  postgres_data:
+  web_data:
+  caddy_data:
+  caddy_config:

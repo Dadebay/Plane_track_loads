@@ -1,0 +1,14 @@
+# Reverse proxy with automatic HTTPS (Let's Encrypt) — Faz 15 task 2.
+# {$DOMAIN} is Caddy's native env-var substitution; set DOMAIN in
+# compose.prod.yaml's environment (via a .env file, see docs/DEPLOYMENT.md).
+{$DOMAIN} {
+	reverse_proxy web:3000
+
+	encode gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+	}
+}

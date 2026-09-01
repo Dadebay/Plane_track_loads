@@ -1,0 +1,502 @@
+{
+  "app": {
+    "name": "TUA Ýük Gözegçilik"
+  },
+  "nav": {
+    "flightSelection": "Gatnaw saýlamak",
+    "flightSchedule": "Gatnaw tertibi",
+    "flightDocument": "Gatnaw resminamasy",
+    "uldStock": "ULD Ammary",
+    "admin": "Dolandyryş",
+    "validation": "Barlag",
+    "messages": "Habarlar",
+    "account": "Hasabym"
+  },
+  "documents": {
+    "generate": {
+      "title": "Belge döret",
+      "documentType": "Belgäniň görnüşi",
+      "leg": "Gatnaw",
+      "checkedBy": "Barlan",
+      "specialInformation": "SI (Ýörite maglumat)",
+      "generate": "Döret",
+      "generating": "Döredilýär…",
+      "success": "{type} döredildi",
+      "noFinalizedPlans": "Tamamlanan ýük meýilnamasy bolan gatnaw ýok",
+      "errors": {
+        "loadPlanNotFinalized": "Bu gatnawyň ýük meýilnamasy entek tamamlanmady",
+        "preparedEqualsChecked": "Taýýarlaýan we barlaýan üýtgeşik adamlar bolmaly",
+        "notFound": "Tapylmady",
+        "validation": "Meýdançalary barlaň"
+      }
+    },
+    "list": {
+      "title": "Döredilen resminamalar",
+      "empty": "Entek resminama döredilmedi",
+      "type": "Görnüşi",
+      "flight": "Gatnaw",
+      "edition": "Neşir",
+      "superseded": "Ozalky",
+      "preparedBy": "Taýýarlan",
+      "checkedBy": "Barlan",
+      "issuedAt": "Sene",
+      "download": "Ýükle"
+    }
+  },
+  "common": {
+    "search": "Gözle",
+    "filter": "Süzgüç",
+    "clear": "Arassala",
+    "add": "Goş",
+    "edit": "Üýtget",
+    "delete": "Poz",
+    "save": "Sakla",
+    "cancel": "Ýatyr",
+    "close": "Ýap",
+    "loading": "Ýüklenýär…",
+    "noResults": "Netije ýok",
+    "useFiltersAbove": "Ýazgylary gözlemek üçin ýokardaky süzgüçleri ulanyň",
+    "itemsPerPage": "Sahypadaky sany",
+    "total": "Jemi",
+    "page": "{current} / {total} sahypa",
+    "status": "Ýagdaýy",
+    "actions": "Hereketler",
+    "from": "Nireden",
+    "to": "Nirä",
+    "date": "Sene",
+    "time": "Wagt",
+    "type": "Görnüşi",
+    "file": "Faýl",
+    "detail": "Jikme-jiklik",
+    "ok": "OK",
+    "error": "Ýalňyşlyk",
+    "station": "Stansiýa",
+    "local": "Ýerli",
+    "utc": "UTC",
+    "today": "Şu gün"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Açyk",
+    "dark": "Garaňky",
+    "system": "Ulgam"
+  },
+  "locale": {
+    "label": "Dil",
+    "tk": "Türkmençe",
+    "ru": "Русский",
+    "en": "English"
+  },
+  "flights": {
+    "list": {
+      "title": "Gatnaw saýlamak",
+      "startDateTime": "Başlangyç sene we wagt",
+      "endDateTime": "Ahyrky sene we wagt",
+      "routes": "Ugurlar",
+      "flightNumber": "Gatnaw belgisi",
+      "dayOfWeek": "Hepdäniň güni",
+      "allDays": "Ähli günler",
+      "aircraftRegistration": "Uçaryň bellige alyş belgisi",
+      "allAircraft": "Ähli uçarlar",
+      "serviceType": "Hyzmat görnüşi",
+      "allTypes": "Ähli görnüşler",
+      "schTimeDep": "Tertip. uçuş wagty",
+      "estTimeDep": "Çak. uçuş wagty",
+      "actTimeDep": "Hakyky uçuş wagty",
+      "schTimeArr": "Tertip. gonuş wagty",
+      "allStations": "Ähli stansiýalar",
+      "noStations": "Stansiýa ýok"
+    },
+    "form": {
+      "flightNo": "Gatnaw belgisi",
+      "date": "Sene",
+      "serviceType": "Hyzmat görnüşi",
+      "aircraft": "Uçar",
+      "legs": "Bölekler",
+      "leg": "Bölek {n}",
+      "addLeg": "Bölek goş",
+      "removeLeg": "Bölegi aýyr",
+      "from": "Nireden",
+      "via": "Üsti bilen (hökmany däl)",
+      "to": "Nirä",
+      "stdDep": "Tertip. uçuş (STD)",
+      "staArr": "Tertip. gonuş (STA)",
+      "save": "Gatnawy sakla",
+      "saving": "Saklanýar…",
+      "requiredField": "Hökmany meýdança",
+      "sameStationError": "Nireden we Nirä dürli bolmaly",
+      "arrivalBeforeDepartureError": "Gonuş uçuşdan soň bolmaly",
+      "conflictError": "Bu uçar eýýäm {flightNo} gatnawyna şu wagt aralygynda bellenen",
+      "atLeastOneLeg": "Iň azyndan bir bölek gerek",
+      "createSuccess": "Gatnaw döredildi",
+      "updateSuccess": "Gatnaw üýtgedildi"
+    },
+    "schedule": {
+      "title": "Gatnaw tertibi",
+      "addFlight": "Gatnaw goş",
+      "editFlight": "Gatnawy üýtget",
+      "exportPdf": "PDF"
+    },
+    "status": {
+      "reserved": "Bellenen",
+      "planned": "Meýilleşdirilen",
+      "loading": "Ýüklenýär",
+      "finalized": "Tamamlanan",
+      "departed": "Uçdy",
+      "arrived": "Geldi",
+      "cancelled": "Ýatyrylan"
+    }
+  },
+  "uld": {
+    "title": "ULD ätiýaçlygy we yzarlamak",
+    "code": "ULD kody",
+    "typeCode": "ULD görnüş kody",
+    "serialNumber": "Seriýa belgisi",
+    "ownerCode": "Eýeçilik kody",
+    "assignedStation": "Bellenen stansiýa",
+    "currentStation": "Häzirki stansiýa",
+    "condition": "Ýagdaýy",
+    "baseplateCode": "Aşaky plastinka kody",
+    "addUld": "ULD goş",
+    "editUld": "ULD-ni üýtget",
+    "deleteConfirm": "Bu ULD-ni pozmak isleýäniňize ynanýarsyňyzmy?",
+    "namingConvention": "ULD Atlandyryş Kadasy",
+    "statusValue": {
+      "available": "Elýeter",
+      "assigned": "Bellenen",
+      "damaged": "Zaýalanan",
+      "lost": "Ýitirilen"
+    },
+    "conditionValue": {
+      "serviceable": "Ulanyşa ýarawly",
+      "damaged": "Zaýalanan",
+      "unserviceable": "Ulanyşa ýaramsyz"
+    },
+    "list": {
+      "allStations": "Ähli stansiýalar",
+      "allTypes": "Ähli görnüşler",
+      "allStatuses": "Ähli ýagdaýlar",
+      "allConditions": "Ähli ýagdaýlar",
+      "flight": "Gatnaw",
+      "selected": "{count} saýlandy",
+      "setStatus": "Ýagdaýyny üýtget",
+      "exportPdf": "PDF",
+      "scan": "Skanirle",
+      "scanClose": "Skaneri ýap",
+      "scanning": "Skanirlenýär…",
+      "scanNotSupported": "Bu enjamda/brauzerde barkod skanirlemek elýeterli däl",
+      "scanPrompt": "QR ýa-da barkody kameranyň öňünde tutuň"
+    },
+    "form": {
+      "invalidCode": "ULD kody IATA kadasyna gabat gelenok (mysal: PMC12345TU)",
+      "duplicateCode": "Bu ULD kody eýýäm bar",
+      "requiredField": "Hökmany meýdança",
+      "codeHint": "3 harp + 4-5 san + 2-3 harp, mysal üçin PMC12345TU"
+    },
+    "movement": {
+      "title": "Hereket taryhy",
+      "recordMovement": "Hereketi ýazga al",
+      "station": "Stansiýa",
+      "flight": "Gatnaw (hökmany däl)",
+      "note": "Bellik (hökmany däl)",
+      "recordedAt": "Wagty",
+      "recordedBy": "Kim tarapyndan",
+      "noMovements": "Entek hereket ýazgysy ýok"
+    },
+    "naming": {
+      "description": "IATA ULD atlandyryş kadasy: 3 harp görnüş kody + 4-5 san seriýa belgisi + 2-3 harp eýeçilik kody.",
+      "generate": "Kod döret",
+      "valid": "Dogry ULD kody",
+      "invalid": "Nädogry ULD kody"
+    }
+  },
+  "wnb": {
+    "zfw": "ZFW (Ýangyçsyz agram)",
+    "tow": "TOW (Uçuş agramy)",
+    "ldw": "LDW (Gonuş agramy)",
+    "ttl": "TTL (Jemi ýük agramy)",
+    "taxiWeight": "Taksiläme agramy",
+    "dow": "DOW (Boş ulanyş agramy)",
+    "doi": "DOI (Boş ulanyş indeksi)",
+    "lizfw": "LIZFW",
+    "litow": "LITOW",
+    "lilaw": "LILAW",
+    "maczfw": "MACZFW (%MAC)",
+    "mactow": "MACTOW (%MAC)",
+    "maclaw": "MACLAW (%MAC)",
+    "stab": "STAB (Stabilizator trimi)",
+    "underload": "Az ýüklenen agram",
+    "errors": {
+      "cgOutOfEnvelope": "Agyrlyk merkezi tassyklanan çäkden daşarda",
+      "weightLimitExceeded": "Agram çägi aşyldy",
+      "cumulativeLoadExceeded": "Zolakdaky jemi ýük çägi aşyldy"
+    }
+  },
+  "loadPlan": {
+    "title": "Ýük meýilnamasy",
+    "version": "Wersiýa {version}",
+    "status": {
+      "draft": "Taslama",
+      "finalized": "Tamamlanan",
+      "superseded": "Çalşyrylan"
+    },
+    "save": "Taslamany sakla",
+    "finalize": "Tamamla",
+    "saving": "Saklanýar…",
+    "saveSuccess": "Ýük meýilnamasy saklandy",
+    "saveBlockedEnvelope": "Saklap bolmady — {phase} üçin agyrlyk merkezi çäkden daşarda",
+    "saveBlockedWeight": "Saklap bolmady — {limitName} aşyldy ({actual} kg > {max} kg)",
+    "offlineQueued": "Aragatnaşyk ýok — internet baglananda awtomatiki sinhronlanar",
+    "positions": {
+      "title": "Pozisiýalar",
+      "mainDeck": "Ýokarky güwerte",
+      "lowerDeck": "Aşaky güwerte",
+      "empty": "Boş",
+      "occupied": "{weight} kg",
+      "overloaded": "Aşa ýüklenen",
+      "selectVariant": "ULD ölçegi"
+    },
+    "assignment": {
+      "title": "Pozisiýa {position}",
+      "uldCode": "ULD kody",
+      "awb": "AWB",
+      "weight": "Agram (kg)",
+      "contentCode": "Mazmun kody",
+      "maxGross": "Iň ýokary agram: {max} kg",
+      "remove": "Aýyr",
+      "contentCodes": {
+        "B": "Ýük haltasy",
+        "C": "Kargo",
+        "M": "Poçta",
+        "P": "Palet/ULD",
+        "S": "Barlag ýüki",
+        "E": "Enjam"
+      }
+    },
+    "panel": {
+      "title": "Agram we deňagramlylyk",
+      "envelope": "Agyrlyk merkezi çägi",
+      "withinEnvelope": "Çägiň içinde",
+      "outsideEnvelope": "Çägiň daşynda",
+      "landingApproximate": "Gonuş üçin çäk çap edilmedik — ZFW çägi çemeleşme hökmünde ulanylýar",
+      "notEnoughLoad": "Agyrlyk merkezi çägini barlamak üçin ýeterlik ýük ýok — ýük goşmagy dowam ediň"
+    },
+    "violations": {
+      "title": "Bozulmalar",
+      "none": "Bozulma ýok",
+      "positionOverload": "{position}: {actual} kg iň ýokary {max} kg-dan geçýär",
+      "compartmentExceeded": "{target}: {actual} kg {max} kg-dan geçýär",
+      "combinedLoadExceeded": "{zone} zolagy: jemi {load} kg {max} kg-dan geçýär",
+      "combinedLoadUnavailable": "Jemi ýük barlagy elýeterli däl: {reason}",
+      "lateralImbalanceUnavailable": "Gapdal deňagramlylyk maglumaty ýok (AHM 560 s.74 çykarylyp bilinmedi)"
+    },
+    "fuel": {
+      "title": "Ýangyç",
+      "density": "Ýygylyk",
+      "takeoffFuel": "Uçuş ýangyjy",
+      "tripFuel": "Ýol ýangyjy",
+      "taxiFuel": "Taksiläme ýangyjy"
+    },
+    "crew": {
+      "title": "Ekipaž",
+      "cockpit": "Kokpit ekipažy (1-4)",
+      "courier": "Kurýer ekipažy (0-6)",
+      "notSet": "DOW/DOI hasaplamak üçin ekipažy belläň"
+    },
+    "trim": {
+      "optimize": "Awtomatiki trim",
+      "optimizing": "Optimizasiýa edilýär…",
+      "success": "Ýüküň paýlanyşy agyrlyk merkezi çäginiň içine getirildi",
+      "noSolution": "Çägiň içinde paýlanyş tapylmady"
+    }
+  },
+  "auth": {
+    "signIn": "Içeri gir",
+    "signOut": "Çyk",
+    "email": "E-poçta",
+    "password": "Parol",
+    "invalidCredentials": "E-poçta ýa-da parol nädogry",
+    "footer": "© {year} Turkmenistan Airlines — Weight & Balance / Load Control ulgamy",
+    "showPassword": "Paroly görkez",
+    "hidePassword": "Paroly gizle"
+  },
+  "admin": {
+    "ahm": {
+      "title": "AHM esasy maglumatlary",
+      "list": {
+        "aircraftType": "Uçar görnüşi",
+        "edition": "Neşir",
+        "revision": "Rewiziýa",
+        "effectiveDate": "Güýje giriş senesi",
+        "approvedBy": "Tassyklan",
+        "viewDetail": "Görmek",
+        "compare": "Rewiziýalary deňeşdir",
+        "uploadNew": "Täze rewiziýa ýükle",
+        "empty": "Entek AHM resminamasy ýok"
+      },
+      "detail": {
+        "back": "Sanawa dolan",
+        "sections": {
+          "aircraft": "Uçar we agram çäkleri",
+          "indexFormula": "Indeks formulasy",
+          "dowDoiMatrix": "DOW/DOI matrisasy",
+          "fuelIndex": "Ýangyç indeks tablisalary",
+          "cgLimits": "AM çäkleri",
+          "compartments": "Ýük bölümleri",
+          "positions": "Pozisiýalar",
+          "combinedLoad": "Jemi ýük çäkleri",
+          "zoneMapping": "Zolak paýlanyşy",
+          "uldTypes": "ULD görnüşleri",
+          "crewIndex": "Ekipaž indeksi"
+        },
+        "zfwForward": "ZFW öňki çägi",
+        "zfwAft": "ZFW yzky çägi",
+        "takeoffForward": "Uçuş öňki çägi",
+        "takeoffAft": "Uçuş yzky çägi"
+      },
+      "diff": {
+        "title": "Rewiziýalary deňeşdirmek",
+        "before": "Öň",
+        "after": "Soň",
+        "run": "Deňeşdir",
+        "noChanges": "Bu rewiziýalaryň arasynda tapawut ýok",
+        "field": "Meýdança",
+        "addedLabel": "Goşuldy",
+        "removedLabel": "Aýryldy",
+        "changedLabel": "Üýtgedi",
+        "changeType": "Üýtgeşme"
+      },
+      "upload": {
+        "title": "Täze rewiziýa ýüklemek",
+        "selectFiles": "JSON faýllaryny saýla",
+        "aircraftType": "Uçar görnüşi",
+        "edition": "Neşir",
+        "revision": "Rewiziýa",
+        "effectiveDate": "Güýje giriş senesi",
+        "approvedBy": "Tassyklan",
+        "validate": "Barla",
+        "preview": "Öňünden gör",
+        "confirm": "Tassykla we ýatda sakla",
+        "cancel": "Ýatyr",
+        "validationErrors": "Barlag ýalňyşlyklary",
+        "validationOk": "Ähli faýllar dogry",
+        "missingFile": "Zerur faýl ýok",
+        "success": "Täze rewiziýa ýatda saklandy",
+        "alreadyExists": "Bu neşir/rewiziýa eýýäm bar"
+      },
+      "calculations": {
+        "title": "AHM rewiziýasy boýunça hasaplamalar",
+        "flight": "Gatnaw",
+        "leg": "Bölek",
+        "ahmRevision": "AHM rewiziýasy",
+        "calculatedAt": "Hasaplanan wagty",
+        "empty": "Entek hasaplama ýazylmady"
+      }
+    },
+    "validation": {
+      "title": "Barlag hasabaty",
+      "coverage": "{total} ssenariýden {withReference} sanysynda deňeşdirme salgylanmasy bar.",
+      "scenariosHeading": "Test ssenariýleri",
+      "scenario": "Ssenariý",
+      "description": "Beýany",
+      "status": "Ýagdaýy",
+      "statusAvailable": "Salgylanma bar",
+      "statusPending": "Garaşylýar",
+      "summaryColumn": "Netije",
+      "summaryValue": "{match} gabat gelýär, {ourFix} biziň düzedişimiz, {investigate} barlanmaly",
+      "noScenarios": "Ssenariý ýok",
+      "detailHeading": "{scenario} — meýdan deňeşdirmesi",
+      "field": "Meýdan",
+      "aerometa": "Aerometa",
+      "ours": "Biziňki",
+      "difference": "Tapawut",
+      "classification": "Baha",
+      "classificationMATCH": "Gabat gelýär",
+      "classificationOUR_FIX": "Biziň düzedişimiz",
+      "classificationINVESTIGATE": "Barlanmaly",
+      "note": "Bellik",
+      "noFields": "Heniz meýdan deňeşdirilmedi"
+    }
+  },
+  "messages": {
+    "generate": {
+      "title": "Habar döret",
+      "messageType": "Habar görnüşi",
+      "leg": "Gatnaw",
+      "event": "Waka",
+      "address": "Salgy",
+      "generate": "Döret we ugrat",
+      "generating": "Ugradylýar…",
+      "success": "{type} ugradyldy",
+      "noFinalizedPlans": "Tamamlanan ýük meýilnamasy bolan gatnaw ýok",
+      "errors": {
+        "unauthorized": "Rugsat ýok",
+        "validation": "Meýdançalary barlaň",
+        "notFound": "Tapylmady",
+        "loadPlanNotFinalized": "Bu gatnawyň ýük meýilnamasy entek tamamlanmady",
+        "invalidAddress": "Salgy nädogry (SITA ýa-da e-poçta gerek)"
+      }
+    },
+    "addressBook": {
+      "title": "Salgy kitaby",
+      "label": "At",
+      "sita": "SITA salgysy",
+      "email": "E-poçta",
+      "add": "Goş",
+      "success": "Salgy goşuldy",
+      "errors": {
+        "unauthorized": "Rugsat ýok",
+        "validation": "Meýdançalary barlaň",
+        "invalidAddress": "Salgy nädogry (SITA ýa-da e-poçta gerek)"
+      }
+    },
+    "incomingCpm": {
+      "title": "Gelen CPM (kabul ediş) derňew",
+      "placeholder": "Gelen CPM habaryny bu ýere ýapyşdyryň",
+      "parse": "Derňe"
+    },
+    "list": {
+      "title": "Ugradylan habarlar",
+      "type": "Görnüşi",
+      "flight": "Gatnaw",
+      "address": "Salgy",
+      "status": "Ýagdaýy",
+      "attempts": "Synanyşyk",
+      "retry": "Gaýtala",
+      "createdBy": "Kim",
+      "createdAt": "Sene",
+      "empty": "Entek habar ugradylmady"
+    }
+  },
+  "account": {
+    "title": "Hasabym",
+    "fields": {
+      "name": "Ady",
+      "email": "E-poçta",
+      "role": "Wezipe",
+      "station": "Stansiýa"
+    },
+    "noStation": "Bellenmedik",
+    "roles": {
+      "ADMIN": "Admin",
+      "LOAD_CONTROLLER": "Ýük gözegçisi",
+      "CHECKER": "Barlaýjy",
+      "RAMP": "Ramp işgäri",
+      "VIEWER": "Synçy"
+    },
+    "history": {
+      "title": "Iş taryhy",
+      "subtitle": "Soňky 50 hereket",
+      "empty": "Entek hiç hereket ýazylmady",
+      "action": "Hereket",
+      "entity": "Görnüşi",
+      "entityId": "ID",
+      "at": "Wagt"
+    },
+    "menu": {
+      "myAccount": "Hasabym",
+      "history": "Iş taryhy",
+      "signOut": "Çykmak"
+    }
+  }
+}

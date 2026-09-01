@@ -1,0 +1,27 @@
+{
+  "refSta": "33.1555",
+  "k": "100",
+  "c": "2500",
+  "macLength": "7.270",
+  "lemac": "31.3380",
+  "derived": {
+    "refStaMinusLemac": "1.8175",
+    "macOver100": "0.0727"
+  },
+  "stabTrimCurve": [
+    { "mac": "18", "stab": "7", "direction": "UP" },
+    { "mac": "21", "stab": "7", "direction": "UP" },
+    { "mac": "35", "stab": "0", "direction": "DOWN" },
+    { "mac": "40", "stab": "0", "direction": "DOWN" }
+  ],
+  "roundingRules": {
+    "stab": {
+      "method": "TRUNCATE",
+      "decimals": 1,
+      "note": "AHM 560 s.16 documents no explicit rounding rule; T5 692 formula gives 4.155, loadsheet shows 4.1 -> truncate confirmed empirically. See GROUND_TRUTH.md Bulgu #3."
+    }
+  },
+  "source": {
+    "groundTruthRefs": ["AHM 560 s.15-16 §3"]
+  }
+}

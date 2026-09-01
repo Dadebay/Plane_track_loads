@@ -1,0 +1,15 @@
+node_modules/
+.pnpm-store/
+dist/
+.next/
+.turbo/
+coverage/
+*.tsbuildinfo
+.env
+.env.local
+.DS_Store
+npm-debug.log*
+.vercel
+prisma/dev.db
+apps/web/.data/
+apps/web/next-env.d.ts

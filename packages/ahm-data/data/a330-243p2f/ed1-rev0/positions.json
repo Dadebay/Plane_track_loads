@@ -1,0 +1,846 @@
+{
+  "positions": [
+    {
+      "code": "A",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "2826",
+      "indexPerKg": "-0.00696"
+    },
+    {
+      "code": "B",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3123",
+      "indexPerKg": "-0.00605"
+    },
+    {
+      "code": "C",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3391",
+      "indexPerKg": "-0.00515"
+    },
+    {
+      "code": "D",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3391",
+      "indexPerKg": "-0.00424"
+    },
+    {
+      "code": "E",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "4687",
+      "indexPerKg": "-0.00334"
+    },
+    {
+      "code": "F",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "6033",
+      "indexPerKg": "-0.00243"
+    },
+    {
+      "code": "G",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "6033",
+      "indexPerKg": "-0.00153"
+    },
+    {
+      "code": "H",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "6033",
+      "indexPerKg": "-0.00063"
+    },
+    {
+      "code": "J",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "6033",
+      "indexPerKg": "0.00028"
+    },
+    {
+      "code": "K",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "5945",
+      "indexPerKg": "0.00118"
+    },
+    {
+      "code": "L",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "4037",
+      "indexPerKg": "0.00209"
+    },
+    {
+      "code": "M",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "4037",
+      "indexPerKg": "0.00299"
+    },
+    {
+      "code": "P",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3725",
+      "indexPerKg": "0.00389"
+    },
+    {
+      "code": "R",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3714",
+      "indexPerKg": "0.00496"
+    },
+    {
+      "code": "S",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3714",
+      "indexPerKg": "0.00595"
+    },
+    {
+      "code": "T",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "3059",
+      "indexPerKg": "0.00693"
+    },
+    {
+      "code": "U",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_88x125",
+      "maxGross": "2541",
+      "indexPerKg": "0.00792"
+    },
+    {
+      "code": "AA",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "3080",
+      "indexPerKg": "-0.00692"
+    },
+    {
+      "code": "BB",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "3428",
+      "indexPerKg": "-0.00593"
+    },
+    {
+      "code": "CC",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "3696",
+      "indexPerKg": "-0.00494"
+    },
+    {
+      "code": "DD",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "3696",
+      "indexPerKg": "-0.00396"
+    },
+    {
+      "code": "EE",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "5670",
+      "indexPerKg": "-0.00297"
+    },
+    {
+      "code": "FF",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "5670",
+      "indexPerKg": "-0.00199"
+    },
+    {
+      "code": "GG",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "5670",
+      "indexPerKg": "-0.00100"
+    },
+    {
+      "code": "HH",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "5670",
+      "indexPerKg": "-0.00002"
+    },
+    {
+      "code": "JJ",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "5670",
+      "indexPerKg": "0.00097"
+    },
+    {
+      "code": "KK",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "4822",
+      "indexPerKg": "0.00196"
+    },
+    {
+      "code": "LL",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "4400",
+      "indexPerKg": "0.00295"
+    },
+    {
+      "code": "MM",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "4091",
+      "indexPerKg": "0.00394"
+    },
+    {
+      "code": "PP",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "4048",
+      "indexPerKg": "0.00492"
+    },
+    {
+      "code": "RR",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "4048",
+      "indexPerKg": "0.00591"
+    },
+    {
+      "code": "SS",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "3389",
+      "indexPerKg": "0.00689"
+    },
+    {
+      "code": "TT",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_96x125",
+      "maxGross": "2809",
+      "indexPerKg": "0.00788"
+    },
+    {
+      "code": "AB",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "3429",
+      "indexPerKg": "-0.00677"
+    },
+    {
+      "code": "BC",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "3941",
+      "indexPerKg": "-0.00549"
+    },
+    {
+      "code": "CE",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "4001",
+      "indexPerKg": "-0.00421"
+    },
+    {
+      "code": "EF",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "6804",
+      "indexPerKg": "-0.00293"
+    },
+    {
+      "code": "FH",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "6804",
+      "indexPerKg": "-0.00165"
+    },
+    {
+      "code": "HJ",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "6804",
+      "indexPerKg": "-0.00037"
+    },
+    {
+      "code": "JK",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "6804",
+      "indexPerKg": "0.00091"
+    },
+    {
+      "code": "KM",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "4868",
+      "indexPerKg": "0.00219"
+    },
+    {
+      "code": "MP",
+      "deck": "MAIN",
+      "uldType": "SINGLE_ROW_125x96",
+      "maxGross": "4445",
+      "indexPerKg": "0.00348"
+    },
+    {
+      "code": "ABR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2000",
+      "indexPerKg": "-0.00677"
+    },
+    {
+      "code": "ABL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2000",
+      "indexPerKg": "-0.00677"
+    },
+    {
+      "code": "BCR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2358",
+      "indexPerKg": "-0.00549"
+    },
+    {
+      "code": "BCL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2358",
+      "indexPerKg": "-0.00549"
+    },
+    {
+      "code": "CER",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2400",
+      "indexPerKg": "-0.00421"
+    },
+    {
+      "code": "CEL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2400",
+      "indexPerKg": "-0.00421"
+    },
+    {
+      "code": "EFR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "3825",
+      "indexPerKg": "-0.00293"
+    },
+    {
+      "code": "EFL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "3825",
+      "indexPerKg": "-0.00293"
+    },
+    {
+      "code": "FHR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00165"
+    },
+    {
+      "code": "FHL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00165"
+    },
+    {
+      "code": "HJR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00037"
+    },
+    {
+      "code": "HJL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00037"
+    },
+    {
+      "code": "JKR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "4321",
+      "indexPerKg": "0.00091"
+    },
+    {
+      "code": "JKL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "4321",
+      "indexPerKg": "0.00091"
+    },
+    {
+      "code": "KMR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2964",
+      "indexPerKg": "0.00219"
+    },
+    {
+      "code": "KML",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2964",
+      "indexPerKg": "0.00219"
+    },
+    {
+      "code": "MPR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2756",
+      "indexPerKg": "0.00348"
+    },
+    {
+      "code": "MPL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2756",
+      "indexPerKg": "0.00348"
+    },
+    {
+      "code": "PRR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2629",
+      "indexPerKg": "0.00477"
+    },
+    {
+      "code": "PRL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x88",
+      "maxGross": "2629",
+      "indexPerKg": "0.00477"
+    },
+    {
+      "code": "ABR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2000",
+      "indexPerKg": "-0.00677"
+    },
+    {
+      "code": "ABL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2000",
+      "indexPerKg": "-0.00677"
+    },
+    {
+      "code": "BCR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2358",
+      "indexPerKg": "-0.00549"
+    },
+    {
+      "code": "BCL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2358",
+      "indexPerKg": "-0.00549"
+    },
+    {
+      "code": "CER",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2400",
+      "indexPerKg": "-0.00421"
+    },
+    {
+      "code": "CEL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2400",
+      "indexPerKg": "-0.00421"
+    },
+    {
+      "code": "EFR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "3825",
+      "indexPerKg": "-0.00293"
+    },
+    {
+      "code": "EFL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "3825",
+      "indexPerKg": "-0.00293"
+    },
+    {
+      "code": "FHR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00165"
+    },
+    {
+      "code": "FHL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00165"
+    },
+    {
+      "code": "HJR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00037"
+    },
+    {
+      "code": "HJL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "4321",
+      "indexPerKg": "-0.00037"
+    },
+    {
+      "code": "JKR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "4321",
+      "indexPerKg": "0.00091"
+    },
+    {
+      "code": "JKL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "4321",
+      "indexPerKg": "0.00091"
+    },
+    {
+      "code": "KMR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2964",
+      "indexPerKg": "0.00219"
+    },
+    {
+      "code": "KML",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2964",
+      "indexPerKg": "0.00219"
+    },
+    {
+      "code": "MPR",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2756",
+      "indexPerKg": "0.00348"
+    },
+    {
+      "code": "MPL",
+      "deck": "MAIN",
+      "uldType": "SIDE_BY_SIDE_125x96",
+      "maxGross": "2756",
+      "indexPerKg": "0.00348"
+    },
+    {
+      "code": "CFR",
+      "deck": "MAIN",
+      "uldType": "PALLET_16FT",
+      "maxGross": "7729",
+      "indexPerKg": "-0.00385"
+    },
+    {
+      "code": "FJR",
+      "deck": "MAIN",
+      "uldType": "PALLET_16FT",
+      "maxGross": "10668",
+      "indexPerKg": "-0.00137"
+    },
+    {
+      "code": "JLR",
+      "deck": "MAIN",
+      "uldType": "PALLET_16FT",
+      "maxGross": "10668",
+      "indexPerKg": "0.00070"
+    },
+    {
+      "code": "LPR",
+      "deck": "MAIN",
+      "uldType": "PALLET_16FT",
+      "maxGross": "6236",
+      "indexPerKg": "0.00274"
+    },
+    {
+      "code": "CFG",
+      "deck": "MAIN",
+      "uldType": "PALLET_20FT",
+      "maxGross": "10602",
+      "indexPerKg": "-0.00361"
+    },
+    {
+      "code": "FJG",
+      "deck": "MAIN",
+      "uldType": "PALLET_20FT",
+      "maxGross": "11340",
+      "indexPerKg": "-0.00114"
+    },
+    {
+      "code": "JLG",
+      "deck": "MAIN",
+      "uldType": "PALLET_20FT",
+      "maxGross": "11340",
+      "indexPerKg": "0.00131"
+    },
+    {
+      "code": "51",
+      "deck": "LOWER",
+      "uldType": "BULK",
+      "maxGross": "339",
+      "indexPerKg": "0.00571"
+    },
+    {
+      "code": "52",
+      "deck": "LOWER",
+      "uldType": "BULK",
+      "maxGross": "1413",
+      "indexPerKg": "0.00592"
+    },
+    {
+      "code": "53",
+      "deck": "LOWER",
+      "uldType": "BULK",
+      "maxGross": "1716",
+      "indexPerKg": "0.00674"
+    },
+    {
+      "code": "11",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00709"
+    },
+    {
+      "code": "12",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00638"
+    },
+    {
+      "code": "13",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00575"
+    },
+    {
+      "code": "14",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00512"
+    },
+    {
+      "code": "21",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00441"
+    },
+    {
+      "code": "22",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00378"
+    },
+    {
+      "code": "23",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "-0.00315"
+    },
+    {
+      "code": "31",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "0.00178"
+    },
+    {
+      "code": "32",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "0.00241"
+    },
+    {
+      "code": "33",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "0.00305"
+    },
+    {
+      "code": "41",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "0.00384"
+    },
+    {
+      "code": "42",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "0.00447"
+    },
+    {
+      "code": "43",
+      "deck": "LOWER",
+      "uldType": "CONTAINER",
+      "maxGross": "3174",
+      "indexPerKg": "0.00510"
+    },
+    {
+      "code": "12P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "-0.00624"
+    },
+    {
+      "code": "13P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "-0.00526"
+    },
+    {
+      "code": "21P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "-0.00427"
+    },
+    {
+      "code": "22P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "-0.00329"
+    },
+    {
+      "code": "31P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "0.00192"
+    },
+    {
+      "code": "32P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "0.00291"
+    },
+    {
+      "code": "41P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "0.00398"
+    },
+    {
+      "code": "42P",
+      "deck": "LOWER",
+      "uldType": "PALLET_88x125",
+      "maxGross": "4626",
+      "indexPerKg": "0.00488"
+    },
+    {
+      "code": "12P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "-0.00628"
+    },
+    {
+      "code": "13P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "-0.00530"
+    },
+    {
+      "code": "21P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "-0.00431"
+    },
+    {
+      "code": "22P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "-0.00333"
+    },
+    {
+      "code": "31P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "0.00196"
+    },
+    {
+      "code": "32P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "0.00295"
+    },
+    {
+      "code": "41P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "0.00394"
+    },
+    {
+      "code": "42P",
+      "deck": "LOWER",
+      "uldType": "PALLET_96x125",
+      "maxGross": "5103",
+      "indexPerKg": "0.00492"
+    }
+  ],
+  "notes": [
+    "Lower deck 12P-42P codes appear twice with different uldType/maxGross/indexPerKg depending on whether an 88x125 or 96x125 pallet is loaded there; both variants are listed as distinct entries distinguished by uldType.",
+    "11P and 43P lower-deck pallet positions do not exist (also greyed out in LIR form)."
+  ],
+  "source": {
+    "groundTruthRefs": [
+      "AHM 560 s.57-67 Sheet 14 §10"
+    ]
+  }
+}

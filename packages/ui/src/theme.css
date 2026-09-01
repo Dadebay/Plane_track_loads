@@ -1,0 +1,172 @@
+/**
+ * @tua/ui theme tokens.
+ * docs/IMPLEMENTATION_PLAN.md Bölüm B.1.
+ *
+ * Light palette lives on bare :root. Dark overrides are duplicated under
+ * both the media-query guard (system preference) and the [data-theme="dark"]
+ * attribute guard (explicit user choice via next-themes), per the artifact
+ * dark-mode contract this project follows for all theme-aware surfaces.
+ * PDFs never read these tokens — documents are always light (CLAUDE.md #4).
+ */
+
+:root {
+  /* Brand — Turkmenistan Airlines green */
+  --brand-50: #ecfaf1;
+  --brand-100: #d2f2dd;
+  --brand-200: #a8e4bd;
+  --brand-300: #74cf97;
+  --brand-400: #3fb56f;
+  --brand-500: #1b8b3a;
+  --brand-600: #157530;
+  --brand-700: #125e28;
+  --brand-800: #104b22;
+  --brand-900: #0f3e1e;
+  --brand-950: #0a2712;
+
+  /* Surface */
+  --bg: #ffffff;
+  --bg-subtle: #f7f8f7;
+  --bg-muted: #eef1ef;
+  --bg-overlay: rgba(10, 15, 12, 0.5);
+
+  /* Foreground */
+  --fg: #101512;
+  --fg-muted: #4b544e;
+  --fg-subtle: #7a847c;
+  --fg-on-brand: #ffffff;
+
+  /* Border */
+  --border: #dde3df;
+  --border-strong: #b9c2bc;
+  --ring: var(--brand-500);
+
+  /* Semantic */
+  --success: #1b8b3a;
+  --success-bg: #ecfaf1;
+  --warning: #b7791f;
+  --warning-bg: #fdf3e0;
+  --danger: #c23a2e;
+  --danger-bg: #fbeae8;
+  --info: #2563eb;
+  --info-bg: #eaf1fe;
+
+  /* Flight / load status */
+  --status-reserved: #6b7280;
+  --status-reserved-bg: #f0f1f2;
+  --status-planned: #2563eb;
+  --status-planned-bg: #eaf1fe;
+  --status-loading: #b7791f;
+  --status-loading-bg: #fdf3e0;
+  --status-finalized: #7c3aed;
+  --status-finalized-bg: #f2eafd;
+  --status-departed: #1b8b3a;
+  --status-departed-bg: #ecfaf1;
+  --status-arrived: #0f6b2a;
+  --status-arrived-bg: #e3f5e8;
+  --status-cancelled: #c23a2e;
+  --status-cancelled-bg: #fbeae8;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(16, 21, 18, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 21, 18, 0.1);
+  --shadow-lg: 0 12px 32px rgba(16, 21, 18, 0.16);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0f0e;
+    --bg-subtle: #111613;
+    --bg-muted: #171d19;
+    --bg-overlay: rgba(0, 0, 0, 0.6);
+
+    --fg: #eef2ef;
+    --fg-muted: #b3bcb6;
+    --fg-subtle: #7f897f;
+    --fg-on-brand: #05100a;
+
+    --border: #232a25;
+    --border-strong: #333d35;
+    --ring: var(--brand-400);
+
+    --success: #4fcf7f;
+    --success-bg: #10261a;
+    --warning: #e0a847;
+    --warning-bg: #2b2211;
+    --danger: #f0685a;
+    --danger-bg: #2c1613;
+    --info: #6ea3ff;
+    --info-bg: #101c30;
+
+    --status-reserved: #9aa3ab;
+    --status-reserved-bg: #1a1e1c;
+    --status-planned: #6ea3ff;
+    --status-planned-bg: #101c30;
+    --status-loading: #e0a847;
+    --status-loading-bg: #2b2211;
+    --status-finalized: #b394f5;
+    --status-finalized-bg: #221a30;
+    --status-departed: #4fcf7f;
+    --status-departed-bg: #10261a;
+    --status-arrived: #6fe097;
+    --status-arrived-bg: #0e2417;
+    --status-cancelled: #f0685a;
+    --status-cancelled-bg: #2c1613;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b0f0e;
+  --bg-subtle: #111613;
+  --bg-muted: #171d19;
+  --bg-overlay: rgba(0, 0, 0, 0.6);
+
+  --fg: #eef2ef;
+  --fg-muted: #b3bcb6;
+  --fg-subtle: #7f897f;
+  --fg-on-brand: #05100a;
+
+  --border: #232a25;
+  --border-strong: #333d35;
+  --ring: var(--brand-400);
+
+  --success: #4fcf7f;
+  --success-bg: #10261a;
+  --warning: #e0a847;
+  --warning-bg: #2b2211;
+  --danger: #f0685a;
+  --danger-bg: #2c1613;
+  --info: #6ea3ff;
+  --info-bg: #101c30;
+
+  --status-reserved: #9aa3ab;
+  --status-reserved-bg: #1a1e1c;
+  --status-planned: #6ea3ff;
+  --status-planned-bg: #101c30;
+  --status-loading: #e0a847;
+  --status-loading-bg: #2b2211;
+  --status-finalized: #b394f5;
+  --status-finalized-bg: #221a30;
+  --status-departed: #4fcf7f;
+  --status-departed-bg: #10261a;
+  --status-arrived: #6fe097;
+  --status-arrived-bg: #0e2417;
+  --status-cancelled: #f0685a;
+  --status-cancelled-bg: #2c1613;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+}

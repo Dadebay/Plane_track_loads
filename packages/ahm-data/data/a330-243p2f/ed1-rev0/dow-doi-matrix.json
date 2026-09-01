@@ -1,0 +1,351 @@
+{
+  "EZ-F429": [
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 0,
+      "dow": "111220",
+      "doi": "81.25"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 1,
+      "dow": "111300",
+      "doi": "80.56"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 2,
+      "dow": "111380",
+      "doi": "79.87"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 3,
+      "dow": "111460",
+      "doi": "79.18"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 4,
+      "dow": "111540",
+      "doi": "78.49"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 5,
+      "dow": "111620",
+      "doi": "77.80"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 6,
+      "dow": "111700",
+      "doi": "77.11"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 0,
+      "dow": "111320",
+      "doi": "80.28"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 1,
+      "dow": "111400",
+      "doi": "79.59"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 2,
+      "dow": "111480",
+      "doi": "78.90"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 3,
+      "dow": "111560",
+      "doi": "78.21"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 4,
+      "dow": "111640",
+      "doi": "77.52"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 5,
+      "dow": "111720",
+      "doi": "76.83"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 6,
+      "dow": "111800",
+      "doi": "76.14"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 0,
+      "dow": "111420",
+      "doi": "79.34"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 1,
+      "dow": "111500",
+      "doi": "78.65"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 2,
+      "dow": "111580",
+      "doi": "77.96"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 3,
+      "dow": "111660",
+      "doi": "77.28"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 4,
+      "dow": "111740",
+      "doi": "76.59"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 5,
+      "dow": "111820",
+      "doi": "75.90"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 6,
+      "dow": "111900",
+      "doi": "75.21"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 0,
+      "dow": "111520",
+      "doi": "78.41"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 1,
+      "dow": "111600",
+      "doi": "77.72"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 2,
+      "dow": "111680",
+      "doi": "77.03"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 3,
+      "dow": "111760",
+      "doi": "76.34"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 4,
+      "dow": "111840",
+      "doi": "75.65"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 5,
+      "dow": "111920",
+      "doi": "74.96"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 6,
+      "dow": "112000",
+      "doi": "74.27"
+    }
+  ],
+  "EZ-F430": [
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 0,
+      "dow": "111380",
+      "doi": "80.78"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 1,
+      "dow": "111460",
+      "doi": "80.09"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 2,
+      "dow": "111540",
+      "doi": "79.40"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 3,
+      "dow": "111620",
+      "doi": "78.71"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 4,
+      "dow": "111700",
+      "doi": "78.02"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 5,
+      "dow": "111780",
+      "doi": "77.30"
+    },
+    {
+      "cockpitCrew": 1,
+      "courierCrew": 6,
+      "dow": "111860",
+      "doi": "76.64"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 0,
+      "dow": "111480",
+      "doi": "79.81"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 1,
+      "dow": "111560",
+      "doi": "79.12"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 2,
+      "dow": "111640",
+      "doi": "78.43"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 3,
+      "dow": "111720",
+      "doi": "77.74"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 4,
+      "dow": "111800",
+      "doi": "77.05"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 5,
+      "dow": "111880",
+      "doi": "76.36"
+    },
+    {
+      "cockpitCrew": 2,
+      "courierCrew": 6,
+      "dow": "111960",
+      "doi": "75.67"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 0,
+      "dow": "111580",
+      "doi": "78.87"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 1,
+      "dow": "111660",
+      "doi": "78.18"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 2,
+      "dow": "111740",
+      "doi": "77.49"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 3,
+      "dow": "111820",
+      "doi": "76.80"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 4,
+      "dow": "111900",
+      "doi": "76.11"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 5,
+      "dow": "111980",
+      "doi": "75.42"
+    },
+    {
+      "cockpitCrew": 3,
+      "courierCrew": 6,
+      "dow": "112060",
+      "doi": "74.73"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 0,
+      "dow": "111680",
+      "doi": "77.94"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 1,
+      "dow": "111760",
+      "doi": "77.25"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 2,
+      "dow": "111840",
+      "doi": "76.56"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 3,
+      "dow": "111920",
+      "doi": "75.87"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 4,
+      "dow": "112000",
+      "doi": "75.18"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 5,
+      "dow": "112080",
+      "doi": "74.49"
+    },
+    {
+      "cockpitCrew": 4,
+      "courierCrew": 6,
+      "dow": "112160",
+      "doi": "73.80"
+    }
+  ],
+  "notes": [
+    "3rd and 4th occupants included in cockpit crew count (1-4).",
+    "EZ-F430 cockpit3/courier3 cell is printed as '76,8' (single decimal) in source; normalized here to '76.80'. See docs/AHM560_ERRATA.md."
+  ],
+  "source": {
+    "groundTruthRefs": [
+      "AHM 560 s.6"
+    ]
+  }
+}

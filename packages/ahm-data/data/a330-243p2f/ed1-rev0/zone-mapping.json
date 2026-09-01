@@ -1,0 +1,19 @@
+{
+  "longPalletDistribution": [
+    { "position": "CFR", "distribution": [ { "zone": "ZD", "factor": "0.6" }, { "zone": "ZE", "factor": "0.4" } ] },
+    { "position": "FJR", "distribution": [ { "zone": "ZE", "factor": "0.2" }, { "zone": "ZF", "factor": "0.5" }, { "zone": "ZG", "factor": "0.3" } ] },
+    { "position": "JLR", "distribution": [ { "zone": "ZJ", "factor": "0.2" }, { "zone": "ZK", "factor": "0.5" }, { "zone": "ZL", "factor": "0.3" } ] },
+    { "position": "LPR", "distribution": [ { "zone": "ZL", "factor": "0.4" }, { "zone": "ZM", "factor": "0.5" }, { "zone": "ZP", "factor": "0.1" } ] },
+    { "position": "CFG", "distribution": [ { "zone": "ZD", "factor": "0.2" }, { "zone": "ZE", "factor": "0.4" }, { "zone": "ZF", "factor": "0.4" } ] },
+    { "position": "FJG", "distribution": [ { "zone": "ZF", "factor": "0.1" }, { "zone": "ZG", "factor": "0.4" }, { "zone": "ZH", "factor": "0.4" }, { "zone": "ZJ", "factor": "0.1" } ] },
+    { "position": "JLG", "distribution": [ { "zone": "ZJ", "factor": "0.2" }, { "zone": "ZK", "factor": "0.4" }, { "zone": "ZL", "factor": "0.4" } ] }
+  ],
+  "notes": [
+    "These distribution factors were read visually from a small-print graphic on AHM 560 s.76 (Load & Trim Sheet Appendix I, page 4) - the page has no extractable text layer, it is a scanned/vector diagram.",
+    "Coefficients sum to 1.0 for every position (verified: CFR 0.6+0.4=1.0, FJR 0.2+0.5+0.3=1.0, JLR 0.2+0.5+0.3=1.0, LPR 0.4+0.5+0.1=1.0, CFG 0.2+0.4+0.4=1.0, FJG 0.1+0.4+0.4+0.1=1.0, JLG 0.2+0.4+0.4=1.0).",
+    "Faz 2 kabul kriteri: high-resolution re-verification of this page is still required before operational use - see GROUND_TRUTH.md §14 and §21 Q7."
+  ],
+  "source": {
+    "groundTruthRefs": ["AHM 560 s.76 Appendix I page 4"]
+  }
+}

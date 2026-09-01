@@ -1,0 +1,502 @@
+{
+  "app": {
+    "name": "TUA Load Control"
+  },
+  "nav": {
+    "flightSelection": "Flight selection",
+    "flightSchedule": "Flight schedule",
+    "flightDocument": "Flight document",
+    "uldStock": "ULD Stock",
+    "admin": "Administration",
+    "validation": "Validation",
+    "messages": "Messages",
+    "account": "My account"
+  },
+  "documents": {
+    "generate": {
+      "title": "Generate document",
+      "documentType": "Document type",
+      "leg": "Flight",
+      "checkedBy": "Checked by",
+      "specialInformation": "SI (Special Information)",
+      "generate": "Generate",
+      "generating": "Generating…",
+      "success": "{type} generated",
+      "noFinalizedPlans": "No flights with a finalized load plan",
+      "errors": {
+        "loadPlanNotFinalized": "This flight's load plan isn't finalized yet",
+        "preparedEqualsChecked": "Prepared by and checked by must be different people",
+        "notFound": "Not found",
+        "validation": "Check the fields"
+      }
+    },
+    "list": {
+      "title": "Generated documents",
+      "empty": "No documents generated yet",
+      "type": "Type",
+      "flight": "Flight",
+      "edition": "Edition",
+      "superseded": "Superseded",
+      "preparedBy": "Prepared by",
+      "checkedBy": "Checked by",
+      "issuedAt": "Date",
+      "download": "Download"
+    }
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "loading": "Loading…",
+    "noResults": "No results",
+    "useFiltersAbove": "Use the filters above to search for records",
+    "itemsPerPage": "Items per page",
+    "total": "Total",
+    "page": "Page {current} of {total}",
+    "status": "Status",
+    "actions": "Actions",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "time": "Time",
+    "type": "Type",
+    "station": "Station",
+    "local": "Local",
+    "utc": "UTC",
+    "file": "File",
+    "detail": "Detail",
+    "ok": "OK",
+    "error": "Error",
+    "today": "Today"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "locale": {
+    "label": "Language",
+    "tk": "Türkmençe",
+    "ru": "Русский",
+    "en": "English"
+  },
+  "flights": {
+    "list": {
+      "title": "Flight selection",
+      "startDateTime": "Start date & time",
+      "endDateTime": "End date & time",
+      "routes": "Routes",
+      "flightNumber": "Flight number",
+      "dayOfWeek": "Day of week",
+      "allDays": "All days",
+      "aircraftRegistration": "Aircraft registration",
+      "allAircraft": "All aircraft",
+      "serviceType": "Service type",
+      "allTypes": "All types",
+      "schTimeDep": "Sch Time Dep",
+      "estTimeDep": "Est Time Dep",
+      "actTimeDep": "Act Time Dep",
+      "schTimeArr": "Sch Time Arr",
+      "allStations": "All stations",
+      "noStations": "No stations"
+    },
+    "schedule": {
+      "title": "Flight schedule",
+      "addFlight": "Add Flight",
+      "editFlight": "Edit Flight",
+      "exportPdf": "PDF"
+    },
+    "form": {
+      "flightNo": "Flight number",
+      "date": "Date",
+      "serviceType": "Service type",
+      "aircraft": "Aircraft",
+      "legs": "Legs",
+      "leg": "Leg {n}",
+      "addLeg": "Add leg",
+      "removeLeg": "Remove leg",
+      "from": "From",
+      "via": "Via (optional)",
+      "to": "To",
+      "stdDep": "Sch dep (STD)",
+      "staArr": "Sch arr (STA)",
+      "save": "Save flight",
+      "saving": "Saving…",
+      "requiredField": "Required",
+      "sameStationError": "From and To must be different",
+      "arrivalBeforeDepartureError": "Arrival must be after departure",
+      "conflictError": "This aircraft is already assigned to {flightNo} during this time",
+      "atLeastOneLeg": "At least one leg is required",
+      "createSuccess": "Flight created",
+      "updateSuccess": "Flight updated"
+    },
+    "status": {
+      "reserved": "Reserved",
+      "planned": "Planned",
+      "loading": "Loading",
+      "finalized": "Finalized",
+      "departed": "Departed",
+      "arrived": "Arrived",
+      "cancelled": "Cancelled"
+    }
+  },
+  "uld": {
+    "title": "ULD stock & track",
+    "code": "ULD code",
+    "typeCode": "ULD type code",
+    "serialNumber": "Serial number",
+    "ownerCode": "Owner code",
+    "assignedStation": "Assigned station",
+    "currentStation": "Current station",
+    "condition": "Condition",
+    "baseplateCode": "Baseplate code",
+    "addUld": "Add ULD",
+    "editUld": "Edit ULD",
+    "deleteConfirm": "Delete this ULD?",
+    "namingConvention": "ULD Naming Convention",
+    "statusValue": {
+      "available": "Available",
+      "assigned": "Assigned",
+      "damaged": "Damaged",
+      "lost": "Lost"
+    },
+    "conditionValue": {
+      "serviceable": "Serviceable",
+      "damaged": "Damaged",
+      "unserviceable": "Unserviceable"
+    },
+    "list": {
+      "allStations": "All stations",
+      "allTypes": "All types",
+      "allStatuses": "All statuses",
+      "allConditions": "All conditions",
+      "flight": "Flight",
+      "selected": "{count} selected",
+      "setStatus": "Set status",
+      "exportPdf": "PDF",
+      "scan": "Scan",
+      "scanClose": "Close scanner",
+      "scanning": "Scanning…",
+      "scanNotSupported": "Barcode scanning isn't available on this device/browser",
+      "scanPrompt": "Point the camera at a QR or barcode"
+    },
+    "form": {
+      "invalidCode": "ULD code doesn't match the IATA format (e.g. PMC12345TU)",
+      "duplicateCode": "This ULD code already exists",
+      "requiredField": "Required field",
+      "codeHint": "3 letters + 4-5 digits + 2-3 letters, e.g. PMC12345TU"
+    },
+    "movement": {
+      "title": "Movement history",
+      "recordMovement": "Record movement",
+      "station": "Station",
+      "flight": "Flight (optional)",
+      "note": "Note (optional)",
+      "recordedAt": "Time",
+      "recordedBy": "Recorded by",
+      "noMovements": "No movements recorded yet"
+    },
+    "naming": {
+      "description": "IATA ULD naming rule: 3-letter type code + 4-5 digit serial number + 2-3 letter owner code.",
+      "generate": "Generate code",
+      "valid": "Valid ULD code",
+      "invalid": "Invalid ULD code"
+    }
+  },
+  "wnb": {
+    "zfw": "ZFW",
+    "tow": "TOW",
+    "ldw": "LDW",
+    "ttl": "TTL",
+    "taxiWeight": "Taxi weight",
+    "dow": "DOW",
+    "doi": "DOI",
+    "lizfw": "LIZFW",
+    "litow": "LITOW",
+    "lilaw": "LILAW",
+    "maczfw": "MACZFW (%MAC)",
+    "mactow": "MACTOW (%MAC)",
+    "maclaw": "MACLAW (%MAC)",
+    "stab": "STAB (stabilizer trim)",
+    "underload": "Underload",
+    "errors": {
+      "cgOutOfEnvelope": "Center of gravity is outside the approved envelope",
+      "weightLimitExceeded": "Weight limit exceeded",
+      "cumulativeLoadExceeded": "Cumulative zone load limit exceeded"
+    }
+  },
+  "loadPlan": {
+    "title": "Load plan",
+    "version": "Version {version}",
+    "status": {
+      "draft": "Draft",
+      "finalized": "Finalized",
+      "superseded": "Superseded"
+    },
+    "save": "Save draft",
+    "finalize": "Finalize",
+    "saving": "Saving…",
+    "saveSuccess": "Load plan saved",
+    "saveBlockedEnvelope": "Can't save — CG is outside the envelope for {phase}",
+    "saveBlockedWeight": "Can't save — {limitName} exceeded ({actual} kg > {max} kg)",
+    "offlineQueued": "You're offline — this will sync automatically once you're back online",
+    "positions": {
+      "title": "Positions",
+      "mainDeck": "Main deck",
+      "lowerDeck": "Lower deck",
+      "empty": "Empty",
+      "occupied": "{weight} kg",
+      "overloaded": "Overloaded",
+      "selectVariant": "ULD size"
+    },
+    "assignment": {
+      "title": "Position {position}",
+      "uldCode": "ULD code",
+      "awb": "AWB",
+      "weight": "Weight (kg)",
+      "contentCode": "Content code",
+      "maxGross": "Max gross: {max} kg",
+      "remove": "Remove",
+      "contentCodes": {
+        "B": "Baggage",
+        "C": "Cargo",
+        "M": "Mail",
+        "P": "Pallet/ULD",
+        "S": "Rummage",
+        "E": "Equipment"
+      }
+    },
+    "panel": {
+      "title": "Weight & balance",
+      "envelope": "CG envelope",
+      "withinEnvelope": "Within envelope",
+      "outsideEnvelope": "Outside envelope",
+      "landingApproximate": "No landing envelope published — using the ZFW envelope as an approximation",
+      "notEnoughLoad": "Not enough load entered yet to check the CG envelope — keep adding load"
+    },
+    "violations": {
+      "title": "Violations",
+      "none": "No violations",
+      "positionOverload": "{position}: {actual} kg exceeds max {max} kg",
+      "compartmentExceeded": "{target}: {actual} kg exceeds {max} kg",
+      "combinedLoadExceeded": "Zone {zone}: cumulative {load} kg exceeds {max} kg",
+      "combinedLoadUnavailable": "Combined load check unavailable: {reason}",
+      "lateralImbalanceUnavailable": "Lateral imbalance data not available (AHM 560 s.74 not extractable)"
+    },
+    "fuel": {
+      "title": "Fuel",
+      "density": "Density",
+      "takeoffFuel": "Takeoff fuel",
+      "tripFuel": "Trip fuel",
+      "taxiFuel": "Taxi fuel"
+    },
+    "crew": {
+      "title": "Crew",
+      "cockpit": "Cockpit (1-4)",
+      "courier": "Courier (0-6)",
+      "notSet": "Set crew to compute DOW/DOI"
+    },
+    "trim": {
+      "optimize": "Auto trim",
+      "optimizing": "Optimizing…",
+      "success": "Load distribution updated to bring the CG within the envelope",
+      "noSolution": "Could not find a distribution within the envelope"
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "invalidCredentials": "Invalid email or password",
+    "footer": "© {year} Turkmenistan Airlines — Weight & Balance / Load Control",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "admin": {
+    "ahm": {
+      "title": "AHM master data",
+      "list": {
+        "aircraftType": "Aircraft type",
+        "edition": "Edition",
+        "revision": "Revision",
+        "effectiveDate": "Effective date",
+        "approvedBy": "Approved by",
+        "viewDetail": "View",
+        "compare": "Compare revisions",
+        "uploadNew": "Upload new revision",
+        "empty": "No AHM documents yet"
+      },
+      "detail": {
+        "back": "Back to list",
+        "sections": {
+          "aircraft": "Aircraft & weight limits",
+          "indexFormula": "Index formula",
+          "dowDoiMatrix": "DOW/DOI matrix",
+          "fuelIndex": "Fuel index tables",
+          "cgLimits": "CG limits",
+          "compartments": "Compartments",
+          "positions": "Positions",
+          "combinedLoad": "Combined load limitations",
+          "zoneMapping": "Zone mapping",
+          "uldTypes": "ULD types",
+          "crewIndex": "Crew index"
+        },
+        "zfwForward": "ZFW forward",
+        "zfwAft": "ZFW aft",
+        "takeoffForward": "Takeoff forward",
+        "takeoffAft": "Takeoff aft"
+      },
+      "diff": {
+        "title": "Compare revisions",
+        "before": "Before",
+        "after": "After",
+        "run": "Compare",
+        "noChanges": "No differences between these revisions",
+        "field": "Field",
+        "addedLabel": "Added",
+        "removedLabel": "Removed",
+        "changedLabel": "Changed",
+        "changeType": "Change"
+      },
+      "upload": {
+        "title": "Upload new revision",
+        "selectFiles": "Select JSON files",
+        "aircraftType": "Aircraft type",
+        "edition": "Edition",
+        "revision": "Revision",
+        "effectiveDate": "Effective date",
+        "approvedBy": "Approved by",
+        "validate": "Validate",
+        "preview": "Preview",
+        "confirm": "Confirm & save",
+        "cancel": "Cancel",
+        "validationErrors": "Validation errors",
+        "validationOk": "All files are valid",
+        "missingFile": "Missing required file",
+        "success": "New revision saved",
+        "alreadyExists": "This edition/revision already exists"
+      },
+      "calculations": {
+        "title": "Calculations by AHM revision",
+        "flight": "Flight",
+        "leg": "Leg",
+        "ahmRevision": "AHM revision",
+        "calculatedAt": "Calculated at",
+        "empty": "No calculations recorded yet"
+      }
+    },
+    "validation": {
+      "title": "Validation dossier",
+      "coverage": "{withReference} of {total} scenarios have a comparison reference.",
+      "scenariosHeading": "Test scenarios",
+      "scenario": "Scenario",
+      "description": "Description",
+      "status": "Status",
+      "statusAvailable": "Reference available",
+      "statusPending": "Pending",
+      "summaryColumn": "Result",
+      "summaryValue": "{match} match, {ourFix} our fix, {investigate} to investigate",
+      "noScenarios": "No scenarios defined",
+      "detailHeading": "{scenario} — field comparison",
+      "field": "Field",
+      "aerometa": "Aerometa",
+      "ours": "Ours",
+      "difference": "Difference",
+      "classification": "Assessment",
+      "classificationMATCH": "Match",
+      "classificationOUR_FIX": "Our fix",
+      "classificationINVESTIGATE": "To investigate",
+      "note": "Note",
+      "noFields": "No fields compared yet"
+    }
+  },
+  "messages": {
+    "generate": {
+      "title": "Generate message",
+      "messageType": "Message type",
+      "leg": "Flight",
+      "event": "Event",
+      "address": "Address",
+      "generate": "Generate & send",
+      "generating": "Sending…",
+      "success": "{type} sent",
+      "noFinalizedPlans": "No flights with a finalized load plan",
+      "errors": {
+        "unauthorized": "Not authorized",
+        "validation": "Check the fields",
+        "notFound": "Not found",
+        "loadPlanNotFinalized": "This flight's load plan isn't finalized yet",
+        "invalidAddress": "Invalid address (SITA or email required)"
+      }
+    },
+    "addressBook": {
+      "title": "Address book",
+      "label": "Label",
+      "sita": "SITA address",
+      "email": "Email",
+      "add": "Add",
+      "success": "Address added",
+      "errors": {
+        "unauthorized": "Not authorized",
+        "validation": "Check the fields",
+        "invalidAddress": "Invalid address (SITA or email required)"
+      }
+    },
+    "incomingCpm": {
+      "title": "Parse incoming CPM (acceptance)",
+      "placeholder": "Paste the incoming CPM message text here",
+      "parse": "Parse"
+    },
+    "list": {
+      "title": "Sent messages",
+      "type": "Type",
+      "flight": "Flight",
+      "address": "Address",
+      "status": "Status",
+      "attempts": "Attempts",
+      "retry": "Retry",
+      "createdBy": "By",
+      "createdAt": "Date",
+      "empty": "No messages sent yet"
+    }
+  },
+  "account": {
+    "title": "My account",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "station": "Station"
+    },
+    "noStation": "Not assigned",
+    "roles": {
+      "ADMIN": "Admin",
+      "LOAD_CONTROLLER": "Load Controller",
+      "CHECKER": "Checker",
+      "RAMP": "Ramp",
+      "VIEWER": "Viewer"
+    },
+    "history": {
+      "title": "Activity history",
+      "subtitle": "Last 50 actions",
+      "empty": "No activity yet",
+      "action": "Action",
+      "entity": "Type",
+      "entityId": "ID",
+      "at": "Time"
+    },
+    "menu": {
+      "myAccount": "My account",
+      "history": "Activity history",
+      "signOut": "Sign out"
+    }
+  }
+}

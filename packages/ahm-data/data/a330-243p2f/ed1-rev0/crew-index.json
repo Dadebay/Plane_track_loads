@@ -1,0 +1,23 @@
+{
+  "cockpit": {
+    "maxSeats": 4,
+    "armFromRefSta": "-23.807",
+    "indexPerKg": "-0.00952"
+  },
+  "courier": [
+    { "location": "AFT_OF_LAVATORY_L11", "maxSeats": 2, "armFromRefSta": "-21.555", "indexPerKg": "-0.00862" },
+    { "location": "AFT_OF_COURIER_STOWAGE", "maxSeats": 4, "armFromRefSta": "-21.555", "indexPerKg": "-0.00862" }
+  ],
+  "galley": [
+    { "location": "COURIER_STOWAGE", "armFromRefSta": "-22.3555", "indexPerKg": "-0.00864" }
+  ],
+  "cabinConfiguration": {
+    "code": "6 YC",
+    "class1": "YC",
+    "courierAreaSeats": 6,
+    "standardCourierSplit": { "aftOfLavatory": 2, "aftOfCourierStowage": 4 }
+  },
+  "source": {
+    "groundTruthRefs": ["AHM 560 s.47 Sheet C-5", "AHM 560 s.51 Sheet C-8", "AHM 560 s.52 Sheet C-11"]
+  }
+}

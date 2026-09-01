@@ -1,0 +1,65 @@
+# Bare-IP pilot test compose — for trying the app on a shared VPS that
+# already serves other sites on 80/443, with no domain pointed at this
+# project yet. Exposes `web` directly on a host port (no Caddy, no
+# automatic HTTPS — Let's Encrypt needs a real domain, which a bare IP
+# doesn't have). Once a domain exists, switch to compose.prod.yaml instead.
+#
+#   docker compose -f compose.pilot-test.yaml up -d --build
+#   docker compose -f compose.pilot-test.yaml run --rm migrate
+#
+# Requires a .env file with POSTGRES_PASSWORD, AUTH_SECRET, HOST_IP, and
+# optionally WEB_PORT (default 8080) — see docs/DEPLOYMENT.md.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tua
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: tua_load_control
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tua -d tua_load_control"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:3000"
+    environment:
+      DATABASE_URL: "postgresql://tua:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/tua_load_control?schema=public"
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
+      NEXT_PUBLIC_APP_URL: "http://${HOST_IP:?set HOST_IP in .env}:${WEB_PORT:-8080}"
+      DOCUMENTS_WATERMARK: ${DOCUMENTS_WATERMARK:-true}
+      NEXT_PUBLIC_DEFAULT_LOCALE: "tk"
+      NODE_ENV: production
+    volumes:
+      - web_data:/app/.data
+
+  # See apps/web/Dockerfile's `migrator` stage comment — the `web` runtime
+  # image can't run `prisma migrate deploy` itself.
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: migrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://tua:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/tua_load_control?schema=public"
+    profiles: ["tools"]
+
+volumes:
+  postgres_data:
+  web_data:

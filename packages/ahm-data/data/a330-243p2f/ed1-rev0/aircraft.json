@@ -1,0 +1,50 @@
+{
+  "aircraftType": "Airbus A330-243 P2F",
+  "carrier": "TUA",
+  "edition": 1,
+  "revision": 0,
+  "effectiveDate": "2023-03-15",
+  "approvedDate": "2023-05-08",
+  "sita": "ASBDBT5",
+  "email": "groundhandling@turkmenistanairlines.tm",
+  "units": {
+    "weight": "kg",
+    "length": "m",
+    "volume": "m3",
+    "fuelDensity": "kg/litre",
+    "moment": "kg.m"
+  },
+  "weightLimits": {
+    "mtw": "233900",
+    "mtow": "233000",
+    "mlw": "182000",
+    "mzfw": "170000",
+    "min": "116000"
+  },
+  "registrations": [
+    {
+      "registration": "EZ-F429",
+      "bew": "111072.5",
+      "bewCgMac": "19.64",
+      "bewIndex": "82.65",
+      "rampTaxi": "233900",
+      "designTakeoffDry": "233000",
+      "zeroFuel": "170000",
+      "landing": "182000"
+    },
+    {
+      "registration": "EZ-F430",
+      "bew": "111233.5",
+      "bewCgMac": "19.49",
+      "bewIndex": "82.15",
+      "rampTaxi": "233900",
+      "designTakeoffDry": "233000",
+      "zeroFuel": "170000",
+      "landing": "182000"
+    }
+  ],
+  "source": {
+    "documentTitle": "Turkmenistan Airlines OJSC, AHM 560, Airbus A330-243 P2F, Edition 1 / Revision 0",
+    "groundTruthRefs": ["AHM 560 s.3", "AHM 560 s.4", "AHM 560 s.48"]
+  }
+}

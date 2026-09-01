@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import "@tua/ui/theme.css";
+
+/* Tailwind v4 auto-content-detection only walks the directory tree under
+   this CSS file. @tua/ui lives in a sibling package outside apps/web, so
+   its class names must be scanned explicitly or utilities it alone uses
+   (e.g. responsive sm:block) never get generated. */
+@source "../../../../packages/ui/src";
+
+@theme inline {
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
+
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-muted: var(--bg-muted);
+  --color-bg-overlay: var(--bg-overlay);
+
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-on-brand: var(--fg-on-brand);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
+  --color-status-reserved: var(--status-reserved);
+  --color-status-reserved-bg: var(--status-reserved-bg);
+  --color-status-planned: var(--status-planned);
+  --color-status-planned-bg: var(--status-planned-bg);
+  --color-status-loading: var(--status-loading);
+  --color-status-loading-bg: var(--status-loading-bg);
+  --color-status-finalized: var(--status-finalized);
+  --color-status-finalized-bg: var(--status-finalized-bg);
+  --color-status-departed: var(--status-departed);
+  --color-status-departed-bg: var(--status-departed-bg);
+  --color-status-arrived: var(--status-arrived);
+  --color-status-arrived-bg: var(--status-arrived-bg);
+  --color-status-cancelled: var(--status-cancelled);
+  --color-status-cancelled-bg: var(--status-cancelled-bg);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-sans: var(--font-gilroy, ui-sans-serif, system-ui, sans-serif);
+}
+
+html {
+  color-scheme: light;
+}
+
+html[data-theme="dark"],
+html:not([data-theme="light"]) {
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+/* Turkmen (ä ç ž ň ö ş ü ý) and Cyrillic must render with a font that
+   covers Latin-Extended-A and Cyrillic. Gilroy (self-hosted via
+   next/font/local, see src/fonts.ts) only covers standard Latin — the
+   browser falls back per-glyph (not per-word) to the system UI stack for
+   any character Gilroy lacks, so Turkmen/Cyrillic text still renders
+   correctly, just in the fallback font rather than Gilroy for those
+   specific glyphs. */
