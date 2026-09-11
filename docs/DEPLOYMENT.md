@@ -188,8 +188,13 @@ exec /path/to/node /path/to/app/apps/web/server-guard.mjs
 ```
 
 ```bash
-pm2 start start.sh --name tua-web --interpreter bash && pm2 save
+cd /path/to/app && pm2 start start.sh --name tua-web --interpreter bash --cwd /path/to/app && pm2 save
 ```
+
+`--cwd` şart: pm2 süreci ilk oluşturduğu andaki çalışma dizinini saklar ve
+o dizin sonradan silinirse süreç hiç başlayamaz — `pm2 list` yine "online"
+gösterir, oysa 8080'i dinleyen kimse yoktur. Eski kurulum silindikten sonra
+pm2 kaydını **silip yeniden oluşturun**, yalnızca `restart` yetmez.
 
 ### `db push` ile kurulmuş bir veritabanını devralmak
 
