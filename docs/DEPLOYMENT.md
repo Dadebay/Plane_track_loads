@@ -31,7 +31,7 @@ docker compose up
    POSTGRES_PASSWORD=<güçlü-şifre>
    AUTH_SECRET=<openssl rand -base64 32>
    DOMAIN=tua.example.com
-   DOCUMENTS_WATERMARK=true
+   DOCUMENTS_WATERMARK=false
    ```
 
 3. DNS'te `DOMAIN` A kaydını VPS IP'sine yönlendirin (Caddy'nin Let's
@@ -49,6 +49,25 @@ docker compose up
    `migrator` build target'ı) çalıştırılır:
 
    ```bash
+   docker compose -f compose.prod.yaml run --rm migrate
+   ```
+
+6. Boş bir veritabanına ilk kullanıcıları ve AHM verisini yükleyin.
+   `migrate` servisi tam toolchain'e sahip olduğu için seed'i de o çalıştırır:
+
+   ```bash
+   docker compose -f compose.prod.yaml run --rm migrate pnpm --filter @tua/db seed
+   ```
+
+   Seed, `packages/db/prisma/seed.ts`'deki geliştirme parolasıyla kullanıcı
+   açar. **Üretimde ilk işiniz** o parolaları değiştirmek olmalı — seed'i
+   yalnızca boş bir veritabanında çalıştırın, mevcut veriye asla.
+
+7. Güncelleme (kod değiştiğinde):
+
+   ```bash
+   git pull
+   docker compose -f compose.prod.yaml up -d --build
    docker compose -f compose.prod.yaml run --rm migrate
    ```
 
