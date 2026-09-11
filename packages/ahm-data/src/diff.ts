@@ -41,7 +41,18 @@ function deepEqual(a: unknown, b: unknown): boolean {
 // Fields recognized as a natural identity key for an array element, tried
 // in order. `cockpitCrew`+`courierCrew` (DOW/DOI matrix cells) is handled
 // as a composite key before this list is consulted.
-const NATURAL_KEY_FIELDS = ["code", "zone", "typeCode", "location", "position", "fuelWeight", "weight", "mac"];
+const NATURAL_KEY_FIELDS = [
+  "code",
+  "zone",
+  "typeCode",
+  "location",
+  "position",
+  "fuelWeight",
+  "weight",
+  "mac",
+  "id",
+  "category",
+];
 
 function naturalKeyFor(item: unknown): string | null {
   if (!isPlainObject(item)) return null;

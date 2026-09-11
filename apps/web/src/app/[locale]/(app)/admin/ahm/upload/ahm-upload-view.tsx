@@ -2,7 +2,10 @@
 
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { DatePicker, PageHeader } from "@tua/ui";
+import {
+  DatePicker,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
 import { useRouter } from "@/i18n/navigation";
 
 const FILES = [

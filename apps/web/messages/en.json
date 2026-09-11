@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "TUA Load Control"
+    "name": "Load Control"
   },
   "nav": {
     "flightSelection": "Flight selection",
@@ -9,8 +9,9 @@
     "uldStock": "ULD Stock",
     "admin": "Administration",
     "validation": "Validation",
-    "messages": "Messages",
-    "account": "My account"
+    "account": "My account",
+    "collapseSidebar": "Collapse navigation",
+    "expandSidebar": "Expand navigation"
   },
   "documents": {
     "generate": {
@@ -40,7 +41,12 @@
       "preparedBy": "Prepared by",
       "checkedBy": "Checked by",
       "issuedAt": "Date",
-      "download": "Download"
+      "download": "Download",
+      "document": "Document",
+      "preview": "Preview {name}",
+      "downloadNamed": "Download {name}",
+      "generateNamed": "Generate {type} for {flightNo}",
+      "newEdition": "New {type} edition for {flightNo}"
     }
   },
   "common": {
@@ -73,7 +79,16 @@
     "detail": "Detail",
     "ok": "OK",
     "error": "Error",
-    "today": "Today"
+    "today": "Today",
+    "weekdays": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    }
   },
   "theme": {
     "label": "Theme",
@@ -92,26 +107,40 @@
       "title": "Flight selection",
       "startDateTime": "Start date & time",
       "endDateTime": "End date & time",
-      "routes": "Routes",
+      "routes": "Route",
       "flightNumber": "Flight number",
       "dayOfWeek": "Day of week",
       "allDays": "All days",
       "aircraftRegistration": "Aircraft registration",
-      "allAircraft": "All aircraft",
+      "allAircraft": "All Aircraft",
       "serviceType": "Service type",
       "allTypes": "All types",
-      "schTimeDep": "Sch Time Dep",
-      "estTimeDep": "Est Time Dep",
-      "actTimeDep": "Act Time Dep",
-      "schTimeArr": "Sch Time Arr",
+      "schTimeDep": "Sch. time dep.",
+      "estTimeDep": "Est. time dep.",
+      "actTimeDep": "Act. time dep.",
+      "schTimeArr": "Sch. time arr.",
       "allStations": "All stations",
-      "noStations": "No stations"
+      "noStations": "No stations",
+      "via": "Via",
+      "day": "Day",
+      "actions": "Action",
+      "clearFilters": "Clear filters",
+      "openLoadPlan": "Open the load plan for {flightNo}",
+      "openDocuments": "Open the documents for {flightNo}",
+      "flightNumberPrefix": "Carrier code",
+      "flightNumberPlaceholder": "Number",
+      "openLoadPlanShort": "Open load plan",
+      "flightNoShort": "Flt no",
+      "registrationShort": "Reg.",
+      "serviceTypeShort": "Svc type"
     },
     "schedule": {
       "title": "Flight schedule",
       "addFlight": "Add Flight",
       "editFlight": "Edit Flight",
-      "exportPdf": "PDF"
+      "exportPdf": "PDF",
+      "deleteUnavailable": "A flight with load plans cannot be deleted — cancel it instead.",
+      "selectRowFirst": "Select the flight first"
     },
     "form": {
       "flightNo": "Flight number",
@@ -145,6 +174,17 @@
       "departed": "Departed",
       "arrived": "Arrived",
       "cancelled": "Cancelled"
+    },
+    "timeline": {
+      "now": "N",
+      "close": "Close",
+      "dragHint": "Drag left or right to move through time, or use the arrow keys.",
+      "markers": {
+        "std": "STD",
+        "etd": "ETD",
+        "atd": "ATD",
+        "sta": "STA"
+      }
     }
   },
   "uld": {
@@ -208,7 +248,9 @@
       "generate": "Generate code",
       "valid": "Valid ULD code",
       "invalid": "Invalid ULD code"
-    }
+    },
+    "selectOneFirst": "Select exactly one ULD first",
+    "deleteInUse": "This ULD is on a load plan and cannot be deleted. Mark it damaged or lost instead."
   },
   "wnb": {
     "zfw": "ZFW",
@@ -252,7 +294,6 @@
       "mainDeck": "Main deck",
       "lowerDeck": "Lower deck",
       "empty": "Empty",
-      "occupied": "{weight} kg",
       "overloaded": "Overloaded",
       "selectVariant": "ULD size"
     },
@@ -271,7 +312,14 @@
         "P": "Pallet/ULD",
         "S": "Rummage",
         "E": "Equipment"
-      }
+      },
+      "index": "Index units",
+      "overMaxGross": "Over the position's max gross of {max} kg",
+      "tareWeight": "Tare (kg)",
+      "netWeight": "Net (kg)",
+      "grossWeight": "Gross (kg)",
+      "grossDerived": "Derived from tare + net",
+      "readOnly": "This plan is finalized and cannot be edited."
     },
     "panel": {
       "title": "Weight & balance",
@@ -279,7 +327,15 @@
       "withinEnvelope": "Within envelope",
       "outsideEnvelope": "Outside envelope",
       "landingApproximate": "No landing envelope published — using the ZFW envelope as an approximation",
-      "notEnoughLoad": "Not enough load entered yet to check the CG envelope — keep adding load"
+      "notEnoughLoad": "Not enough load entered yet to check the CG envelope — keep adding load",
+      "loadIndex": "Load index",
+      "totalTrafficLoad": "Total traffic load (kg)",
+      "indexCard": "Index card cross-check",
+      "indexCardNote": "Zone load · computed index · printed card. The card rounds to whole units over a 500 kg bracket, so small differences are normal.",
+      "engineErrorTitle": "Calculation blocked",
+      "engineErrorDetail": "Engine rule (English, as printed in the log):",
+      "zfcgOutOfRange": "The combined-load table covers 21–38 % MAC. This load puts ZFCG outside that band, so no load band can be read. Redistribute the load towards the centre of the aircraft.",
+      "combinedLoadUnavailable": "Combined-load check unavailable for this load."
     },
     "violations": {
       "title": "Violations",
@@ -288,7 +344,8 @@
       "compartmentExceeded": "{target}: {actual} kg exceeds {max} kg",
       "combinedLoadExceeded": "Zone {zone}: cumulative {load} kg exceeds {max} kg",
       "combinedLoadUnavailable": "Combined load check unavailable: {reason}",
-      "lateralImbalanceUnavailable": "Lateral imbalance data not available (AHM 560 s.74 not extractable)"
+      "lateralImbalanceUnavailable": "Lateral imbalance data not available (AHM 560 s.74 not extractable)",
+      "indexCardMismatch": "Zone {zone}: computed index {computed} is further from the printed card ({printed}) than the card's own resolution allows"
     },
     "fuel": {
       "title": "Fuel",
@@ -308,6 +365,175 @@
       "optimizing": "Optimizing…",
       "success": "Load distribution updated to bring the CG within the envelope",
       "noSolution": "Could not find a distribution within the envelope"
+    },
+    "loading": "Loading the draft…",
+    "workspace": {
+      "orientation": "Nose left, tail right",
+      "noConfigurations": "This AHM revision carries no position configuration page, so the workspace cannot be drawn. The position list below still works.",
+      "blockedByList": "blocked by {positions}",
+      "state": {
+        "EMPTY": "Empty",
+        "LOADED": "Loaded",
+        "OVERLOADED": "Over max gross",
+        "BLOCKED": "Blocked by another position",
+        "READ_ONLY": "Finalized, read only"
+      }
+    },
+    "tables": {
+      "pass": "OK",
+      "fail": "Exceeded",
+      "conflicts": "Position conflicts",
+      "overlapMetres": "{metres} m of shared floor",
+      "positionIndex": "Position index",
+      "position": "Position",
+      "weight": "Weight",
+      "indexUnits": "Index",
+      "total": "Total",
+      "noLoad": "Nothing loaded yet",
+      "combinedLoad": "Combined load by zone",
+      "combinedLoadCaption": "Cumulative combined load per zone, band {band}",
+      "zone": "Zone",
+      "cumulativeLoad": "Cumulative",
+      "maxCumulative": "Max",
+      "margin": "Margin",
+      "result": "Result",
+      "compartments": "Compartments",
+      "compartment": "Compartment",
+      "actual": "Actual",
+      "max": "Max",
+      "lateralImbalance": "Lateral imbalance",
+      "lateralProvisional": "Provisional and informational: the fuel half of the source table is not transcribed, so no total lateral imbalance can be stated.",
+      "noSideBySide": "No side-by-side positions loaded",
+      "category": "Category",
+      "left": "Left",
+      "right": "Right",
+      "difference": "Difference",
+      "yArm": "Y-arm (m)",
+      "moment": "Moment (kg.m)",
+      "totalWithMargin": "Total including operational margin",
+      "limit": "Limit",
+      "sbs": {
+        "MAIN_SBS_88": "Main SBS 88\"",
+        "MAIN_SBS_96": "Main SBS 96\"",
+        "LOWER_LD3": "Lower LD3"
+      },
+      "lateralImbalanceUnavailable": "Lateral imbalance cannot be checked: the fuel half of AHM 560's lateral table is not transcribed from the approved source."
+    },
+    "envelope": {
+      "title": "CG envelope",
+      "indexAxis": "Index units",
+      "inside": "inside the envelope",
+      "outside": "outside the envelope",
+      "informational": "Informational. The server's own check decides whether the plan may be saved."
+    },
+    "tanks": {
+      "title": "Fuel distribution by tank",
+      "clear": "Clear",
+      "empty": "Not distributed yet. Leave empty, or enter every tank.",
+      "balanced": "Distribution sums to {total} kg",
+      "difference": "{allocated} kg distributed against a takeoff fuel of {total} kg ({difference} kg)",
+      "manualOnly": "Manual only: the approved AHM 560 publishes no refuelling schedule.",
+      "slot": {
+        "OUTER_LEFT": "Outer left",
+        "INNER_LEFT": "Inner left",
+        "CENTER_CENTRE": "Centre",
+        "INNER_RIGHT": "Inner right",
+        "OUTER_RIGHT": "Outer right",
+        "TRIM_CENTRE": "Trim"
+      }
+    },
+    "sidebar": {
+      "title": "Load & balance",
+      "flightDetails": "Flight details",
+      "date": "Date",
+      "time": "Time",
+      "station": "Station",
+      "flightNumber": "Flight number",
+      "departurePort": "Departure port",
+      "arrivalPort": "Arrival port",
+      "flightSummary": "Flight summary",
+      "aircraftReg": "Aircraft reg.",
+      "crewCode": "Crew code",
+      "zeroFuel": "Zero fuel",
+      "takeOff": "Take off",
+      "landing": "Landing",
+      "cgTrim": "CG & trim",
+      "payload": "Payload",
+      "maxPayload": "Max payload",
+      "actualPayload": "Actual payload",
+      "lateralImbalance": "Lateral imbalance",
+      "uldSummary": "ULD summary",
+      "loadedTare": "Loaded tare wt.",
+      "loadedNet": "Loaded net wt.",
+      "loadedGross": "Loaded gross wt.",
+      "notAvailable": "Not available",
+      "notComputedYet": "Waiting for crew and fuel input",
+      "allWeights": "All weights in kilograms",
+      "cgRange": "CG range",
+      "forwardLimit": "FWD limit",
+      "aftLimit": "AFT limit",
+      "actualIndex": "Actual"
+    },
+    "backToFlights": "Back to flights",
+    "fuelModal": {
+      "title": "Fuel distribution",
+      "open": "Fuel info",
+      "refuelMode": "Refuelling mode",
+      "modeAutomatic": "Automatic",
+      "modeManual": "Manual",
+      "totalFuel": "Total fuel (kg)",
+      "tanksConfiguration": "Fuel tanks configuration",
+      "leftWing": "Left wing",
+      "centerAndTrim": "Centre and trim",
+      "rightWing": "Right wing",
+      "innerTank": "Inner tank",
+      "outerTank": "Outer tank",
+      "centerTank": "Centre tank",
+      "trimTank": "Trim tank",
+      "clear": "Clear",
+      "notDistributed": "Not distributed yet. Leave empty, or fill every tank.",
+      "balanced": "Distribution sums to {total} kg",
+      "difference": "{allocated} kg distributed against a takeoff fuel of {total} kg ({difference} kg)",
+      "asymmetry": "Left/right difference: {detail} kg",
+      "fuelIndex": "Fuel index",
+      "lateralMoment": "Lateral moment",
+      "tankIndexLabel": "Index: not available",
+      "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) is provisional — the approved scan cannot be read reliably at the printed precision. See AHM560_ERRATA.md Kayit 10.",
+      "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE is not transcribed from the approved source.",
+      "automaticUnavailable": "Automatic distribution is unavailable: the approved AHM 560 publishes no refuelling schedule. Enter the tank weights manually."
+    },
+    "dowModal": {
+      "title": "DOW / DOI",
+      "open": "DOW / DOI",
+      "published": "Published by AHM 560",
+      "publishedSource": "AHM 560 Edition {edition} Revision {revision}, s.6 §III — the matrix cell for this crew version. This is the figure the loadsheet is computed from.",
+      "crewVersion": "Crew version",
+      "crewWeights": "Printed remark: {cockpit} kg per cockpit occupant, {courier} kg per courier — baggage included.",
+      "composition": "How the cell decomposes",
+      "impliedBasic": "Basic figure implied by the matrix",
+      "crewTotal": "Crew",
+      "compositionNote": "The published cell already contains the crew and the fixed stowage items, so this is shown as explanation only. Nothing here is added back into the calculation.",
+      "basicWeight": "Basic empty weight",
+      "bew": "BEW",
+      "bewCg": "BEW CG",
+      "bewIndex": "BEW index",
+      "bewDisagrees": "This basic weight disagrees with the DOW/DOI matrix by {gap} kg — it is from an earlier weighing of the airframe. The loadsheet uses the matrix, not this figure. See AHM560_ERRATA.md Kayit 11.",
+      "fixedItems": "Document, courier, bag and coat stowage · potable water · waste tank",
+      "fixedItemsUnavailable": "Their weight is already inside the published cell, but the approved AHM pages held here publish no arm for them individually, so they cannot be itemised. Recorded as an open question rather than filled with an assumed value."
+    },
+    "errorLog": {
+      "title": "Error log",
+      "clear": "Clear",
+      "blockingCount": "{count} blocking",
+      "nothingToReport": "No blockers, warnings or unavailable checks.",
+      "crewNotSet": "Crew version is not set, so DOW/DOI cannot be looked up.",
+      "calculationFailed": "Weight & balance could not be computed: {detail}",
+      "positionOverload": "Position {position} holds {actual} kg, above its maximum of {max} kg.",
+      "compartmentExceeded": "{target}: {actual} kg exceeds the published maximum of {max} kg.",
+      "outOfEnvelope": "{phase} CG is outside the published envelope.",
+      "landingApproximate": "No landing CG table is published for this aircraft; the ZFW envelope is used as an approximation.",
+      "combinedLoadExceeded": "Combined load at zone {zone}: {actual} kg above the {max} kg limit.",
+      "combinedLoadUnavailable": "Combined load could not be checked: {reason}"
     }
   },
   "auth": {
@@ -416,56 +642,6 @@
       "classificationINVESTIGATE": "To investigate",
       "note": "Note",
       "noFields": "No fields compared yet"
-    }
-  },
-  "messages": {
-    "generate": {
-      "title": "Generate message",
-      "messageType": "Message type",
-      "leg": "Flight",
-      "event": "Event",
-      "address": "Address",
-      "generate": "Generate & send",
-      "generating": "Sending…",
-      "success": "{type} sent",
-      "noFinalizedPlans": "No flights with a finalized load plan",
-      "errors": {
-        "unauthorized": "Not authorized",
-        "validation": "Check the fields",
-        "notFound": "Not found",
-        "loadPlanNotFinalized": "This flight's load plan isn't finalized yet",
-        "invalidAddress": "Invalid address (SITA or email required)"
-      }
-    },
-    "addressBook": {
-      "title": "Address book",
-      "label": "Label",
-      "sita": "SITA address",
-      "email": "Email",
-      "add": "Add",
-      "success": "Address added",
-      "errors": {
-        "unauthorized": "Not authorized",
-        "validation": "Check the fields",
-        "invalidAddress": "Invalid address (SITA or email required)"
-      }
-    },
-    "incomingCpm": {
-      "title": "Parse incoming CPM (acceptance)",
-      "placeholder": "Paste the incoming CPM message text here",
-      "parse": "Parse"
-    },
-    "list": {
-      "title": "Sent messages",
-      "type": "Type",
-      "flight": "Flight",
-      "address": "Address",
-      "status": "Status",
-      "attempts": "Attempts",
-      "retry": "Retry",
-      "createdBy": "By",
-      "createdAt": "Date",
-      "empty": "No messages sent yet"
     }
   },
   "account": {

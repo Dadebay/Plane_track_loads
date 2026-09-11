@@ -8,26 +8,24 @@
  */
 
 import type { LimitCheck, StabResult } from "@tua/wnb-core";
-import type { LirCell } from "../lir/types";
+import type {
+  DocumentDeckLayout,
+  DocumentFuelTankLine,
+  DocumentHeader,
+  DocumentUldLine,
+} from "../shared/types";
 
 export interface LoadsheetInput {
-  station: string;
+  /** The station/flight/date/registration/edition/signature set every
+   * document shares — one shape, one renderer (../shared/chrome.tsx). */
+  header: DocumentHeader;
   destination: string;
-  flightNo: string;
-  /** Pre-formatted by the caller, e.g. "11/08/2026". */
-  date: string;
   /** Pre-formatted by the caller, e.g. "22:00". */
   time: string;
-  aircraftType: string;
-  registration: string;
   /** e.g. "P2F". */
   version: string;
   cockpitCrew: number;
   courierCrew: number;
-  /** e.g. "01" for ED01. */
-  editionNo: string;
-  preparedBy: string;
-  checkedBy: string;
 
   /** CLAUDE.md rule #3 / Bulgu #2 fix — which AHM 560 edition/revision this loadsheet was computed against, shown on the document itself. */
   ahmEdition: number;
@@ -72,10 +70,22 @@ export interface LoadsheetInput {
 
   /** Per-compartment/main-deck actual-vs-max, from @tua/wnb-core's checkCompartmentLimits — the "LOAD IN COMPARTMENTS" block. */
   compartments: LimitCheck[];
-  /** Full position list — reuses the LIR cell shape (ULD/AWB + weight per position). */
-  cells: LirCell[];
+  /** The plate with this plan's load, from @tua/wnb-core's
+   * `buildDeckLayout()` — the same rows the LIR prints and the workspace
+   * shows. */
+  layout: DocumentDeckLayout;
+  /** Loaded positions with the tare/net/gross breakdown. */
+  ulds: DocumentUldLine[];
 
-  /** Faz 12 (LMC) not yet implemented — always empty for now, block prints "NIL". */
+  /** `AUTOMATIC` or `MANUAL`, as recorded on the fuel record. */
+  refuelMode: string;
+  /** Per-tank allocation when the operator recorded one. `null` prints an
+   * explicit "not available" line: AHM 560's FUEL LATERAL MOMENT PER TANK
+   * TABLE is still untranscribed (AHM560_ERRATA.md Kayıt 10), and a
+   * loadsheet must not imply a tank split nobody supplied. */
+  fuelDistribution: DocumentFuelTankLine[] | null;
+
+  /** Faz 12 (LMC) — empty prints "NIL". */
   lastMinuteChanges: { position: string; weightDelta: string; description?: string }[];
 
   specialInformation: string;

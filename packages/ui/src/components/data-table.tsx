@@ -22,6 +22,7 @@ export function DataTable<T>({
   rows,
   rowKey,
   onRowClick,
+  isRowSelected,
   emptyState,
   sortKey,
   sortDirection,
@@ -31,6 +32,8 @@ export function DataTable<T>({
   rows: T[];
   rowKey: (row: T) => string;
   onRowClick?: (row: T) => void;
+  /** Marks the row the rest of the page is showing detail for. */
+  isRowSelected?: (row: T) => boolean;
   emptyState?: ReactNode;
   sortKey?: string;
   sortDirection?: "asc" | "desc";
@@ -55,13 +58,21 @@ export function DataTable<T>({
                 <th
                   key={col.key}
                   scope="col"
-                  className={cn("whitespace-nowrap px-3 py-2 text-left font-semibold", col.className)}
+                  className={cn(
+                    // Upper case, like the printed load sheets and the
+                    // system the crew moved from — column names are read as
+                    // labels, not as sentences.
+                    "whitespace-nowrap px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide",
+                    col.className,
+                  )}
                 >
                   {col.sortable ? (
                     <button
                       type="button"
                       onClick={() => onSort?.(col.key)}
-                      className="inline-flex items-center gap-1"
+                      // Tailwind's preflight resets `text-transform` on
+                      // buttons, so the th's uppercase does not reach here.
+                      className="inline-flex items-center gap-1 uppercase"
                     >
                       {col.header}
                       <SortIcon active={sortKey === col.key} direction={sortDirection} />
@@ -78,9 +89,14 @@ export function DataTable<T>({
               <tr
                 key={rowKey(row)}
                 onClick={() => onRowClick?.(row)}
+                aria-selected={isRowSelected ? isRowSelected(row) : undefined}
                 className={cn(
                   "border-b border-border",
                   onRowClick && "cursor-pointer hover:bg-bg-muted",
+                  // Selection is carried by a left bar as well as a tint, so
+                  // it survives a colour-blind reader and a washed-out
+                  // tablet screen in daylight.
+                  isRowSelected?.(row) && "bg-info-bg shadow-[inset_3px_0_0_0_var(--info)]",
                 )}
               >
                 {columns.map((col) => (
@@ -100,9 +116,11 @@ export function DataTable<T>({
           <li
             key={rowKey(row)}
             onClick={() => onRowClick?.(row)}
+            aria-selected={isRowSelected ? isRowSelected(row) : undefined}
             className={cn(
               "rounded-lg border border-border bg-bg-subtle p-3",
               onRowClick && "cursor-pointer active:bg-bg-muted",
+              isRowSelected?.(row) && "border-info bg-info-bg",
             )}
           >
             {columns

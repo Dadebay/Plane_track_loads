@@ -40,8 +40,8 @@ services:
       DATABASE_URL: "postgresql://tua:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/tua_load_control?schema=public"
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
       NEXT_PUBLIC_APP_URL: "http://${HOST_IP:?set HOST_IP in .env}:${WEB_PORT:-8080}"
-      DOCUMENTS_WATERMARK: ${DOCUMENTS_WATERMARK:-true}
-      NEXT_PUBLIC_DEFAULT_LOCALE: "tk"
+      DOCUMENTS_WATERMARK: ${DOCUMENTS_WATERMARK:-false}
+      NEXT_PUBLIC_DEFAULT_LOCALE: "en"
       NODE_ENV: production
     volumes:
       - web_data:/app/.data

@@ -1,0 +1,1244 @@
+{
+  "tanks": {
+    "INNER": {
+      "perTank": true,
+      "step": {
+        "0.760": [
+          {
+            "fuelWeight": "1000",
+            "index": "-1"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "-2"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "-3"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "-4"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "-5"
+          },
+          {
+            "fuelWeight": "6000",
+            "index": "-6"
+          },
+          {
+            "fuelWeight": "7000",
+            "index": "-7"
+          },
+          {
+            "fuelWeight": "8000",
+            "index": "-8"
+          },
+          {
+            "fuelWeight": "9000",
+            "index": "-9"
+          },
+          {
+            "fuelWeight": "10000",
+            "index": "-10"
+          },
+          {
+            "fuelWeight": "11000",
+            "index": "-11"
+          },
+          {
+            "fuelWeight": "12000",
+            "index": "-12"
+          },
+          {
+            "fuelWeight": "13000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "14000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "15000",
+            "index": "-14"
+          },
+          {
+            "fuelWeight": "16000",
+            "index": "-15"
+          },
+          {
+            "fuelWeight": "17000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "18000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "19000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "20000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "21000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "22000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "23000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "24000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "25000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "26000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "27000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "28000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "29000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "30000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "31000",
+            "index": "-16"
+          }
+        ],
+        "0.800": [
+          {
+            "fuelWeight": "1000",
+            "index": "-1"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "-2"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "-3"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "-4"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "-5"
+          },
+          {
+            "fuelWeight": "6000",
+            "index": "-6"
+          },
+          {
+            "fuelWeight": "7000",
+            "index": "-7"
+          },
+          {
+            "fuelWeight": "8000",
+            "index": "-8"
+          },
+          {
+            "fuelWeight": "9000",
+            "index": "-9"
+          },
+          {
+            "fuelWeight": "10000",
+            "index": "-10"
+          },
+          {
+            "fuelWeight": "11000",
+            "index": "-11"
+          },
+          {
+            "fuelWeight": "12000",
+            "index": "-12"
+          },
+          {
+            "fuelWeight": "13000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "14000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "15000",
+            "index": "-14"
+          },
+          {
+            "fuelWeight": "16000",
+            "index": "-15"
+          },
+          {
+            "fuelWeight": "17000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "18000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "19000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "20000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "21000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "22000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "23000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "24000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "25000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "26000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "27000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "28000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "29000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "30000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "31000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "32000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "33000",
+            "index": "-16"
+          }
+        ],
+        "0.840": [
+          {
+            "fuelWeight": "1000",
+            "index": "-1"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "-2"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "-3"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "-4"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "-5"
+          },
+          {
+            "fuelWeight": "6000",
+            "index": "-6"
+          },
+          {
+            "fuelWeight": "7000",
+            "index": "-7"
+          },
+          {
+            "fuelWeight": "8000",
+            "index": "-8"
+          },
+          {
+            "fuelWeight": "9000",
+            "index": "-9"
+          },
+          {
+            "fuelWeight": "10000",
+            "index": "-10"
+          },
+          {
+            "fuelWeight": "11000",
+            "index": "-11"
+          },
+          {
+            "fuelWeight": "12000",
+            "index": "-12"
+          },
+          {
+            "fuelWeight": "13000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "14000",
+            "index": "-14"
+          },
+          {
+            "fuelWeight": "15000",
+            "index": "-14"
+          },
+          {
+            "fuelWeight": "16000",
+            "index": "-15"
+          },
+          {
+            "fuelWeight": "17000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "18000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "19000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "20000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "21000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "22000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "23000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "24000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "25000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "26000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "27000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "28000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "29000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "30000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "31000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "32000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "33000",
+            "index": "-18"
+          },
+          {
+            "fuelWeight": "34000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "35000",
+            "index": "-16"
+          }
+        ]
+      },
+      "full": {
+        "0.760": "-14",
+        "0.800": "-15",
+        "0.840": "-16"
+      }
+    },
+    "OUTER": {
+      "perTank": true,
+      "step": {
+        "0.760": [
+          {
+            "fuelWeight": "500",
+            "index": "+1"
+          },
+          {
+            "fuelWeight": "1000",
+            "index": "+2"
+          },
+          {
+            "fuelWeight": "1500",
+            "index": "+3"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "+4"
+          },
+          {
+            "fuelWeight": "2500",
+            "index": "+5"
+          }
+        ],
+        "0.800": [
+          {
+            "fuelWeight": "500",
+            "index": "+1"
+          },
+          {
+            "fuelWeight": "1000",
+            "index": "+2"
+          },
+          {
+            "fuelWeight": "1500",
+            "index": "+3"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "+4"
+          },
+          {
+            "fuelWeight": "2500",
+            "index": "+5"
+          }
+        ],
+        "0.840": [
+          {
+            "fuelWeight": "500",
+            "index": "+1"
+          },
+          {
+            "fuelWeight": "1000",
+            "index": "+2"
+          },
+          {
+            "fuelWeight": "1500",
+            "index": "+3"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "+4"
+          },
+          {
+            "fuelWeight": "2500",
+            "index": "+5"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "+6"
+          }
+        ]
+      },
+      "full": {
+        "0.760": "+6",
+        "0.800": "+6",
+        "0.840": "+7"
+      }
+    },
+    "CENTER": {
+      "perTank": false,
+      "step": {
+        "0.760": [
+          {
+            "fuelWeight": "1000",
+            "index": "-1"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "-2"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "-3"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "-4"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "-5"
+          },
+          {
+            "fuelWeight": "6000",
+            "index": "-7"
+          },
+          {
+            "fuelWeight": "7000",
+            "index": "-8"
+          },
+          {
+            "fuelWeight": "8000",
+            "index": "-9"
+          },
+          {
+            "fuelWeight": "9000",
+            "index": "-11"
+          },
+          {
+            "fuelWeight": "10000",
+            "index": "-12"
+          },
+          {
+            "fuelWeight": "11000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "12000",
+            "index": "-15"
+          },
+          {
+            "fuelWeight": "13000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "14000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "15000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "16000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "17000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "18000",
+            "index": "-23"
+          },
+          {
+            "fuelWeight": "19000",
+            "index": "-24"
+          },
+          {
+            "fuelWeight": "20000",
+            "index": "-25"
+          },
+          {
+            "fuelWeight": "21000",
+            "index": "-27"
+          },
+          {
+            "fuelWeight": "22000",
+            "index": "-28"
+          },
+          {
+            "fuelWeight": "23000",
+            "index": "-29"
+          },
+          {
+            "fuelWeight": "24000",
+            "index": "-31"
+          },
+          {
+            "fuelWeight": "25000",
+            "index": "-32"
+          },
+          {
+            "fuelWeight": "26000",
+            "index": "-34"
+          },
+          {
+            "fuelWeight": "27000",
+            "index": "-35"
+          },
+          {
+            "fuelWeight": "28000",
+            "index": "-36"
+          },
+          {
+            "fuelWeight": "29000",
+            "index": "-38"
+          },
+          {
+            "fuelWeight": "30000",
+            "index": "-40"
+          },
+          {
+            "fuelWeight": "31000",
+            "index": "-42"
+          }
+        ],
+        "0.800": [
+          {
+            "fuelWeight": "1000",
+            "index": "-1"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "-2"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "-3"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "-4"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "-5"
+          },
+          {
+            "fuelWeight": "6000",
+            "index": "-7"
+          },
+          {
+            "fuelWeight": "7000",
+            "index": "-8"
+          },
+          {
+            "fuelWeight": "8000",
+            "index": "-9"
+          },
+          {
+            "fuelWeight": "9000",
+            "index": "-11"
+          },
+          {
+            "fuelWeight": "10000",
+            "index": "-12"
+          },
+          {
+            "fuelWeight": "11000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "12000",
+            "index": "-15"
+          },
+          {
+            "fuelWeight": "13000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "14000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "15000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "16000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "17000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "18000",
+            "index": "-23"
+          },
+          {
+            "fuelWeight": "19000",
+            "index": "-24"
+          },
+          {
+            "fuelWeight": "20000",
+            "index": "-25"
+          },
+          {
+            "fuelWeight": "21000",
+            "index": "-27"
+          },
+          {
+            "fuelWeight": "22000",
+            "index": "-28"
+          },
+          {
+            "fuelWeight": "23000",
+            "index": "-29"
+          },
+          {
+            "fuelWeight": "24000",
+            "index": "-31"
+          },
+          {
+            "fuelWeight": "25000",
+            "index": "-32"
+          },
+          {
+            "fuelWeight": "26000",
+            "index": "-33"
+          },
+          {
+            "fuelWeight": "27000",
+            "index": "-35"
+          },
+          {
+            "fuelWeight": "28000",
+            "index": "-36"
+          },
+          {
+            "fuelWeight": "29000",
+            "index": "-38"
+          },
+          {
+            "fuelWeight": "30000",
+            "index": "-39"
+          },
+          {
+            "fuelWeight": "31000",
+            "index": "-41"
+          },
+          {
+            "fuelWeight": "32000",
+            "index": "-43"
+          },
+          {
+            "fuelWeight": "33000",
+            "index": "-44"
+          }
+        ],
+        "0.840": [
+          {
+            "fuelWeight": "1000",
+            "index": "-1"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "-2"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "-3"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "-4"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "-5"
+          },
+          {
+            "fuelWeight": "6000",
+            "index": "-7"
+          },
+          {
+            "fuelWeight": "7000",
+            "index": "-8"
+          },
+          {
+            "fuelWeight": "8000",
+            "index": "-9"
+          },
+          {
+            "fuelWeight": "9000",
+            "index": "-11"
+          },
+          {
+            "fuelWeight": "10000",
+            "index": "-12"
+          },
+          {
+            "fuelWeight": "11000",
+            "index": "-13"
+          },
+          {
+            "fuelWeight": "12000",
+            "index": "-15"
+          },
+          {
+            "fuelWeight": "13000",
+            "index": "-16"
+          },
+          {
+            "fuelWeight": "14000",
+            "index": "-17"
+          },
+          {
+            "fuelWeight": "15000",
+            "index": "-19"
+          },
+          {
+            "fuelWeight": "16000",
+            "index": "-20"
+          },
+          {
+            "fuelWeight": "17000",
+            "index": "-21"
+          },
+          {
+            "fuelWeight": "18000",
+            "index": "-23"
+          },
+          {
+            "fuelWeight": "19000",
+            "index": "-24"
+          },
+          {
+            "fuelWeight": "20000",
+            "index": "-25"
+          },
+          {
+            "fuelWeight": "21000",
+            "index": "-27"
+          },
+          {
+            "fuelWeight": "22000",
+            "index": "-28"
+          },
+          {
+            "fuelWeight": "23000",
+            "index": "-29"
+          },
+          {
+            "fuelWeight": "24000",
+            "index": "-31"
+          },
+          {
+            "fuelWeight": "25000",
+            "index": "-32"
+          },
+          {
+            "fuelWeight": "26000",
+            "index": "-33"
+          },
+          {
+            "fuelWeight": "27000",
+            "index": "-35"
+          },
+          {
+            "fuelWeight": "28000",
+            "index": "-36"
+          },
+          {
+            "fuelWeight": "29000",
+            "index": "-37"
+          },
+          {
+            "fuelWeight": "30000",
+            "index": "-39"
+          },
+          {
+            "fuelWeight": "31000",
+            "index": "-40"
+          },
+          {
+            "fuelWeight": "32000",
+            "index": "-42"
+          },
+          {
+            "fuelWeight": "33000",
+            "index": "-44"
+          },
+          {
+            "fuelWeight": "34000",
+            "index": "-45"
+          }
+        ]
+      },
+      "full": {
+        "0.760": "-43",
+        "0.800": "-45",
+        "0.840": "-47"
+      }
+    },
+    "TRIM": {
+      "perTank": false,
+      "step": {
+        "0.760": [
+          {
+            "fuelWeight": "200",
+            "index": "+2"
+          },
+          {
+            "fuelWeight": "400",
+            "index": "+4"
+          },
+          {
+            "fuelWeight": "600",
+            "index": "+6"
+          },
+          {
+            "fuelWeight": "800",
+            "index": "+8"
+          },
+          {
+            "fuelWeight": "1000",
+            "index": "+10"
+          },
+          {
+            "fuelWeight": "1200",
+            "index": "+12"
+          },
+          {
+            "fuelWeight": "1400",
+            "index": "+14"
+          },
+          {
+            "fuelWeight": "1600",
+            "index": "+17"
+          },
+          {
+            "fuelWeight": "1800",
+            "index": "+19"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "+21"
+          },
+          {
+            "fuelWeight": "2200",
+            "index": "+23"
+          },
+          {
+            "fuelWeight": "2400",
+            "index": "+25"
+          },
+          {
+            "fuelWeight": "2600",
+            "index": "+27"
+          },
+          {
+            "fuelWeight": "2800",
+            "index": "+29"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "+31"
+          },
+          {
+            "fuelWeight": "3200",
+            "index": "+33"
+          },
+          {
+            "fuelWeight": "3400",
+            "index": "+36"
+          },
+          {
+            "fuelWeight": "3600",
+            "index": "+38"
+          },
+          {
+            "fuelWeight": "3800",
+            "index": "+40"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "+42"
+          },
+          {
+            "fuelWeight": "4200",
+            "index": "+45"
+          },
+          {
+            "fuelWeight": "4400",
+            "index": "+47"
+          },
+          {
+            "fuelWeight": "4600",
+            "index": "+49"
+          }
+        ],
+        "0.800": [
+          {
+            "fuelWeight": "200",
+            "index": "+2"
+          },
+          {
+            "fuelWeight": "400",
+            "index": "+4"
+          },
+          {
+            "fuelWeight": "600",
+            "index": "+6"
+          },
+          {
+            "fuelWeight": "800",
+            "index": "+8"
+          },
+          {
+            "fuelWeight": "1000",
+            "index": "+10"
+          },
+          {
+            "fuelWeight": "1200",
+            "index": "+12"
+          },
+          {
+            "fuelWeight": "1400",
+            "index": "+14"
+          },
+          {
+            "fuelWeight": "1600",
+            "index": "+17"
+          },
+          {
+            "fuelWeight": "1800",
+            "index": "+19"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "+21"
+          },
+          {
+            "fuelWeight": "2200",
+            "index": "+23"
+          },
+          {
+            "fuelWeight": "2400",
+            "index": "+25"
+          },
+          {
+            "fuelWeight": "2600",
+            "index": "+27"
+          },
+          {
+            "fuelWeight": "2800",
+            "index": "+29"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "+31"
+          },
+          {
+            "fuelWeight": "3200",
+            "index": "+33"
+          },
+          {
+            "fuelWeight": "3400",
+            "index": "+36"
+          },
+          {
+            "fuelWeight": "3600",
+            "index": "+38"
+          },
+          {
+            "fuelWeight": "3800",
+            "index": "+40"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "+42"
+          },
+          {
+            "fuelWeight": "4200",
+            "index": "+44"
+          },
+          {
+            "fuelWeight": "4400",
+            "index": "+47"
+          },
+          {
+            "fuelWeight": "4600",
+            "index": "+49"
+          },
+          {
+            "fuelWeight": "4800",
+            "index": "+51"
+          }
+        ],
+        "0.840": [
+          {
+            "fuelWeight": "200",
+            "index": "+2"
+          },
+          {
+            "fuelWeight": "400",
+            "index": "+4"
+          },
+          {
+            "fuelWeight": "600",
+            "index": "+6"
+          },
+          {
+            "fuelWeight": "800",
+            "index": "+8"
+          },
+          {
+            "fuelWeight": "1000",
+            "index": "+10"
+          },
+          {
+            "fuelWeight": "1200",
+            "index": "+12"
+          },
+          {
+            "fuelWeight": "1400",
+            "index": "+14"
+          },
+          {
+            "fuelWeight": "1600",
+            "index": "+17"
+          },
+          {
+            "fuelWeight": "1800",
+            "index": "+19"
+          },
+          {
+            "fuelWeight": "2000",
+            "index": "+21"
+          },
+          {
+            "fuelWeight": "2200",
+            "index": "+23"
+          },
+          {
+            "fuelWeight": "2400",
+            "index": "+25"
+          },
+          {
+            "fuelWeight": "2600",
+            "index": "+27"
+          },
+          {
+            "fuelWeight": "2800",
+            "index": "+29"
+          },
+          {
+            "fuelWeight": "3000",
+            "index": "+31"
+          },
+          {
+            "fuelWeight": "3200",
+            "index": "+33"
+          },
+          {
+            "fuelWeight": "3400",
+            "index": "+36"
+          },
+          {
+            "fuelWeight": "3600",
+            "index": "+38"
+          },
+          {
+            "fuelWeight": "3800",
+            "index": "+40"
+          },
+          {
+            "fuelWeight": "4000",
+            "index": "+42"
+          },
+          {
+            "fuelWeight": "4200",
+            "index": "+44"
+          },
+          {
+            "fuelWeight": "4400",
+            "index": "+47"
+          },
+          {
+            "fuelWeight": "4600",
+            "index": "+49"
+          },
+          {
+            "fuelWeight": "4800",
+            "index": "+51"
+          },
+          {
+            "fuelWeight": "5000",
+            "index": "+53"
+          },
+          {
+            "fuelWeight": "5200",
+            "index": "+56"
+          }
+        ]
+      },
+      "full": {
+        "0.760": "+51",
+        "0.800": "+53",
+        "0.840": "+56"
+      }
+    }
+  },
+  "densities": [
+    "0.760",
+    "0.800",
+    "0.840"
+  ],
+  "provisional": true,
+  "verification": {
+    "status": "SINGLE_READING_PROVISIONAL",
+    "method": "One visual transcription from the approved AHM 560 PDF page 76 (printed Appendix I p.75), embedded raster 1189x843 at ~174 ppi, cropped per column and resampled 6-15x. Structural checks applied: monotonic run, uniform step, per-density capacity ordering (0.760 < 0.800 < 0.840 last printed weight), and sign consistency.",
+    "blocker": "At this scan resolution the glyph pairs 6/8 and 3/9 are not reliably separable. The structural checks pass but they cannot rule out a single-digit misread. A second independent source is required before any of these values may drive an operational calculation.",
+    "flaggedCells": [
+      "INNER FULL 0.760 = -14 while INNER 31000 kg 0.760 = -16 and the tank holds under 32000 kg at that density: two index units in under 1000 kg breaks the column's own step pattern. Either the FULL row or the 31000 row is misread, or the FULL row is not a simple continuation of the column.",
+      "TRIM 3400 kg (all densities) read as +36; the neighbouring 3600 kg row prints the same glyph shape and was read as +38. 6/8 is the exact ambiguity this scan cannot resolve.",
+      "TRIM 5200 kg and TRIM FULL 0.840 read as +56; +55 is not excluded.",
+      "CENTER 26000 kg is the first row where the densities diverge (-34 / -33 / -33); the divergence is physically plausible but rests on a single reading."
+    ],
+    "requiredToClear": "A legible copy of LOAD AND TRIM SHEET page 3 - for example a photograph of the operator's laminated card, as already supplied for the STANDARD FUEL INDEX TABLE and the CARGO LOADING INDEX TABLE."
+  },
+  "notes": [
+    "Footnote (1) on the plate: weight and index per tank. INNER and OUTER values are therefore per tank, not per pair; CENTER and TRIM are single tanks.",
+    "The FULL row is the index at the tank's usable capacity for that density; capacity is between the last printed weight row and the next grid step.",
+    "Greyed cells mean the bracket is above that tank's capacity at that density and carry no value.",
+    "This file is provisional. It must not be wired into any calculation, and any check that would depend on it stays NOT_AVAILABLE, until verification.status becomes VERIFIED. See CLAUDE.md rule #3 and #9.",
+    "The STANDARD FUEL INDEX TABLE on the same plate is already encoded as fuel-index.json and remains the authoritative total-fuel input."
+  ],
+  "source": {
+    "documentTitle": "AHM 560 - Airbus A330-243 P2F - Appendix I, LOAD AND TRIM SHEET page 3 (printed p.75), Ed.1 Rev.0, effective 15.03.2023",
+    "groundTruthRefs": [
+      "AHM 560 Appendix I s.75 - FUEL INDEX PER TANK TABLE",
+      "AHM560_ERRATA.md Kayit 10"
+    ]
+  }
+}

@@ -22,10 +22,30 @@ export function FilterPanel({
 export function FilterField({
   label,
   children,
+  inline = false,
 }: {
   label: string;
   children: ReactNode;
+  /**
+   * Put the label to the left of the control instead of above it, as a
+   * short `FROM:` / `VIA:` / `TO:` prefix. Used where several one-line
+   * fields belong to one idea (a route) and stacked labels would make the
+   * group three times taller than it needs to be.
+   */
+  inline?: boolean;
 }) {
+  if (inline) {
+    return (
+      <label className="flex items-center gap-2 text-xs font-medium text-fg-muted">
+        {/* Fixed width so the controls line up down the column. The colon is
+            added here rather than in the translations, so the same strings
+            keep working where the label sits above the field. */}
+        <span className="w-11 shrink-0 uppercase tracking-wide">{label}:</span>
+        <span className="min-w-0 flex-1">{children}</span>
+      </label>
+    );
+  }
+
   return (
     <label className="flex flex-col gap-1 text-xs font-medium text-fg-muted">
       <span className="uppercase tracking-wide">{label}</span>

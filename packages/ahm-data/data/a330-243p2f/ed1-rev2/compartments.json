@@ -1,0 +1,17 @@
+{
+  "compartments": [
+    { "number": 1, "description": "Forward cargo hold", "maxGrossPair": "18869", "pairedWith": 2, "indexPerKg": "-0.00609", "lirSubLimit": "12696" },
+    { "number": 2, "description": "Forward cargo hold", "maxGrossPair": "18869", "pairedWith": 1, "indexPerKg": "-0.00379", "lirSubLimit": "10206" },
+    { "number": 3, "description": "Aft cargo hold", "maxGrossPair": "15241", "pairedWith": 4, "indexPerKg": "0.00243", "lirSubLimit": "10206" },
+    { "number": 4, "description": "Aft cargo hold", "maxGrossPair": "15241", "pairedWith": 3, "indexPerKg": "0.00444", "lirSubLimit": "10206" },
+    { "number": 5, "description": "Rear (Bulk) cargo hold", "maxGrossPair": "3468", "pairedWith": null, "indexPerKg": "0.00630", "lirSubLimit": "3468" }
+  ],
+  "mainDeckMaxLoad": "62000",
+  "notes": [
+    "Comp 1+2 share a combined max gross of 18869 kg; comp 3+4 share 15241 kg.",
+    "LIR sub-limits per position (12696/10206/10206/10206/3468) come from the LIR form header (AHM 560 s.77), not the Sheet 14 compartment table."
+  ],
+  "source": {
+    "groundTruthRefs": ["AHM 560 s.54 Sheet C-14", "AHM 560 s.77 (LIR header)", "AHM 560 s.4"]
+  }
+}

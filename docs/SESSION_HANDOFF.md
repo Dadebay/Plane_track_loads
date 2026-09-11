@@ -48,13 +48,13 @@ pnpm dev   # veya Claude Code'un preview_start aracı, launch.json'da "web" adı
 **Test giriş bilgileri** (`packages/db/prisma/seed.ts`, hepsi aynı şifre):
 | Rol | Email |
 |---|---|
-| ADMIN | admin@tua.local |
+| ADMIN | admin@gmail.com |
 | LOAD_CONTROLLER | controller@tua.local |
 | CHECKER | checker@tua.local |
 | RAMP | ramp@tua.local |
 | VIEWER | viewer@tua.local |
 
-Şifre: `ChangeMe123!`
+Şifre: `changeme123`
 
 ## Faz bazında durum
 

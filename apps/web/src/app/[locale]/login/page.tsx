@@ -46,13 +46,14 @@ export default async function LoginPage({
         backgroundPosition: "center",
       }}
     >
-      {/* Dark brand-tinted overlay so the form stays readable in both themes — never pure black, per CLAUDE.md dark-mode rule */}
+      {/* Scrim over the photo. Theme-owned: light washes it out to near-white,
+          dark tints it brand-green (never pure black, per CLAUDE.md's
+          dark-mode rule). Defined in @tua/ui/theme.css so the light value
+          lives on :root and the dark one is overridden there, like every
+          other colour — an inline gradient here could not follow the theme. */}
       <div
         className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(120deg, rgba(5,16,10,0.94) 0%, rgba(5,16,10,0.80) 42%, rgba(11,15,14,0.55) 100%)",
-        }}
+        style={{ background: "var(--login-scrim)" }}
       />
 
       {/* Header bar — wraps below the brand block on narrow screens so the
@@ -60,10 +61,15 @@ export default async function LoginPage({
           mobile rule: no page may scroll sideways at 375px). */}
       <header className="relative z-10 flex flex-wrap items-center justify-between gap-y-2">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 shadow-lg shadow-black/30">
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 shadow-lg"
+            style={{ boxShadow: "0 10px 15px -3px var(--login-card-shadow)" }}
+          >
             <Plane className="h-5 w-5 text-fg-on-brand" aria-hidden="true" />
           </div>
-          <span className="text-base font-semibold text-white">{tApp("name")}</span>
+          <span className="text-base font-semibold" style={{ color: "var(--login-on-scrim)" }}>
+            {tApp("name")}
+          </span>
         </div>
         {/* LocaleSwitcher/ThemeToggle are self-contained (own bg/border/text
             tokens) and already theme-aware — no override needed here. A
@@ -80,7 +86,11 @@ export default async function LoginPage({
       <div className="relative z-10 flex flex-1 items-center justify-center">
         <form
           action={loginAction}
-          className="w-full max-w-sm rounded-2xl border border-white/10 bg-bg-subtle/90 p-7 shadow-2xl shadow-black/40 backdrop-blur-md"
+          className="w-full max-w-sm rounded-2xl border bg-bg-subtle/90 p-7 backdrop-blur-md"
+          style={{
+            borderColor: "var(--login-card-border)",
+            boxShadow: "0 25px 50px -12px var(--login-card-shadow)",
+          }}
         >
           <div className="mb-6 flex flex-col items-center gap-3 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500/15 ring-1 ring-brand-500/30">
@@ -121,7 +131,7 @@ export default async function LoginPage({
         </form>
       </div>
 
-      <footer className="relative z-10 text-center text-xs text-white/40">
+      <footer className="relative z-10 text-center text-xs" style={{ color: "var(--login-on-scrim-muted)" }}>
         {t("footer", { year: new Date().getFullYear() })}
       </footer>
     </div>

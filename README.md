@@ -17,8 +17,6 @@ report, CG envelope ve NOTOC üretir.
 | CG Envelope | `ENV` | Ağırlık merkezinin zarf içinde olduğunun grafik ispatı |
 | NOTOC | — | Notification to Captain (tehlikeli madde) |
 
-Ayrıca IATA mesajları: `LDM`, `CPM`, `MVT`, `FFM`, `FBL`.
-
 ---
 
 ## Nereden başlamalı

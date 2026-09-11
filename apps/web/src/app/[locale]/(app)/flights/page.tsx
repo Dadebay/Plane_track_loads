@@ -1,5 +1,6 @@
 import { db } from "@tua/db";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
+import { serviceTypeOptions } from "@/lib/service-types";
 import { FlightsListView } from "./flights-list-view";
 
 export default async function FlightsPage({
@@ -10,13 +11,42 @@ export default async function FlightsPage({
   const sp = await searchParams;
   const filters = parseFlightListFilters(sp);
 
-  const [{ rows, total }, stations, flightsForServiceTypes] = await Promise.all([
+  const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet] = await Promise.all([
     queryFlightLegs(filters),
     db.station.findMany({ orderBy: { iata: "asc" } }),
     db.flight.findMany({ distinct: ["serviceType"], select: { serviceType: true }, orderBy: { serviceType: "asc" } }),
+    db.flight.findMany({ distinct: ["flightNo"], select: { flightNo: true }, orderBy: { flightNo: "asc" } }),
+    db.aircraft.findMany({
+      where: { active: true },
+      select: { registration: true },
+      orderBy: { registration: "asc" },
+    }),
   ]);
 
-  const serviceTypes = flightsForServiceTypes.map((f) => f.serviceType);
+  // The full catalogue, plus any legacy value the schedule still stores —
+  // a type has to be offered before the first flight of that kind exists.
+  const serviceTypes = serviceTypeOptions(flightsForServiceTypes.map((f) => f.serviceType));
 
-  return <FlightsListView rows={rows} total={total} filters={filters} stations={stations} serviceTypes={serviceTypes} />;
+  // Carrier prefixes actually present in the schedule ("T5 692" -> "T5"),
+  // so the flight-number filter offers real choices instead of a hardcoded
+  // airline list. A flight number with no prefix contributes nothing.
+  const flightNumberPrefixes = [
+    ...new Set(
+      flightsForNumbers
+        .map((f) => /^([A-Za-z][A-Za-z0-9])/.exec(f.flightNo.trim())?.[1]?.toUpperCase())
+        .filter((p): p is string => Boolean(p)),
+    ),
+  ].sort();
+
+  return (
+    <FlightsListView
+      rows={rows}
+      total={total}
+      filters={filters}
+      stations={stations}
+      serviceTypes={serviceTypes}
+      flightNumberPrefixes={flightNumberPrefixes}
+      registrations={fleet.map((a) => a.registration)}
+    />
+  );
 }

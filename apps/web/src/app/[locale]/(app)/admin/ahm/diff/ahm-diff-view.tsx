@@ -1,7 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { PageHeader, DataTable, type DataTableColumn } from "@tua/ui";
+import {
+  DataTable,
+  type DataTableColumn,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
 import type { AhmDocument } from "@tua/db";
 import type { DiffEntry } from "@tua/ahm-data";
 

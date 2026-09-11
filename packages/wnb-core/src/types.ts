@@ -46,6 +46,28 @@ export interface Position {
   indexPerKg: string;
 }
 
+// ---------------------------------------------------------------------------
+// cargo-index-table.json — the printed "CARGO LOADING INDEX TABLE" card.
+// Cross-check only; never an input to a calculation. See cargo-index-table.ts.
+// ---------------------------------------------------------------------------
+
+export interface CargoIndexBracket {
+  /** Inclusive lower bound of the printed kg bracket, e.g. "1", "501". */
+  from: string;
+  /** Inclusive upper bound, e.g. "500", "1000". */
+  to: string;
+  /** Index units keyed by the card's zone letter (A..U, skipping I/N/O/Q).
+   * A zone is absent when the card leaves that cell blank, i.e. the bracket
+   * is above that zone's maximum load. */
+  index: Record<string, string>;
+}
+
+export interface CargoIndexTable {
+  brackets: CargoIndexBracket[];
+  /** The card's MAX row — the index at each zone's maximum load. */
+  max: Record<string, string>;
+}
+
 export interface FuelIndexRow {
   fuelWeight: string; // decimal string, or the literal "FULL"
   index: string;
@@ -222,6 +244,132 @@ export interface LimitCheck {
   withinLimit: boolean;
 }
 
+// ---------------------------------------------------------------------------
+// AHM 560 Appendix I plate — LOAD AND TRIM SHEET pages 2 and 3.
+// Mirrors @tua/ahm-data's schemas structurally; wnb-core never imports it.
+// ---------------------------------------------------------------------------
+
+export type LateralPlacement = "CENTRE" | "PAIRED_LEFT_RIGHT" | "CENTRE_OR_PAIRED_LEFT_RIGHT";
+
+/** One printed row of the plate's main/lower deck position diagram. */
+export interface PositionConfiguration {
+  id: string;
+  label: string;
+  deck: Deck;
+  /** Fore-aft extent of the ULD in inches. `null` for bulk, which the plate
+   * gives no footprint for — bulk positions never take part in a conflict. */
+  longitudinalInches: string | null;
+  lateralInches: string | null;
+  lateralPlacement: LateralPlacement;
+}
+
+/** One main-deck loading zone of the LOADING ZONES H-arm TABLE. */
+export interface LoadingZoneHArm {
+  zone: string;
+  frontHArm: string;
+  rearHArm: string;
+}
+
+/** LATERAL IMBALANCE CAUTION — the payload half plus the printed constants. */
+export interface LateralImbalanceLimits {
+  limit: string;
+  operationalMargin: string;
+  payload: { category: SideBySideCategory; yArm: string }[];
+  /** False while FUEL LATERAL MOMENT PER TANK TABLE is untranscribed — the
+   * check then has no fuel term and must not claim a total. */
+  fuelDataAvailable: boolean;
+}
+
+export type SideBySideCategory = "MAIN_SBS_88" | "MAIN_SBS_96" | "LOWER_LD3";
+
+export type FuelTankName = "INNER" | "OUTER" | "CENTER" | "TRIM";
+
+/** FUEL INDEX PER TANK TABLE. Provisional — see AHM560_ERRATA.md Kayıt 10. */
+export interface FuelTankIndexTable {
+  tanks: Record<string, { perTank: boolean; step: Record<string, FuelIndexRow[]>; full: Record<string, string> }>;
+  /** True while the table is a single reading of an illegible scan. A
+   * consumer must refuse to calculate from it while this is set. */
+  provisional: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Position footprints and conflicts
+// ---------------------------------------------------------------------------
+
+export type LateralSide = "CENTRE" | "LEFT" | "RIGHT";
+
+/** A position's fore-aft extent on its deck, in metres from the nose datum. */
+export interface PositionFootprint {
+  /** `${uldType}/${code}` — a code alone is ambiguous across configurations. */
+  key: string;
+  code: string;
+  uldType: string;
+  deck: Deck;
+  from: string;
+  to: string;
+  side: LateralSide;
+}
+
+export interface PositionConflict {
+  a: string;
+  b: string;
+  deck: Deck;
+  /** Length of the shared floor, in metres. */
+  overlap: string;
+  reason: string;
+}
+
+// ---------------------------------------------------------------------------
+// Fuel tank allocation
+// ---------------------------------------------------------------------------
+
+export interface TankAllocation {
+  tank: FuelTankName;
+  side: LateralSide;
+  weight: string;
+}
+
+export interface TankAllocationCheck {
+  total: string;
+  allocated: string;
+  /** allocated - total; zero when the allocation is exact. */
+  difference: string;
+  balanced: boolean;
+  errors: string[];
+  /** Left-minus-right weight difference per paired tank, informational. */
+  asymmetry: { tank: FuelTankName; difference: string }[];
+}
+
+// ---------------------------------------------------------------------------
+// Check function results
+// ---------------------------------------------------------------------------
+
+export interface LateralImbalanceRow {
+  category: SideBySideCategory;
+  leftWeight: string;
+  rightWeight: string;
+  difference: string;
+  yArm: string;
+  moment: string;
+}
+
 export type ImbalanceCheck =
-  | { status: "NOT_AVAILABLE"; reason: string }
-  | { status: "OK" | "EXCEEDED"; detail: string };
+  | {
+      status: "NOT_AVAILABLE";
+      reason: string;
+      /** Present when the payload half could be computed but the fuel half
+       * could not — informational only, never a pass/fail. */
+      payloadRows?: LateralImbalanceRow[];
+      payloadMoment?: string;
+    }
+  | {
+      status: "OK" | "EXCEEDED";
+      detail: string;
+      payloadRows: LateralImbalanceRow[];
+      payloadMoment: string;
+      fuelMoment: string;
+      totalWithoutMargin: string;
+      operationalMargin: string;
+      totalWithMargin: string;
+      limit: string;
+    };

@@ -28,8 +28,12 @@ faz tablosuna bak ve tamamlanmış kabul kriterlerinden çıkar.
    `WnbCalculation` ve `Document` tabloları sadece INSERT kabul eder.
 6. **Her hesap fonksiyonu kaynağını belirtir:** `// AHM 560 s.16 §3.4`
 7. **`prepared_by ≠ checked_by`** — sistem zorunlu kılar (DB constraint).
-8. **Validasyon bitene kadar her PDF'te `NOT FOR OPERATIONAL USE` filigranı.**
-   `DOCUMENTS_WATERMARK` env değişkeni ile kontrol edilir. Varsayılan `true`.
+8. **Filigran anahtarı `DOCUMENTS_WATERMARK` ile kontrol edilir.**
+   Kural ilk yazıldığında varsayılan `true` idi (validasyon bitene kadar her
+   PDF'te `NOT FOR OPERATIONAL USE`). **2026-09-11'de operatör filigranı
+   kapattı**; depo varsayılanı artık `false`. Anahtarı koddan kaldırma —
+   `true` yapılınca filigran geri gelmeli. Validasyonun hâlâ tamamlanmadığını
+   `docs/VALIDATION_DOSSIER.md` kaydediyor.
 9. **Ground truth ile çıkarım çakışırsa çıkarım hatalıdır.**
    `AHM560_GROUND_TRUTH.md` elle doğrulanmıştır — onu değiştirme, kodu düzelt.
 10. **Mobil öncelikli.** Ramp ekibi tablet ve telefon kullanır.
@@ -68,7 +72,7 @@ docker compose up # postgres + web
 
 ## Dil ve i18n
 
-- Diller: `tk` (Türkmençe, varsayılan), `ru` (Русский), `en` (English)
+- Diller: `en` (English, varsayılan — uygulama İngilizce açılır), `tk` (Türkmençe), `ru` (Русский)
 - Çeviri dosyaları: `apps/web/messages/{tk,ru,en}.json` — **üçü de aynı anahtar setine sahip**
 - Havacılık kısaltmaları (`ULD`, `ZFW`, `TOW`, `MAC`, `LIR`, `AWB`, `MTOW`, `PMC`)
   **hiçbir dilde çevrilmez**

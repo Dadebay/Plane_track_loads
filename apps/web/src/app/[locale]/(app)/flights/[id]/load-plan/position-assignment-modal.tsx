@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { X, Trash2 } from "lucide-react";
-import type { Position } from "@tua/wnb-core";
+import { X, Trash2, AlertTriangle } from "lucide-react";
+import { Decimal } from "decimal.js";
+import { positionIndex, type Position } from "@tua/wnb-core";
 import type { DraftLoadItem } from "@/lib/load-plan-calc";
+import { formatIndex, formatWeight } from "@/lib/format-number";
 import { useLoadDraftStore } from "./load-draft-store";
 
 const CONTENT_CODES = ["B", "C", "M", "P", "S", "E"] as const;
@@ -16,11 +18,18 @@ export function PositionAssignmentModal({
   code,
   variants,
   existing,
+  readOnly = false,
+  uldTares = {},
   onClose,
 }: {
   code: string | null;
   variants: Position[];
   existing: DraftLoadItem | null;
+  /** A finalized plan cannot be edited (CLAUDE.md rule #5) — the modal
+   * still opens, so the controller can read what is loaded. */
+  readOnly?: boolean;
+  /** ULD type code -> printed tare, from uld-types.json. */
+  uldTares?: Record<string, string>;
   onClose: () => void;
 }) {
   const t = useTranslations("loadPlan.assignment");
@@ -30,6 +39,12 @@ export function PositionAssignmentModal({
 
   const [uldCode, setUldCode] = useState(existing?.uldCode ?? "");
   const [awb, setAwb] = useState(existing?.awb ?? "");
+  // Tare / net / gross. AHM 560 works in gross ULD weights, so gross is the
+  // number that reaches W&B and the documents — but the ramp weighs net and
+  // reads tare off the ULD plate, so all three are entered and gross is
+  // derived. The server re-derives it and never trusts what is sent here.
+  const [tareWeight, setTareWeight] = useState(existing?.tareWeight ?? "");
+  const [netWeight, setNetWeight] = useState(existing?.netWeight ?? "");
   const [weight, setWeight] = useState(existing?.weight ?? "");
   const [contentCode, setContentCode] = useState(existing?.contentCode ?? "");
   const [uldType, setUldType] = useState(existing?.uldType ?? variants[0]?.uldType ?? "");
@@ -38,12 +53,27 @@ export function PositionAssignmentModal({
 
   const selectedVariant = variants.find((v) => v.uldType === uldType) ?? variants[0];
 
+  const hasBreakdown = tareWeight !== "" && netWeight !== "";
+  // Decimal, not float: 0.1 + 0.2 has to be 0.3 on a loadsheet.
+  const grossWeight = hasBreakdown
+    ? new Decimal(tareWeight || "0").plus(new Decimal(netWeight || "0")).toString()
+    : weight;
+
+  // The number the loadmaster would otherwise look up by hand on the
+  // printed CARGO LOADING INDEX TABLE, recomputed on every keystroke.
+  const parsedWeight = Number(grossWeight);
+  const hasWeight = grossWeight !== "" && Number.isFinite(parsedWeight) && parsedWeight > 0;
+  const liveIndex = hasWeight && selectedVariant ? positionIndex(grossWeight, selectedVariant.indexPerKg) : null;
+  const isOverloaded = hasWeight && selectedVariant ? parsedWeight > Number(selectedVariant.maxGross) : false;
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!code) return;
     upsertItem({
       position: code,
-      weight,
+      weight: grossWeight,
+      tareWeight: hasBreakdown ? tareWeight : undefined,
+      netWeight: hasBreakdown ? netWeight : undefined,
       uldCode: uldCode || undefined,
       awb: awb || undefined,
       contentCode: contentCode || undefined,
@@ -78,13 +108,13 @@ export function PositionAssignmentModal({
               <select value={uldType} onChange={(e) => setUldType(e.target.value)} className={inputClass}>
                 {variants.map((v) => (
                   <option key={v.uldType} value={v.uldType}>
-                    {v.uldType} — {t("maxGross", { max: v.maxGross })}
+                    {v.uldType} — {t("maxGross", { max: formatWeight(v.maxGross) })}
                   </option>
                 ))}
               </select>
             </label>
           ) : selectedVariant ? (
-            <p className="text-xs text-fg-subtle">{t("maxGross", { max: selectedVariant.maxGross })}</p>
+            <p className="text-xs text-fg-subtle">{t("maxGross", { max: formatWeight(selectedVariant.maxGross) })}</p>
           ) : null}
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -97,16 +127,54 @@ export function PositionAssignmentModal({
               <input value={awb} onChange={(e) => setAwb(e.target.value)} className={inputClass} />
             </label>
             <label className={labelClass}>
-              {t("weight")}
+              {t("tareWeight")}
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                inputMode="decimal"
+                value={tareWeight}
+                onChange={(e) => setTareWeight(e.target.value)}
+                placeholder={selectedVariant && uldTares[selectedVariant.uldType] ? uldTares[selectedVariant.uldType] : ""}
+                disabled={readOnly}
+                className={inputClass}
+              />
+            </label>
+            <label className={labelClass}>
+              {t("netWeight")}
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                inputMode="decimal"
+                value={netWeight}
+                onChange={(e) => setNetWeight(e.target.value)}
+                disabled={readOnly}
+                className={inputClass}
+              />
+            </label>
+            <label className={labelClass}>
+              {t("grossWeight")}
               <input
                 required
                 type="number"
                 min="0"
                 step="0.1"
-                value={weight}
+                inputMode="decimal"
+                // Derived and locked as soon as tare and net are both given,
+                // so the three can never disagree on screen.
+                value={grossWeight}
                 onChange={(e) => setWeight(e.target.value)}
-                className={inputClass}
+                readOnly={hasBreakdown}
+                disabled={readOnly}
+                aria-describedby={hasBreakdown ? "gross-derived" : undefined}
+                className={`${inputClass} ${hasBreakdown ? "bg-bg-muted" : ""}`}
               />
+              {hasBreakdown ? (
+                <span id="gross-derived" className="text-[11px] font-normal text-fg-subtle">
+                  {t("grossDerived")}
+                </span>
+              ) : null}
             </label>
             <label className={labelClass}>
               {t("contentCode")}
@@ -121,8 +189,34 @@ export function PositionAssignmentModal({
             </label>
           </div>
 
+          {selectedVariant ? (
+            <div
+              className={`flex items-center justify-between rounded-md border px-3 py-2.5 ${
+                isOverloaded ? "border-danger bg-danger-bg" : "border-border bg-bg"
+              }`}
+            >
+              <span className="text-xs font-medium uppercase tracking-wide text-fg-subtle">{t("index")}</span>
+              <span className="font-mono text-base font-semibold tabular-nums text-fg">
+                {liveIndex === null ? "—" : formatIndex(liveIndex)}
+              </span>
+            </div>
+          ) : null}
+
+          {isOverloaded && selectedVariant ? (
+            <p className="flex items-start gap-1.5 text-xs font-medium text-danger">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              {t("overMaxGross", { max: formatWeight(selectedVariant.maxGross) })}
+            </p>
+          ) : null}
+
+          {readOnly ? (
+            <p className="rounded-md border border-border bg-bg-muted px-3 py-2 text-xs text-fg-subtle">
+              {t("readOnly")}
+            </p>
+          ) : null}
+
           <div className="flex justify-between gap-2 border-t border-border pt-4">
-            {existing ? (
+            {existing && !readOnly ? (
               <button
                 type="button"
                 onClick={handleRemove}
@@ -144,7 +238,8 @@ export function PositionAssignmentModal({
               </button>
               <button
                 type="submit"
-                className="h-11 rounded-md bg-brand-500 px-4 text-sm font-semibold text-fg-on-brand sm:h-9"
+                disabled={readOnly}
+                className="h-11 rounded-md bg-brand-500 px-4 text-sm font-semibold text-fg-on-brand disabled:opacity-50 sm:h-9"
               >
                 {tCommon("save")}
               </button>

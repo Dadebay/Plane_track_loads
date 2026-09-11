@@ -75,13 +75,18 @@ compose ağı dışından erişilemez.
 
 ## `DOCUMENTS_WATERMARK`
 
-CLAUDE.md kural #8: validasyon bitene kadar her PDF'te
-`NOT FOR OPERATIONAL USE` filigranı basılır. Varsayılan `true`.
+Filigran (`NOT FOR OPERATIONAL USE`) bu anahtarla açılıp kapanır.
 
-Bölüm D'deki regülasyon adımları (paralel çalıştırma, otorite kabulü)
-tamamlanmadan **`DOCUMENTS_WATERMARK=false` yapılmaz** — bu bir dağıtım
-ayarı değil, işletme kararıdır. `.env`'de açıkça `true` tutun; `false`'a
-çeviren kişi bunu bilerek, otorite onayından sonra yapmalıdır.
+**Operatör kararı (2026-09-11): filigran kapatıldı.** Depo varsayılanı
+artık `false`, `compose.prod.yaml` dahil. Anahtar koddan kaldırılmadı —
+`DOCUMENTS_WATERMARK=true` yazıldığı anda filigran geri gelir.
+
+Kararın bağlamı kayıt altında kalsın: bu, bir dağıtım ayarı değil işletme
+kararıdır ve `docs/VALIDATION_DOSSIER.md`'nin kaydettiği durumu
+değiştirmez — 13 senaryonun 2'sinde referans var, `AHM560_ERRATA.md`
+Kayıt 6 açık, tank bazlı yakıt ve yanal denge verisi eksik. Filigransız
+üretilen bir belge, otorite kabulü alınmış bir belge değildir; paralel
+operasyonel validasyon ve havayolu/otorite kabulü hâlâ gereklidir.
 
 ## Sağlık kontrolü
 
@@ -124,19 +129,18 @@ yaramaz. Pilot/üretimde bu dizini düzenli olarak VPS dışına
 (ör. `rsync` ile başka bir sunucuya veya nesne depolamaya) kopyalayın —
 bu adım henüz otomatik değil, Faz 15 kapsamı yalnızca yerel yedeklemedir.
 
-## Üretilen belgeler ve mesaj kutusu
+## Üretilen belgeler
 
-Üretilen LIR/LS/ENV PDF'leri (`apps/web/src/lib/document-storage.ts`) ve
-gönderilen LDM/CPM/MVT mesajlarının yerel kopyası
-(`apps/web/src/lib/message-transport.ts`) konteynerin yerel diskinde,
-`/app/.data` altında saklanır — `compose.prod.yaml`'daki `web_data`
-named volume'u bu dizini konteyner yeniden oluşturulduğunda korur.
+Üretilen LIR/LS/ENV PDF'leri (`apps/web/src/lib/document-storage.ts`)
+konteynerin yerel diskinde, `/app/.data` altında saklanır —
+`compose.prod.yaml`'daki `web_data` named volume'u bu dizini konteyner
+yeniden oluşturulduğunda korur.
 
 **Önemli:** `tools/backup/` yalnızca postgres'i yedekler — `web_data`
-ayrı bir hacim, otomatik yedeklemesi yok. `Document`/`OutgoingMessage`
-tablolarındaki `sha256`/durum kayıtları postgres yedeğiyle korunur ama
-asıl PDF/mesaj dosyaları korunmaz. Üretim öncesi bu hacmi de düzenli
-yedekleme kapsamına alın (ör. `docker run --rm -v tua_web_data:/data
+ayrı bir hacim, otomatik yedeklemesi yok. `Document` tablosundaki
+`sha256`/durum kayıtları postgres yedeğiyle korunur ama asıl PDF
+dosyaları korunmaz. Üretim öncesi bu hacmi de düzenli yedekleme
+kapsamına alın (ör. `docker run --rm -v tua_web_data:/data
 -v $(pwd)/backups:/backup alpine tar czf /backup/web_data_$(date
 +%Y%m%dT%H%M%SZ).tar.gz -C /data .`).
 

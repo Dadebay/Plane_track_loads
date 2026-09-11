@@ -1,56 +1,65 @@
 import { db } from "@tua/db";
-import { DocumentsView } from "./documents-view";
+import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
+import { serviceTypeOptions } from "@/lib/service-types";
+import { DocumentsView, type LegDocuments } from "./documents-view";
 
-export default async function DocumentsPage() {
-  const [legs, users, documents] = await Promise.all([
-    db.flightLeg.findMany({
-      where: { loadPlans: { some: { status: "FINALIZED" } } },
-      include: {
-        flight: { include: { aircraft: true } },
-        fromStation: true,
-        toStation: true,
-      },
-      orderBy: { stdDep: "desc" },
-    }),
+export default async function DocumentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const filters = parseFlightListFilters(sp);
+
+  // The document page lists the same legs as Flight selection, through the
+  // same query, so a filter means the same thing on every screen.
+  const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet, users] = await Promise.all([
+    queryFlightLegs(filters),
+    db.station.findMany({ orderBy: { iata: "asc" } }),
+    db.flight.findMany({ distinct: ["serviceType"], select: { serviceType: true }, orderBy: { serviceType: "asc" } }),
+    db.flight.findMany({ distinct: ["flightNo"], select: { flightNo: true }, orderBy: { flightNo: "asc" } }),
+    db.aircraft.findMany({ where: { active: true }, orderBy: { registration: "asc" } }),
     db.user.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
-    db.document.findMany({
-      include: {
-        leg: { include: { flight: true } },
-        preparedBy: true,
-        checkedBy: true,
-      },
-      orderBy: { issuedAt: "desc" },
-    }),
   ]);
 
-  // Faz 12 — the highest edition per (leg, type) is current; every earlier
-  // edition of that same document is SUPERSEDED (still accessible, never
-  // deleted — Document rows are insert-only, CLAUDE.md rule #5).
-  const maxEditionByGroup = new Map<string, number>();
+  const legIds = rows.map((r) => r.id);
+  const [documents, finalizedPlans] = await Promise.all([
+    db.document.findMany({ where: { legId: { in: legIds } }, orderBy: { edition: "asc" } }),
+    db.loadPlan.findMany({ where: { legId: { in: legIds }, status: "FINALIZED" }, select: { legId: true } }),
+  ]);
+
+  // Faz 12 — the highest edition per (leg, type) is the current one. Earlier
+  // editions are never deleted (Document rows are insert-only, CLAUDE.md
+  // rule #5); the page links to the current edition of each type.
+  const current: Record<string, LegDocuments> = {};
   for (const doc of documents) {
-    const key = `${doc.legId}:${doc.type}`;
-    maxEditionByGroup.set(key, Math.max(maxEditionByGroup.get(key) ?? 0, doc.edition));
+    const forLeg = (current[doc.legId] ??= {});
+    const held = forLeg[doc.type];
+    if (!held || doc.edition > held.edition) {
+      forLeg[doc.type] = { id: doc.id, edition: doc.edition, issuedAt: doc.issuedAt.toISOString() };
+    }
   }
+
+  const flightNumberPrefixes = [
+    ...new Set(
+      flightsForNumbers
+        .map((f) => /^([A-Za-z][A-Za-z0-9])/.exec(f.flightNo.trim())?.[1]?.toUpperCase())
+        .filter((p): p is string => Boolean(p)),
+    ),
+  ].sort();
 
   return (
     <DocumentsView
-      legs={legs.map((leg) => ({
-        id: leg.id,
-        flightNo: leg.flight.flightNo,
-        route: `${leg.fromStation.iata}-${leg.toStation.iata}`,
-        date: leg.flight.date.toISOString().slice(0, 10),
-      }))}
+      rows={rows}
+      total={total}
+      filters={filters}
+      documentsByLegId={current}
+      finalizedLegIds={[...new Set(finalizedPlans.map((p) => p.legId))]}
       users={users.map((u) => ({ id: u.id, name: u.name }))}
-      documents={documents.map((doc) => ({
-        id: doc.id,
-        type: doc.type,
-        edition: doc.edition,
-        flightNo: doc.leg.flight.flightNo,
-        preparedByName: doc.preparedBy.name,
-        checkedByName: doc.checkedBy.name,
-        issuedAt: doc.issuedAt.toISOString(),
-        superseded: doc.edition < (maxEditionByGroup.get(`${doc.legId}:${doc.type}`) ?? doc.edition),
-      }))}
+      stations={stations}
+      serviceTypes={serviceTypeOptions(flightsForServiceTypes.map((f) => f.serviceType))}
+      flightNumberPrefixes={flightNumberPrefixes}
+      registrations={fleet.map((a) => a.registration)}
     />
   );
 }

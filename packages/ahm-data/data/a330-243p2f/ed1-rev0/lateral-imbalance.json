@@ -1,0 +1,38 @@
+{
+  "scope": "SIDE_BY_SIDE_PALLETS_ONLY",
+  "limit": "34000",
+  "operationalMargin": "11554",
+  "signRule": "MARGIN_FOLLOWS_TOTAL",
+  "payload": [
+    { "category": "MAIN_SBS_88", "label": "MAIN SBS 88\"", "yArm": "1.13" },
+    { "category": "MAIN_SBS_96", "label": "MAIN SBS 96\"", "yArm": "1.23" },
+    { "category": "LOWER_LD3", "label": "LOWER LD3", "yArm": "0.81" }
+  ],
+  "fuel": {
+    "status": "SOURCE_NOT_TRANSCRIBED",
+    "tanks": ["OUTER", "INNER"],
+    "sourceTable": "FUEL LATERAL MOMENT PER TANK TABLE",
+    "sourcePage": "AHM 560 Appendix I s.75 (LOAD AND TRIM SHEET page 3)",
+    "reason": "The only copy of that page we hold is a 174 ppi scan in which 6/8 and 0/3 are not separable at the printed one-decimal precision; see AHM560_ERRATA.md Kayit 10. No value is guessed."
+  },
+  "verification": {
+    "status": "PAYLOAD_VERIFIED_FUEL_BLOCKED",
+    "note": "The payload y-arms, the limit and the operational margin are read cleanly from the approved plate. The fuel half of the same table is not transcribed, so a complete lateral imbalance cannot yet be computed and checkLateralImbalance() must stay NOT_AVAILABLE / provisional."
+  },
+  "notes": [
+    "Printed caution: \"The lateral imbalance of the aircraft due to asymmetric loading of cargo & fuel must not exceed a lateral moment of +/- 34 000 kg.m\".",
+    "Per payload row: lateral imbalance (kg.m) = (weight LEFT - weight RIGHT) x y-arm.",
+    "Fuel rows are entered directly as lateral moment (kg.m) per tank pair, LEFT minus RIGHT.",
+    "The operational margin is a fixed 11 554 kg.m added on top of the total. Printed rule: \"SIGN OF OPERATIONAL MARGIN IS IDENTICAL TO SIGN OF TOTAL IMBALANCE WITHOUT OPERATIONAL MARGIN\" - so the margin always makes the result worse, never better.",
+    "The plate titles this table FOR SIDE-BY-SIDE PALLETS ONLY: single-row and bridge positions are centred and contribute no lateral moment.",
+    "The plate's footnote (1) points at page 3 for the fuel lateral moments."
+  ],
+  "source": {
+    "documentTitle": "AHM 560 - Airbus A330-243 P2F - Appendix I, LOAD AND TRIM SHEET page 2 (printed p.74), Ed.1 Rev.0, effective 15.03.2023",
+    "groundTruthRefs": [
+      "AHM 560 Appendix I s.74 - LATERAL IMBALANCE CAUTION (FOR SIDE-BY-SIDE PALLETS ONLY)",
+      "AHM560_ERRATA.md Kayit 9",
+      "AHM560_ERRATA.md Kayit 10"
+    ]
+  }
+}

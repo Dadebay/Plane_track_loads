@@ -7,7 +7,7 @@
  * intermediate float round-trip. See CLAUDE.md rule #2 and #3.
  */
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { z } from "zod";
@@ -109,6 +109,14 @@ export const DowDoiCellSchema = z.object({
 export const DowDoiMatrixSchema = z.object({
   "EZ-F429": z.array(DowDoiCellSchema),
   "EZ-F430": z.array(DowDoiCellSchema),
+  /** The remark printed under the matrix: per-occupant weights, baggage
+   * included. They are what makes a printed cell decomposable back into a
+   * basic weight — see AHM560_ERRATA.md Kayıt 11. */
+  crewWeights: z.object({
+    cockpitKg: decimalString,
+    courierKg: decimalString,
+    note: z.string(),
+  }),
   notes: z.array(z.string()),
   source: z.object({ groundTruthRefs: z.array(z.string()) }),
 });
@@ -300,6 +308,164 @@ export const FuelIndexSchema = z.record(z.string(), z.array(FuelIndexRowSchema))
 export type FuelIndexData = z.infer<typeof FuelIndexSchema>;
 
 // ---------------------------------------------------------------------------
+// cargo-index-table.json (OPTIONAL)
+// ---------------------------------------------------------------------------
+
+/** One printed kg bracket of the CARGO LOADING INDEX TABLE card, keyed by
+ * the card's zone letter. A zone is absent where the card greys the cell
+ * out (the bracket is above that zone's maximum load). */
+export const CargoIndexBracketSchema = z.object({
+  from: decimalString,
+  to: decimalString,
+  index: z.record(z.string(), decimalString),
+});
+
+export const CargoIndexTableSchema = z.object({
+  brackets: z.array(CargoIndexBracketSchema),
+  /** The card's MAX row — the index at each zone's maximum load. */
+  max: z.record(z.string(), decimalString),
+  notes: z.array(z.string()),
+  source: z.object({ groundTruthRefs: z.array(z.string()) }),
+});
+export type CargoIndexTableData = z.infer<typeof CargoIndexTableSchema>;
+
+// ---------------------------------------------------------------------------
+// Appendix I plate — LOAD AND TRIM SHEET pages 2 and 3 (OPTIONAL)
+// ---------------------------------------------------------------------------
+
+/** `source` block of the Appendix I files, which also name the plate they
+ * were read from — the older files carry `groundTruthRefs` alone. */
+const plateSource = z.object({
+  documentTitle: z.string().optional(),
+  groundTruthRefs: z.array(z.string()),
+});
+
+// lmc-index-table.json — LMC INDEX TABLE
+// Index change of a +100 kg last minute change, per main-deck loading zone.
+export const LmcIndexTableSchema = z.object({
+  perHundredKg: z.record(z.string(), decimalString),
+  notes: z.array(z.string()),
+  source: plateSource,
+});
+export type LmcIndexTableData = z.infer<typeof LmcIndexTableSchema>;
+
+// loading-zones-harm.json — LOADING ZONES H-arm TABLE
+export const LoadingZoneHArmSchema = z.object({
+  zone: z.string(),
+  frontHArm: decimalString,
+  rearHArm: decimalString,
+});
+
+export const LoadingZonesHArmSchema = z.object({
+  zones: z.array(LoadingZoneHArmSchema),
+  notes: z.array(z.string()),
+  source: plateSource,
+});
+export type LoadingZonesHArmData = z.infer<typeof LoadingZonesHArmSchema>;
+
+// lateral-imbalance.json — LATERAL IMBALANCE CAUTION
+export const LateralImbalancePayloadSchema = z.object({
+  category: z.enum(["MAIN_SBS_88", "MAIN_SBS_96", "LOWER_LD3"]),
+  label: z.string(),
+  yArm: decimalString,
+});
+
+export const LateralImbalanceSchema = z.object({
+  scope: z.literal("SIDE_BY_SIDE_PALLETS_ONLY"),
+  limit: decimalString,
+  operationalMargin: decimalString,
+  /** The plate's printed rule: the margin always carries the sign of the
+   * total imbalance without it, so it can only ever make the result worse. */
+  signRule: z.literal("MARGIN_FOLLOWS_TOTAL"),
+  payload: z.array(LateralImbalancePayloadSchema),
+  /** The fuel half of the same table. Only ever `SOURCE_NOT_TRANSCRIBED`
+   * today — see AHM560_ERRATA.md Kayıt 10. */
+  fuel: z.object({
+    status: z.literal("SOURCE_NOT_TRANSCRIBED"),
+    tanks: z.array(z.string()),
+    sourceTable: z.string(),
+    sourcePage: z.string(),
+    reason: z.string(),
+  }),
+  verification: z.object({ status: z.string(), note: z.string() }),
+  notes: z.array(z.string()),
+  source: plateSource,
+});
+export type LateralImbalanceData = z.infer<typeof LateralImbalanceSchema>;
+
+// position-configurations.json — the plate's main/lower deck position rows.
+export const ConfigurationPositionSchema = z.object({
+  code: z.string(),
+  maxGross: decimalString,
+});
+
+export const PositionConfigurationSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  deck: z.enum(["MAIN", "LOWER"]),
+  /** `null` for bulk, which the plate gives no ULD footprint for. */
+  longitudinalInches: decimalString.nullable(),
+  lateralInches: decimalString.nullable(),
+  lateralPlacement: z.enum(["CENTRE", "PAIRED_LEFT_RIGHT", "CENTRE_OR_PAIRED_LEFT_RIGHT"]),
+  halfSizeMaxGross: decimalString.optional(),
+  fullSizeMaxGross: decimalString.optional(),
+  positions: z.array(ConfigurationPositionSchema),
+});
+
+export const PositionConfigurationsSchema = z.object({
+  configurations: z.array(PositionConfigurationSchema),
+  halfContainerSuffixes: z.array(z.string()),
+  halfContainerPositions: z.array(z.string()),
+  restrictedArea: z.object({
+    id: z.string(),
+    fromFrame: decimalString,
+    toFrame: decimalString,
+    rules: z.array(z.string()),
+  }),
+  exclusivity: z.object({
+    rule: z.literal("FOOTPRINT_OVERLAP"),
+    note: z.string(),
+    verifiedExamples: z.array(z.string()),
+  }),
+  notes: z.array(z.string()),
+  source: plateSource,
+});
+export type PositionConfigurationsData = z.infer<typeof PositionConfigurationsSchema>;
+
+// fuel-tank-index.json — FUEL INDEX PER TANK TABLE (PROVISIONAL)
+export const FuelTankIndexRowSchema = z.object({
+  fuelWeight: decimalString,
+  index: decimalString,
+});
+
+/** Keyed by density string ("0.760" | "0.800" | "0.840"). */
+const byDensity = <T extends z.ZodTypeAny>(inner: T) => z.record(z.string(), inner);
+
+export const FuelTankIndexTankSchema = z.object({
+  /** The plate's footnote (1): INNER and OUTER values are per tank. */
+  perTank: z.boolean(),
+  step: byDensity(z.array(FuelTankIndexRowSchema)),
+  full: byDensity(decimalString),
+});
+
+export const FuelTankIndexSchema = z.object({
+  tanks: z.record(z.string(), FuelTankIndexTankSchema),
+  densities: z.array(z.string()),
+  /** Always `true` today. A consumer must refuse to calculate while it is. */
+  provisional: z.boolean(),
+  verification: z.object({
+    status: z.string(),
+    method: z.string(),
+    blocker: z.string(),
+    flaggedCells: z.array(z.string()),
+    requiredToClear: z.string(),
+  }),
+  notes: z.array(z.string()),
+  source: plateSource,
+});
+export type FuelTankIndexData = z.infer<typeof FuelTankIndexSchema>;
+
+// ---------------------------------------------------------------------------
 // Loader
 // ---------------------------------------------------------------------------
 
@@ -315,6 +481,20 @@ export interface AhmDataSet {
   zoneMapping: ZoneMappingData;
   uldTypes: UldTypesData;
   crewIndex: CrewIndexData;
+  /** The printed CARGO LOADING INDEX TABLE card. Optional: it is a
+   * cross-check aid, never a calculation input (see wnb-core's
+   * cargo-index-table.ts), and a revision we hold without that page still
+   * loads. `null` when the file is absent. */
+  cargoIndexTable: CargoIndexTableData | null;
+  /** Appendix I plate, LOAD AND TRIM SHEET page 2. `null` for a revision
+   * whose plate we do not hold — same rule as `cargoIndexTable`. */
+  lmcIndexTable: LmcIndexTableData | null;
+  loadingZonesHArm: LoadingZonesHArmData | null;
+  lateralImbalance: LateralImbalanceData | null;
+  positionConfigurations: PositionConfigurationsData | null;
+  /** Appendix I plate, page 3. Provisional — see the file's `verification`
+   * block before letting any of it reach a calculation. */
+  fuelTankIndex: FuelTankIndexData | null;
 }
 
 function dataRoot(): string {
@@ -324,6 +504,14 @@ function dataRoot(): string {
 
 function readJson(filePath: string): unknown {
   return JSON.parse(readFileSync(filePath, "utf-8"));
+}
+
+/** Reads a file that a revision may legitimately not carry. Only a missing
+ * file is tolerated — a present but malformed file still throws, so an
+ * unreadable page can never silently degrade to "not published". */
+function readOptionalJson(filePath: string): unknown | null {
+  if (!existsSync(filePath)) return null;
+  return readJson(filePath);
 }
 
 /**
@@ -350,5 +538,16 @@ export function loadAhmData(aircraftType: string, edition: number, revision: num
     zoneMapping: ZoneMappingSchema.parse(readJson(path.join(dir, "zone-mapping.json"))),
     uldTypes: UldTypesSchema.parse(readJson(path.join(dir, "uld-types.json"))),
     crewIndex: CrewIndexSchema.parse(readJson(path.join(dir, "crew-index.json"))),
+    cargoIndexTable: parseOptional(dir, "cargo-index-table.json", CargoIndexTableSchema),
+    lmcIndexTable: parseOptional(dir, "lmc-index-table.json", LmcIndexTableSchema),
+    loadingZonesHArm: parseOptional(dir, "loading-zones-harm.json", LoadingZonesHArmSchema),
+    lateralImbalance: parseOptional(dir, "lateral-imbalance.json", LateralImbalanceSchema),
+    positionConfigurations: parseOptional(dir, "position-configurations.json", PositionConfigurationsSchema),
+    fuelTankIndex: parseOptional(dir, "fuel-tank-index.json", FuelTankIndexSchema),
   };
+}
+
+function parseOptional<T extends z.ZodTypeAny>(dir: string, file: string, schema: T): z.infer<T> | null {
+  const raw = readOptionalJson(path.join(dir, file));
+  return raw === null ? null : schema.parse(raw);
 }

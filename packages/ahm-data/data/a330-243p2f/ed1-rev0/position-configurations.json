@@ -1,0 +1,645 @@
+{
+  "configurations": [
+    {
+      "id": "SINGLE_ROW_88x125",
+      "label": "SINGLE ROW 88\" x 125\"",
+      "deck": "MAIN",
+      "longitudinalInches": "88",
+      "lateralInches": "125",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "A",
+          "maxGross": "2826"
+        },
+        {
+          "code": "B",
+          "maxGross": "3123"
+        },
+        {
+          "code": "C",
+          "maxGross": "3391"
+        },
+        {
+          "code": "D",
+          "maxGross": "3391"
+        },
+        {
+          "code": "E",
+          "maxGross": "4687"
+        },
+        {
+          "code": "F",
+          "maxGross": "6033"
+        },
+        {
+          "code": "G",
+          "maxGross": "6033"
+        },
+        {
+          "code": "H",
+          "maxGross": "6033"
+        },
+        {
+          "code": "J",
+          "maxGross": "6033"
+        },
+        {
+          "code": "K",
+          "maxGross": "5945"
+        },
+        {
+          "code": "L",
+          "maxGross": "4037"
+        },
+        {
+          "code": "M",
+          "maxGross": "4037"
+        },
+        {
+          "code": "P",
+          "maxGross": "3725"
+        },
+        {
+          "code": "R",
+          "maxGross": "3714"
+        },
+        {
+          "code": "S",
+          "maxGross": "3714"
+        },
+        {
+          "code": "T",
+          "maxGross": "3059"
+        },
+        {
+          "code": "U",
+          "maxGross": "2541"
+        }
+      ]
+    },
+    {
+      "id": "SINGLE_ROW_96x125",
+      "label": "SINGLE ROW 96\" x 125\"",
+      "deck": "MAIN",
+      "longitudinalInches": "96",
+      "lateralInches": "125",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "AA",
+          "maxGross": "3080"
+        },
+        {
+          "code": "BB",
+          "maxGross": "3428"
+        },
+        {
+          "code": "CC",
+          "maxGross": "3696"
+        },
+        {
+          "code": "DD",
+          "maxGross": "3696"
+        },
+        {
+          "code": "EE",
+          "maxGross": "5670"
+        },
+        {
+          "code": "FF",
+          "maxGross": "5670"
+        },
+        {
+          "code": "GG",
+          "maxGross": "5670"
+        },
+        {
+          "code": "HH",
+          "maxGross": "5670"
+        },
+        {
+          "code": "JJ",
+          "maxGross": "5670"
+        },
+        {
+          "code": "KK",
+          "maxGross": "4822"
+        },
+        {
+          "code": "LL",
+          "maxGross": "4400"
+        },
+        {
+          "code": "MM",
+          "maxGross": "4091"
+        },
+        {
+          "code": "PP",
+          "maxGross": "4048"
+        },
+        {
+          "code": "RR",
+          "maxGross": "4048"
+        },
+        {
+          "code": "SS",
+          "maxGross": "3389"
+        },
+        {
+          "code": "TT",
+          "maxGross": "2809"
+        }
+      ]
+    },
+    {
+      "id": "SINGLE_ROW_125x96",
+      "label": "SINGLE ROW 125\" x 96\"",
+      "deck": "MAIN",
+      "longitudinalInches": "125",
+      "lateralInches": "96",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "AB",
+          "maxGross": "3429"
+        },
+        {
+          "code": "BC",
+          "maxGross": "3941"
+        },
+        {
+          "code": "CE",
+          "maxGross": "4001"
+        },
+        {
+          "code": "EF",
+          "maxGross": "6804"
+        },
+        {
+          "code": "FH",
+          "maxGross": "6804"
+        },
+        {
+          "code": "HJ",
+          "maxGross": "6804"
+        },
+        {
+          "code": "JK",
+          "maxGross": "6804"
+        },
+        {
+          "code": "KM",
+          "maxGross": "4868"
+        },
+        {
+          "code": "MP",
+          "maxGross": "4445"
+        }
+      ]
+    },
+    {
+      "id": "SIDE_BY_SIDE_125x88",
+      "label": "SIDE BY SIDE 125\" x 88\"",
+      "deck": "MAIN",
+      "longitudinalInches": "125",
+      "lateralInches": "88",
+      "lateralPlacement": "PAIRED_LEFT_RIGHT",
+      "positions": [
+        {
+          "code": "ABR",
+          "maxGross": "2000"
+        },
+        {
+          "code": "ABL",
+          "maxGross": "2000"
+        },
+        {
+          "code": "BCR",
+          "maxGross": "2358"
+        },
+        {
+          "code": "BCL",
+          "maxGross": "2358"
+        },
+        {
+          "code": "CER",
+          "maxGross": "2400"
+        },
+        {
+          "code": "CEL",
+          "maxGross": "2400"
+        },
+        {
+          "code": "EFR",
+          "maxGross": "3825"
+        },
+        {
+          "code": "EFL",
+          "maxGross": "3825"
+        },
+        {
+          "code": "FHR",
+          "maxGross": "4321"
+        },
+        {
+          "code": "FHL",
+          "maxGross": "4321"
+        },
+        {
+          "code": "HJR",
+          "maxGross": "4321"
+        },
+        {
+          "code": "HJL",
+          "maxGross": "4321"
+        },
+        {
+          "code": "JKR",
+          "maxGross": "4321"
+        },
+        {
+          "code": "JKL",
+          "maxGross": "4321"
+        },
+        {
+          "code": "KMR",
+          "maxGross": "2964"
+        },
+        {
+          "code": "KML",
+          "maxGross": "2964"
+        },
+        {
+          "code": "MPR",
+          "maxGross": "2756"
+        },
+        {
+          "code": "MPL",
+          "maxGross": "2756"
+        },
+        {
+          "code": "PRR",
+          "maxGross": "2629"
+        },
+        {
+          "code": "PRL",
+          "maxGross": "2629"
+        }
+      ]
+    },
+    {
+      "id": "SIDE_BY_SIDE_125x96",
+      "label": "SIDE BY SIDE 125\" x 96\"",
+      "deck": "MAIN",
+      "longitudinalInches": "125",
+      "lateralInches": "96",
+      "lateralPlacement": "PAIRED_LEFT_RIGHT",
+      "positions": [
+        {
+          "code": "ABR",
+          "maxGross": "2000"
+        },
+        {
+          "code": "ABL",
+          "maxGross": "2000"
+        },
+        {
+          "code": "BCR",
+          "maxGross": "2358"
+        },
+        {
+          "code": "BCL",
+          "maxGross": "2358"
+        },
+        {
+          "code": "CER",
+          "maxGross": "2400"
+        },
+        {
+          "code": "CEL",
+          "maxGross": "2400"
+        },
+        {
+          "code": "EFR",
+          "maxGross": "3825"
+        },
+        {
+          "code": "EFL",
+          "maxGross": "3825"
+        },
+        {
+          "code": "FHR",
+          "maxGross": "4321"
+        },
+        {
+          "code": "FHL",
+          "maxGross": "4321"
+        },
+        {
+          "code": "HJR",
+          "maxGross": "4321"
+        },
+        {
+          "code": "HJL",
+          "maxGross": "4321"
+        },
+        {
+          "code": "JKR",
+          "maxGross": "4321"
+        },
+        {
+          "code": "JKL",
+          "maxGross": "4321"
+        },
+        {
+          "code": "KMR",
+          "maxGross": "2964"
+        },
+        {
+          "code": "KML",
+          "maxGross": "2964"
+        },
+        {
+          "code": "MPR",
+          "maxGross": "2756"
+        },
+        {
+          "code": "MPL",
+          "maxGross": "2756"
+        }
+      ]
+    },
+    {
+      "id": "PALLET_16FT",
+      "label": "16 FT PALLETS 196\" x 96\"",
+      "deck": "MAIN",
+      "longitudinalInches": "196",
+      "lateralInches": "96",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "CFR",
+          "maxGross": "7729"
+        },
+        {
+          "code": "FJR",
+          "maxGross": "10668"
+        },
+        {
+          "code": "JLR",
+          "maxGross": "10668"
+        },
+        {
+          "code": "LPR",
+          "maxGross": "6236"
+        }
+      ]
+    },
+    {
+      "id": "PALLET_20FT",
+      "label": "20 FT PALLETS 238.5\" x 96\"",
+      "deck": "MAIN",
+      "longitudinalInches": "238.5",
+      "lateralInches": "96",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "CFG",
+          "maxGross": "10602"
+        },
+        {
+          "code": "FJG",
+          "maxGross": "11340"
+        },
+        {
+          "code": "JLG",
+          "maxGross": "11340"
+        }
+      ]
+    },
+    {
+      "id": "CONTAINER",
+      "label": "CONTAINER / PALLET 60.4\" x 61.5\" or 60.4\" x 125\"",
+      "deck": "LOWER",
+      "longitudinalInches": "60.4",
+      "lateralInches": "125",
+      "lateralPlacement": "CENTRE_OR_PAIRED_LEFT_RIGHT",
+      "halfSizeMaxGross": "1587",
+      "fullSizeMaxGross": "3174",
+      "positions": [
+        {
+          "code": "11",
+          "maxGross": "3174"
+        },
+        {
+          "code": "12",
+          "maxGross": "3174"
+        },
+        {
+          "code": "13",
+          "maxGross": "3174"
+        },
+        {
+          "code": "14",
+          "maxGross": "3174"
+        },
+        {
+          "code": "21",
+          "maxGross": "3174"
+        },
+        {
+          "code": "22",
+          "maxGross": "3174"
+        },
+        {
+          "code": "23",
+          "maxGross": "3174"
+        },
+        {
+          "code": "31",
+          "maxGross": "3174"
+        },
+        {
+          "code": "32",
+          "maxGross": "3174"
+        },
+        {
+          "code": "33",
+          "maxGross": "3174"
+        },
+        {
+          "code": "41",
+          "maxGross": "3174"
+        },
+        {
+          "code": "42",
+          "maxGross": "3174"
+        },
+        {
+          "code": "43",
+          "maxGross": "3174"
+        }
+      ]
+    },
+    {
+      "id": "PALLET_88x125",
+      "label": "PALLET 88\" x 125\" (lower deck)",
+      "deck": "LOWER",
+      "longitudinalInches": "88",
+      "lateralInches": "125",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "12P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "13P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "21P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "22P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "31P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "32P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "41P",
+          "maxGross": "4626"
+        },
+        {
+          "code": "42P",
+          "maxGross": "4626"
+        }
+      ]
+    },
+    {
+      "id": "PALLET_96x125",
+      "label": "PALLET 96\" x 125\" (lower deck)",
+      "deck": "LOWER",
+      "longitudinalInches": "96",
+      "lateralInches": "125",
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "12P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "13P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "21P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "22P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "31P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "32P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "41P",
+          "maxGross": "5103"
+        },
+        {
+          "code": "42P",
+          "maxGross": "5103"
+        }
+      ]
+    },
+    {
+      "id": "BULK",
+      "label": "MAX BULK",
+      "deck": "LOWER",
+      "longitudinalInches": null,
+      "lateralInches": null,
+      "lateralPlacement": "CENTRE",
+      "positions": [
+        {
+          "code": "51",
+          "maxGross": "339"
+        },
+        {
+          "code": "52",
+          "maxGross": "1413"
+        },
+        {
+          "code": "53",
+          "maxGross": "1716"
+        }
+      ]
+    }
+  ],
+  "halfContainerSuffixes": [
+    "L",
+    "R"
+  ],
+  "halfContainerPositions": [
+    "11",
+    "12",
+    "13",
+    "14",
+    "21",
+    "22",
+    "23",
+    "31",
+    "32",
+    "33",
+    "41",
+    "42",
+    "43"
+  ],
+  "restrictedArea": {
+    "id": "AREA_OF_ARTICULATION",
+    "fromFrame": "39.2",
+    "toFrame": "40",
+    "rules": [
+      "Long items with a high stiffness (high moment of resistance) shall not be loaded across the area.",
+      "Use of floating pallets is not allowed in the area."
+    ]
+  },
+  "exclusivity": {
+    "rule": "FOOTPRINT_OVERLAP",
+    "note": "Two positions conflict when their longitudinal footprints overlap and their lateral placements are not disjoint. The footprint is centred on the position's arm, which is derived from positions.json indexPerKg (arm = refSta + C x indexPerKg), and is longitudinalInches long. This plate prints alternative row configurations of one physical floor; it does not print a conflict matrix, so the matrix is computed, never transcribed.",
+    "verifiedExamples": [
+      "Lower deck: {12P,13P} tile exactly the floor of containers {12,13,14} (16.438 m - 21.123 m); likewise {21P,22P} over {21,22,23}, {31P,32P} over {31,32,33} and {41P,42P} over {41,42,43}. That is why 11P and 43P do not exist - container 11 has no pallet equivalent.",
+      "Main deck: the SINGLE ROW 88\" x 125\" position X occupies exactly loading zone X of loading-zones-harm.json, to within the rounding of indexPerKg."
+    ]
+  },
+  "notes": [
+    "Row titles read <fore-aft>\" x <lateral>\": SINGLE ROW 88\" x 125\" is 88 in of deck pitch and 125 in across. Confirmed three ways - the 88 in pitch matches loading-zones-harm.json, the 125 in side-by-side rows share their arm with the SINGLE ROW 125\" x 96\" bridge position of the same name, and the lateral imbalance y-arms are half the lateral width (1.13 m for 88 in, 1.23 m for 96 in).",
+    "Max loads are transcribed from the approved plate and independently confirmed against the operator's laminated LOAD AND TRIM SHEET card photographed on 2026-09-09; the two agree cell for cell.",
+    "The lower-deck row is titled 60.4\" x 61.5\" OR 60.4\" x 125\": each numbered position takes either one full-size unit at 3174 kg or two half-size units (L and R) at 1587 kg each. The LIR prints the half-size variants as 11R/11L .. 43R/43L.",
+    "SIDE BY SIDE 125\" x 88\" carries a tenth pair (PRR/PRL) that SIDE BY SIDE 125\" x 96\" does not.",
+    "Both side-by-side rows print identical max loads pair for pair; only the longitudinal pitch differs.",
+    "The 16 ft and 20 ft pallet rows also carry printed zone distribution factors; those live in zone-mapping.json.",
+    "The 16 ft and 20 ft pallet rows are not printed on the approved plate's page 2; they come from the operator's laminated card only, and their max loads are corroborated by positions.json rather than by a second printing of the plate."
+  ],
+  "source": {
+    "documentTitle": "AHM 560 - Airbus A330-243 P2F - Appendix I, LOAD AND TRIM SHEET page 2 (printed p.74), Ed.1 Rev.0, effective 15.03.2023",
+    "groundTruthRefs": [
+      "AHM 560 Appendix I s.74 - main/lower deck position and ULD reference diagram",
+      "Operator laminated LOAD AND TRIM SHEET card, photographed 2026-09-09 (independent second reading)",
+      "AHM560_ERRATA.md Kayit 9"
+    ]
+  }
+}

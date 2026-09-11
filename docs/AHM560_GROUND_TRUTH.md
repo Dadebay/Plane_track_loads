@@ -793,6 +793,23 @@ ihtimali** de var. Muhtemelen uçak yeniden tartıldı ve AHM'in yeni revizyonu 
 **versiyonlu ve tarihli** olmalı; loadsheet hangi AHM edition/revision ile
 üretildiğini **belgede göstermeli**.
 
+> **✅ ÇÖZÜLDÜ (2026-09-09) — AHM 560 Ed.1 Rev.2 temin edildi.**
+> Operasyondan gelen `Valid from 10.06.2025 · Edition 1 · Revision 2 · Page 6`
+> damgalı sayfa, EZ-F430 ekip 2/3 için **DOW 111 044 / DOI 78,19** veriyor —
+> loadsheet'in 111 043,70 / 78,22 değerine 0,30 kg mesafede (loadsheet ondalıklı
+> BEW taşıyor, AHM tablosu tam kg'a basılı). Tahmin edildiği gibi uçak yeniden
+> tartılmış ve yeni bir revizyon çıkmış, ama Rev.0'ın s.9 List of Revisions
+> tablosu boş olduğu için hiçbir iz bırakmamış.
+>
+> Veri `packages/ahm-data/data/a330-243p2f/ed1-rev2/` altında, `AhmDocument`
+> olarak seed edilmiş durumda ve yeni hesaplar bu revizyonla yapılıyor.
+> Transkripsiyon üç bağımsız yolla doğrulandı — detay ve kalan açık maddeler:
+> `docs/AHM560_ERRATA.md` Kayıt 7 ve `ed1-rev2/PROVENANCE.md`.
+>
+> ⚠️ Bulgu #7'nin LIZFW/yakıt indeksi ayağı **kapanmadı**: Rev.2'nin DOI'si
+> Rev.0'dan yalnızca 0,45 farklı, Bulgu #7'deki fark ise 1,10 indeks birimi.
+> `positions.json` ve `fuel-index.json`'ın Rev.2 sayfaları da gerekiyor.
+
 ### Bulgu #3 — TRIM yuvarlama kuralı belgelenmemiş 🟡
 Formül 4,155 → belge 4,1. Truncate mi, banker's rounding mu, yoksa
 farklı bir MACTOW hassasiyeti mi? Tek yerde sabitlenmeli.
@@ -824,6 +841,12 @@ kullandığı revizyonla **aynı değil**.
 Bulgu #2 ile aynı kök neden: muhtemelen uçak yeniden tartıldı / AHM'in bir sonraki revizyonu
 çıktı, ama elimizdeki AHM'in List of Revisions tablosu (s.9) boş olduğu için bu revizyon
 farkı hiçbir yerde iz bırakmamış. Detay: `docs/AHM560_ERRATA.md` Kayıt 6.
+
+> **Kısmen doğrulandı (2026-09-09):** Ed.1 Rev.2'nin s.6'sı geldi ve Bulgu #2'yi kapattı
+> (yukarı bkz.) — yani "daha yeni bir revizyon var" hipotezi **doğru çıktı**. Ama Rev.2'nin
+> DOI'si Rev.0'dan sadece 0,45 farklı, buradaki LIZFW farkı 1,10 indeks birimi; kalan
+> 0,65'in `positions.json`'ın Rev.2 sayfasında olması bekleniyor. Bu bulgu, o sayfa ve
+> Rev.2 yakıt indeks tablosu gelene kadar **açık** kalıyor.
 
 **Bu aslında değer önerimizin kanıtı:** Aerometa hangi AHM revizyonuyla hesapladığını
 göstermiyor; biz elimizdeki (tarihli, versiyonlu) AHM verisiyle bağımsız hesaplayıp tutmayan

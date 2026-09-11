@@ -3,6 +3,8 @@ import { DEFAULT_PAGE_SIZE } from "./pagination";
 
 export interface FlightListFilters {
   from?: string;
+  /** Intermediate station of a multi-stop leg — FlightLeg.via. */
+  via?: string;
   to?: string;
   flightNo?: string;
   registration?: string;
@@ -28,6 +30,7 @@ export function parseFlightListFilters(searchParams: Record<string, string | str
 
   return {
     from: get("from") || undefined,
+    via: get("via") || undefined,
     to: get("to") || undefined,
     flightNo: get("flightNo") || undefined,
     registration: get("registration") || undefined,
@@ -49,6 +52,7 @@ export type FlightLegRow = Prisma.FlightLegGetPayload<{
 export async function queryFlightLegs(filters: FlightListFilters): Promise<{ rows: FlightLegRow[]; total: number }> {
   const where: Prisma.FlightLegWhereInput = {
     ...(filters.from ? { fromStation: { iata: { equals: filters.from, mode: "insensitive" } } } : {}),
+    ...(filters.via ? { via: { contains: filters.via, mode: "insensitive" } } : {}),
     ...(filters.to ? { toStation: { iata: { equals: filters.to, mode: "insensitive" } } } : {}),
     flight: {
       ...(filters.flightNo ? { flightNo: { contains: filters.flightNo, mode: "insensitive" } } : {}),

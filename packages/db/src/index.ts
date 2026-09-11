@@ -18,7 +18,21 @@ import { withAudit, type AuditContext } from "./audit";
 
 export const DB_VERSION = "0.0.0-faz4";
 
-const basePrismaClient = new PrismaClient();
+/**
+ * One client per process, cached on `globalThis` in development.
+ *
+ * Next.js hot-reloads a module graph on every edit. Without this cache each
+ * reload constructs another `PrismaClient`, each opens its own connection
+ * pool, and none of the old ones are closed — Postgres runs out of
+ * connections after a few minutes of editing ("too many clients already")
+ * and every page starts failing. Production builds load the module once, so
+ * the cache is a no-op there.
+ */
+const globalForPrisma = globalThis as unknown as { tuaPrismaClient?: PrismaClient };
+
+const basePrismaClient = globalForPrisma.tuaPrismaClient ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.tuaPrismaClient = basePrismaClient;
 
 export const db = basePrismaClient.$extends(immutableRecordsExtension);
 

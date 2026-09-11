@@ -1,5 +1,9 @@
 import { Document, Page, View, Text, StyleSheet, renderToBuffer } from "@react-pdf/renderer";
-import type { LirCell, LirInput } from "./types";
+import { chrome, Footer, Watermark } from "../shared/chrome";
+import { AirlineLogo } from "../shared/logo";
+import { DeckGrid } from "../shared/deck-grid";
+import { COLOR, RULE } from "../shared/tokens";
+import type { LirCompartmentLimit, LirInput } from "./types";
 
 /**
  * AHM 560 s.18 — LIR header code legend. Fixed IATA/AHM standard codes,
@@ -24,90 +28,241 @@ const SIDE_CODES: [string, string][] = [
   ["L", "LEFT"],
 ];
 
+const CERTIFICATION =
+  "This aircraft has been loaded in accordance with these instructions including the deviations shown " +
+  "in the report. The containers/pallets and bulk-load have been secured in accordance with " +
+  "corporation's regulations.";
+
 const styles = StyleSheet.create({
-  page: { padding: 24, fontSize: 8, fontFamily: "Helvetica" },
-  title: { fontSize: 14, fontWeight: 700, marginBottom: 8 },
-  headerGrid: { flexDirection: "row", flexWrap: "wrap", gap: 4, marginBottom: 8, borderTop: 1, borderColor: "#999999", paddingTop: 6 },
-  headerField: { width: "24%", flexDirection: "column" },
-  headerLabel: { fontSize: 7, color: "#555555" },
-  headerValue: { fontSize: 9, fontWeight: 700 },
-  warning: { fontSize: 7, color: "#555555", marginBottom: 6, fontStyle: "italic" },
-  legendRow: { flexDirection: "row", gap: 16, marginBottom: 10, borderBottom: 1, borderColor: "#999999", paddingBottom: 6 },
-  legendGroup: { flexDirection: "column", gap: 1 },
-  legendLine: { fontSize: 7 },
-  sectionTitle: { fontSize: 10, fontWeight: 700, marginTop: 8, marginBottom: 3 },
-  compartmentRow: { flexDirection: "row", gap: 10, marginBottom: 6 },
-  compartmentBox: { fontSize: 7, border: 1, borderColor: "#cccccc", padding: 3 },
-  table: { display: "flex", flexDirection: "column", borderTop: 1, borderColor: "#999999" },
-  row: { flexDirection: "row", borderBottom: 1, borderColor: "#cccccc" },
-  headerRow: { backgroundColor: "#f0f0f0", fontWeight: 700 },
-  emptyRow: { backgroundColor: "#f5f5f5" },
-  cell: { padding: 3, borderRight: 1, borderColor: "#cccccc" },
-  colPosition: { width: "10%" },
-  colMaxGross: { width: "10%" },
-  colUld: { width: "40%" },
-  colWeight: { width: "40%" },
-  cellStack: { flexDirection: "column" },
-  cellTop: { fontSize: 7.5 },
-  cellBottom: { fontSize: 7.5, fontWeight: 700 },
-  siBox: { marginTop: 10, border: 1, borderColor: "#999999", padding: 6, minHeight: 40 },
-  siLabel: { fontSize: 7, fontWeight: 700, marginBottom: 3 },
-  watermark: {
-    position: "absolute",
-    top: "45%",
-    left: "10%",
-    fontSize: 40,
-    color: "#cc0000",
-    opacity: 0.25,
-    transform: "rotate(-30deg)",
+  masthead: {
+    flexDirection: "row",
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.ink,
   },
+  mastheadLogo: {
+    width: 92,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 3,
+    borderRightWidth: RULE.hairline,
+    borderRightStyle: "solid",
+    borderRightColor: COLOR.ink,
+  },
+  mastheadTitle: {
+    width: 104,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 3,
+    borderRightWidth: RULE.hairline,
+    borderRightStyle: "solid",
+    borderRightColor: COLOR.ink,
+  },
+  titleLine: { fontSize: 9, fontWeight: 700, textAlign: "center", lineHeight: 1.2 },
+  mastheadFields: { flex: 1, flexDirection: "column" },
+
+  fieldRow: { flexDirection: "row" },
+  fieldRowDivider: { borderTopWidth: RULE.hairline, borderTopStyle: "solid", borderTopColor: COLOR.ink },
+  fieldCell: {
+    flex: 1,
+    paddingVertical: 3,
+    paddingHorizontal: 2,
+    borderLeftWidth: RULE.hairline,
+    borderLeftStyle: "solid",
+    borderLeftColor: COLOR.ink,
+    justifyContent: "center",
+  },
+  fieldCellFirst: { borderLeftWidth: 0 },
+  fieldLabelRow: { backgroundColor: COLOR.fill },
+  fieldLabel: { fontSize: 7, fontWeight: 700, textAlign: "center" },
+  fieldValue: { fontSize: 8, textAlign: "center" },
+
+  codesRow: { flexDirection: "row" },
+  codesCell: {
+    borderLeftWidth: RULE.hairline,
+    borderLeftStyle: "solid",
+    borderLeftColor: COLOR.ink,
+    padding: 3,
+  },
+  codesCellFirst: { borderLeftWidth: 0 },
+  codesStack: { flexDirection: "column" },
+  codesDivider: { borderTopWidth: RULE.hairline, borderTopStyle: "solid", borderTopColor: COLOR.ink },
+  codesText: { fontSize: 6, lineHeight: 1.35 },
+
+  onload: {
+    fontSize: 7,
+    fontWeight: 700,
+    marginTop: 6,
+    alignSelf: "flex-start",
+    borderBottomWidth: RULE.hairline,
+    borderBottomStyle: "solid",
+    borderBottomColor: COLOR.ink,
+  },
+  deckTitle: { fontSize: 10, fontWeight: 700, textAlign: "center", marginTop: 6, marginBottom: 5 },
+
+  siBox: {
+    flexDirection: "row",
+    alignItems: "stretch",
+    marginTop: 8,
+    gap: 4,
+  },
+  siLabel: { fontSize: 8, fontWeight: 700, alignSelf: "center" },
+  siField: {
+    flex: 1,
+    minHeight: 34,
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.ink,
+    padding: 3,
+  },
+  siText: { fontSize: 7 },
+
+
+  compartmentBand: { flexDirection: "row", marginBottom: 5, marginLeft: 62 },
+  compartmentGroup: {
+    flexDirection: "column",
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.ink,
+    marginRight: -1,
+  },
+  compartmentGroupName: {
+    fontSize: 6,
+    fontWeight: 700,
+    textAlign: "center",
+    paddingVertical: 2,
+    borderBottomWidth: RULE.hairline,
+    borderBottomStyle: "solid",
+    borderBottomColor: COLOR.ink,
+  },
+  compartmentCells: { flexDirection: "row" },
+  compartmentCell: {
+    flex: 1,
+    paddingVertical: 2,
+    paddingHorizontal: 2,
+    borderLeftWidth: RULE.hairline,
+    borderLeftStyle: "solid",
+    borderLeftColor: COLOR.ink,
+  },
+  compartmentName: { fontSize: 6, textAlign: "center" },
+  compartmentMax: { fontSize: 6, textAlign: "center" },
+
 });
 
-function HeaderField({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={styles.headerField}>
-      <Text style={styles.headerLabel}>{label}</Text>
-      <Text style={styles.headerValue}>{value}</Text>
-    </View>
-  );
-}
+/**
+ * The lower-deck limit band: the paired holds carry one combined maximum over
+ * the two compartments that share it, each compartment its own sub-limit
+ * underneath. Pairing comes from the AHM (`pairedWith`), not from the order
+ * the compartments happen to arrive in.
+ */
+function CompartmentBand({ compartments }: { compartments: LirCompartmentLimit[] }) {
+  const groups: LirCompartmentLimit[][] = [];
+  const taken = new Set<number>();
+  for (const comp of compartments) {
+    if (taken.has(comp.number)) continue;
+    taken.add(comp.number);
+    const partner =
+      comp.pairedWith === null ? undefined : compartments.find((c) => c.number === comp.pairedWith);
+    if (partner) taken.add(partner.number);
+    groups.push(partner ? [comp, partner] : [comp]);
+  }
 
-function CellRow({ cell }: { cell: LirCell }) {
-  const isEmpty = cell.weight === null;
   return (
-    <View style={[styles.row, isEmpty ? styles.emptyRow : {}]}>
-      <Text style={[styles.cell, styles.colPosition]}>{cell.code}</Text>
-      <Text style={[styles.cell, styles.colMaxGross]}>{cell.maxGross}</Text>
-      <View style={[styles.cell, styles.colUld, styles.cellStack]}>
-        <Text style={styles.cellTop}>{isEmpty ? "N" : (cell.uldCode ?? cell.awb ?? "N")}</Text>
-      </View>
-      <View style={[styles.cell, styles.colWeight, styles.cellStack]}>
-        <Text style={styles.cellBottom}>{isEmpty ? "N" : cell.weight}</Text>
-      </View>
-    </View>
-  );
-}
-
-function DeckTable({ cells }: { cells: LirCell[] }) {
-  return (
-    <View style={styles.table}>
-      <View style={[styles.row, styles.headerRow]}>
-        <Text style={[styles.cell, styles.colPosition]}>POS</Text>
-        <Text style={[styles.cell, styles.colMaxGross]}>MAX GROSS</Text>
-        <Text style={[styles.cell, styles.colUld]}>ULD / AWB</Text>
-        <Text style={[styles.cell, styles.colWeight]}>WEIGHT</Text>
-      </View>
-      {cells.map((cell) => (
-        <CellRow key={cell.code} cell={cell} />
+    <View style={styles.compartmentBand}>
+      {groups.map((group) => (
+        <View key={group[0]!.number} style={[styles.compartmentGroup, { flex: group.length }]}>
+          <Text style={styles.compartmentGroupName}>
+            {group.length > 1
+              ? `${group[0]!.description} MAX ${group[0]!.maxGrossPair} kg`
+              : group[0]!.description}
+          </Text>
+          <View style={styles.compartmentCells}>
+            {group.map((comp) => (
+              <View key={comp.number} style={styles.compartmentCell}>
+                <Text style={styles.compartmentName}>{`Compartment No${comp.number}`}</Text>
+                <Text style={styles.compartmentMax}>{`MAX ${comp.lirSubLimit} kg`}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
       ))}
     </View>
   );
 }
 
-function LirDocument({ input }: { input: LirInput }) {
-  const mainDeck = input.cells.filter((c) => c.deck === "MAIN");
-  const lowerDeck = input.cells.filter((c) => c.deck === "LOWER");
+/** The boxed masthead: mark, document title, the flight's identifying fields
+ * and the certification/code strip, all in one frame — the crew reads this
+ * block first and has read it in this shape for years. */
+function Masthead({ input }: { input: LirInput }) {
+  const fields: [string, string][] = [
+    ["STATION", input.header.station],
+    ["FLIGHT", input.header.flightNo],
+    ["DATE", input.header.date],
+    ["A/C", input.header.registration],
+    ["Prepared by", input.header.preparedBy],
+    ["Approved by", input.header.checkedBy],
+    ["ED NO", input.header.editionNo],
+  ];
 
+  const codeLine = (codes: [string, string][]) => codes.map(([code, label]) => `${code}:${label}`).join("   ");
+
+  return (
+    <View style={styles.masthead}>
+      <View style={styles.mastheadLogo}>
+        <AirlineLogo height={30} />
+      </View>
+      <View style={styles.mastheadTitle}>
+        <Text style={styles.titleLine}>LOADING</Text>
+        <Text style={styles.titleLine}>INSTRUCTION</Text>
+        <Text style={styles.titleLine}>REPORT</Text>
+        <Text style={styles.titleLine}>{input.header.aircraftType}</Text>
+      </View>
+
+      <View style={styles.mastheadFields}>
+        <View style={[styles.fieldRow, styles.fieldLabelRow]}>
+          {fields.map(([label], i) => (
+            <View key={label} style={[styles.fieldCell, i === 0 ? styles.fieldCellFirst : {}]}>
+              <Text style={styles.fieldLabel}>{label}</Text>
+            </View>
+          ))}
+        </View>
+        <View style={[styles.fieldRow, styles.fieldRowDivider]}>
+          {fields.map(([label, value], i) => (
+            <View key={label} style={[styles.fieldCell, i === 0 ? styles.fieldCellFirst : {}]}>
+              <Text style={styles.fieldValue}>{value}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={[styles.codesRow, styles.fieldRowDivider]}>
+          <View style={[styles.codesCell, styles.codesCellFirst, { flex: 2 }]}>
+            <Text style={styles.codesText}>{CERTIFICATION}</Text>
+            <Text style={styles.codesText}>Person responsible for loading:</Text>
+          </View>
+          <View style={[styles.codesStack, { flex: 1.5 }]}>
+            <View style={styles.codesCell}>
+              <Text style={styles.codesText}>{`CODES:  ${codeLine(CONTENT_CODES.slice(0, 4))}`}</Text>
+            </View>
+            <View style={[styles.codesCell, styles.codesDivider]}>
+              <Text style={styles.codesText}>{codeLine(STATUS_CODES)}</Text>
+            </View>
+          </View>
+          <View style={[styles.codesStack, { flex: 1.1 }]}>
+            <View style={styles.codesCell}>
+              <Text style={styles.codesText}>{codeLine([...CONTENT_CODES.slice(4), ...SIDE_CODES])}</Text>
+            </View>
+            <View style={[styles.codesCell, styles.codesDivider]}>
+              <Text style={styles.codesText}>{codeLine(CONTENT_CODES.slice(0, 4))}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function LirDocument({ input }: { input: LirInput }) {
   return (
     // Fixed creationDate/modificationDate — @react-pdf/renderer defaults
     // both to the current wall-clock time, which would make every render
@@ -116,67 +271,28 @@ function LirDocument({ input }: { input: LirInput }) {
     // generated, so both are pinned to the epoch rather than surfacing a
     // "generated at" value anywhere in the file.
     <Document creationDate={new Date(0)} modificationDate={new Date(0)}>
-      <Page size="A4" style={styles.page}>
-        {input.watermark ? <Text style={styles.watermark}>NOT FOR OPERATIONAL USE</Text> : null}
+      <Page size="A4" style={chrome.page}>
+        <Watermark show={input.watermark} />
 
-        <Text style={styles.title}>LOADING INSTRUCTION / REPORT</Text>
+        <Masthead input={input} />
 
-        <View style={styles.headerGrid}>
-          <HeaderField label="STATION" value={input.station} />
-          <HeaderField label="FLIGHT" value={input.flightNo} />
-          <HeaderField label="DATE" value={input.date} />
-          <HeaderField label="A/C" value={`${input.registration} (${input.aircraftType})`} />
-          <HeaderField label="PREPARED BY" value={input.preparedBy} />
-          <HeaderField label="CHECKED BY" value={input.checkedBy} />
-          <HeaderField label="ED NO" value={input.editionNo} />
-        </View>
+        <Text style={styles.onload}>ONLOAD</Text>
 
-        <Text style={styles.warning}>
-          This report must be checked against the actual aircraft load before departure. Not valid for load
-          calculation until agreed with Load Control.
-        </Text>
+        <Text style={styles.deckTitle}>MAIN DECK</Text>
+        <DeckGrid rows={input.layout.main} />
 
-        <View style={styles.legendRow}>
-          <View style={styles.legendGroup}>
-            {CONTENT_CODES.map(([code, label]) => (
-              <Text key={code} style={styles.legendLine}>
-                {code} = {label}
-              </Text>
-            ))}
-          </View>
-          <View style={styles.legendGroup}>
-            {STATUS_CODES.map(([code, label]) => (
-              <Text key={code} style={styles.legendLine}>
-                {code} = {label}
-              </Text>
-            ))}
-          </View>
-          <View style={styles.legendGroup}>
-            {SIDE_CODES.map(([code, label]) => (
-              <Text key={code} style={styles.legendLine}>
-                {code} = {label}
-              </Text>
-            ))}
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>MAIN DECK (max {input.mainDeckMaxLoad} kg)</Text>
-        <DeckTable cells={mainDeck} />
-
-        <Text style={styles.sectionTitle}>LOWER DECK</Text>
-        <View style={styles.compartmentRow}>
-          {input.compartments.map((comp) => (
-            <Text key={comp.number} style={styles.compartmentBox}>
-              COMP {comp.number} ({comp.description}) MAX {comp.lirSubLimit} kg
-            </Text>
-          ))}
-        </View>
-        <DeckTable cells={lowerDeck} />
+        <Text style={styles.deckTitle}>LOWER DECK</Text>
+        <CompartmentBand compartments={input.compartments} />
+        <DeckGrid rows={input.layout.lower} />
 
         <View style={styles.siBox}>
-          <Text style={styles.siLabel}>SI (SPECIAL INFORMATION)</Text>
-          <Text>{input.specialInformation || "—"}</Text>
+          <Text style={styles.siLabel}>SI :</Text>
+          <View style={styles.siField}>
+            <Text style={styles.siText}>{input.specialInformation}</Text>
+          </View>
         </View>
+
+        <Footer documentCode="LIR" header={input.header} watermark={input.watermark} />
       </Page>
     </Document>
   );

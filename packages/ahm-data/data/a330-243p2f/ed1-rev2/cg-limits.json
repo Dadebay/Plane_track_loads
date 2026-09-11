@@ -1,0 +1,43 @@
+{
+  "zfw": {
+    "forward": [
+      { "weight": "116000", "index": "100.88" },
+      { "weight": "128960", "index": "98.24" },
+      { "weight": "131759", "index": "97.47" },
+      { "weight": "135440", "index": "95.65" },
+      { "weight": "143000", "index": "90.20" },
+      { "weight": "144080", "index": "86.99" },
+      { "weight": "170000", "index": "81.72" }
+    ],
+    "aft": [
+      { "weight": "116000", "index": "141.62" },
+      { "weight": "167840", "index": "163.72" },
+      { "weight": "168920", "index": "165.20" },
+      { "weight": "170000", "index": "164.45" }
+    ]
+  },
+  "takeoff": {
+    "forward": [
+      { "weight": "116000", "index": "85.61" },
+      { "weight": "210000", "index": "66.50" },
+      { "weight": "223364", "index": "76.64" },
+      { "weight": "233000", "index": "99.29" }
+    ],
+    "aft": [
+      { "weight": "116000", "index": "115.28" },
+      { "weight": "118200", "index": "115.73" },
+      { "weight": "169000", "index": "157.83" },
+      { "weight": "179000", "index": "166.12" },
+      { "weight": "228625", "index": "175.13" },
+      { "weight": "233000", "index": "131.20" }
+    ]
+  },
+  "landing": {
+    "note": "No separate landing CG limit table is given in the source document. The ENV chart shows MLW (182000) as a horizontal red line. Whether the landing envelope is the ZFW envelope extended to MLW is an open question - see GROUND_TRUTH.md §10 and §21 Q3. NOT populated pending operational confirmation.",
+    "forward": [],
+    "aft": []
+  },
+  "source": {
+    "groundTruthRefs": ["AHM 560 s.49-50 Sheet C-7"]
+  }
+}

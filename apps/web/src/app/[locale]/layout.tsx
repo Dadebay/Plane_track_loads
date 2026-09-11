@@ -12,7 +12,7 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: "TUA Load Control",
+  title: "Load Control",
   description: "Turkmenistan Airlines weight & balance and load control system",
 };
 

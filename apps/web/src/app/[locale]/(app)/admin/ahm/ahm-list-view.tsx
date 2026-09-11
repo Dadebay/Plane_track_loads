@@ -1,17 +1,17 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { PageHeader, DataTable, type DataTableColumn } from "@tua/ui";
+import { useTranslations } from "next-intl";
+import {
+  DataTable,
+  type DataTableColumn,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
 import { Link } from "@/i18n/navigation";
+import { formatDate } from "@/lib/format-date";
 import type { AhmDocument } from "@tua/db";
-
-function formatDate(date: Date, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(date);
-}
 
 export function AhmListView({ documents }: { documents: AhmDocument[] }) {
   const t = useTranslations("admin.ahm");
-  const locale = useLocale();
 
   const columns: DataTableColumn<AhmDocument>[] = [
     { key: "aircraftType", header: t("list.aircraftType"), render: (d) => d.aircraftType },
@@ -20,7 +20,7 @@ export function AhmListView({ documents }: { documents: AhmDocument[] }) {
     {
       key: "effectiveDate",
       header: t("list.effectiveDate"),
-      render: (d) => formatDate(d.effectiveDate, locale),
+      render: (d) => formatDate(d.effectiveDate),
     },
     { key: "approvedBy", header: t("list.approvedBy"), render: (d) => d.approvedBy },
     {

@@ -339,6 +339,11 @@
       "doi": "73.80"
     }
   ],
+  "crewWeights": {
+    "cockpitKg": "100",
+    "courierKg": "80",
+    "note": "Printed as a remark under the matrix: each weight includes the occupant's baggage. Structured here so the DOW breakdown screen and the composition tests read it from versioned data instead of hardcoding an AHM constant (CLAUDE.md rule #3)."
+  },
   "notes": [
     "3rd and 4th occupants included in cockpit crew count (1-4).",
     "EZ-F430 cockpit3/courier3 cell is printed as '76,8' (single decimal) in source; normalized here to '76.80'. See docs/AHM560_ERRATA.md."

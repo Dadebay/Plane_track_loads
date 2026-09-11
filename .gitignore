@@ -13,3 +13,6 @@ npm-debug.log*
 prisma/dev.db
 apps/web/.data/
 apps/web/next-env.d.ts
+# Yerel PDF/PNG çalışma çıktıları — referans belgelerin render'ları
+# burada duruyor ve depoya girmemeli.
+tmp/

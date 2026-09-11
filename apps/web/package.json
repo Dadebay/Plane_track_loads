@@ -16,7 +16,6 @@
     "@tua/wnb-core": "workspace:*",
     "@tua/ahm-data": "workspace:*",
     "@tua/documents": "workspace:*",
-    "@tua/messaging": "workspace:*",
     "@tua/compare": "workspace:*",
     "@tua/db": "workspace:*",
     "@tua/ui": "workspace:*",

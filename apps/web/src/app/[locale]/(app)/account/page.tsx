@@ -1,6 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { db } from "@tua/db";
-import { DataTable, PageHeader, type DataTableColumn } from "@tua/ui";
+import {
+  DataTable,
+  type DataTableColumn,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
 import { auth } from "@/auth";
 import { formatDateTime } from "@/lib/format-date";
 

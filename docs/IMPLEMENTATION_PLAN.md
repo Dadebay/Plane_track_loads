@@ -150,7 +150,7 @@ Turkmenistan Airlines kurumsal rengi: **yeşil**. Referans ekranlardan alınan t
 
 ## B.3 i18n şartnamesi
 
-**Diller:** `tk` (Türkmençe, varsayılan), `ru` (Русский), `en` (English)
+**Diller:** `en` (English, varsayılan — 2026-09-10'da operatör isteğiyle değişti), `tk` (Türkmençe), `ru` (Русский)
 
 ```
 apps/web/messages/
@@ -275,7 +275,7 @@ docs/IMPLEMENTATION_PLAN.md Bölüm B'yi oku ve tasarım sistemi + i18n temelini
 
 2. apps/web:
    - next-themes: light/dark/system, localStorage'da kalıcı, FOUC yok.
-   - next-intl: [locale] route segmenti, diller tk (varsayılan), ru, en.
+   - next-intl: [locale] route segmenti, diller en (varsayılan), tk, ru.
      Middleware ile locale algılama ve yönlendirme.
    - messages/{tk,ru,en}.json — nav, common, flights, uld, wnb, auth
      alanları için iskelet anahtarlar. Üç dosya da AYNI anahtar setine sahip olsun.

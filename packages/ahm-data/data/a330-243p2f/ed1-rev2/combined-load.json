@@ -1,0 +1,317 @@
+{
+  "zones": [
+    {
+      "zone": "ZA",
+      "group": "FWD_CANTILEVER",
+      "hArm": "16.203",
+      "cumulativeDirection": "FWD_TO_AFT",
+      "limits": {
+        "21<=ZFCG<22": "4807",
+        "22<=ZFCG<23": "4726",
+        "23<=ZFCG<23.5": "4686",
+        "23.5<=ZFCG<24": "4645",
+        "24<=ZFCG<24.5": "4605",
+        "24.5<=ZFCG<25": "4564",
+        "25<=ZFCG<26": "4484",
+        "26<=ZFCG<27": "4403",
+        "27<=ZFCG<28": "4322",
+        "28<=ZFCG<29": "4242",
+        "29<=ZFCG<30": "4161",
+        "30<=ZFCG<38": "3515"
+      }
+    },
+    {
+      "zone": "ZB",
+      "group": "FWD_CANTILEVER",
+      "hArm": "17.965",
+      "cumulativeDirection": "FWD_TO_AFT",
+      "limits": {
+        "21<=ZFCG<22": "7089",
+        "22<=ZFCG<23": "6926",
+        "23<=ZFCG<23.5": "6845",
+        "23.5<=ZFCG<24": "6764",
+        "24<=ZFCG<24.5": "6683",
+        "24.5<=ZFCG<25": "6601",
+        "25<=ZFCG<26": "6439",
+        "26<=ZFCG<27": "6277",
+        "27<=ZFCG<28": "6114",
+        "28<=ZFCG<29": "5952",
+        "29<=ZFCG<30": "5790",
+        "30<=ZFCG<38": "4491"
+      }
+    },
+    {
+      "zone": "ZC",
+      "group": "FWD_CANTILEVER",
+      "hArm": "21.023",
+      "cumulativeDirection": "FWD_TO_AFT",
+      "limits": {
+        "21<=ZFCG<22": "11911",
+        "22<=ZFCG<23": "11607",
+        "23<=ZFCG<23.5": "11455",
+        "23.5<=ZFCG<24": "11303",
+        "24<=ZFCG<24.5": "11151",
+        "24.5<=ZFCG<25": "10999",
+        "25<=ZFCG<26": "10695",
+        "26<=ZFCG<27": "10391",
+        "27<=ZFCG<28": "10087",
+        "28<=ZFCG<29": "9783",
+        "29<=ZFCG<30": "9479",
+        "30<=ZFCG<38": "7047"
+      }
+    },
+    {
+      "zone": "ZD",
+      "group": "FWD_CANTILEVER",
+      "hArm": "22.893",
+      "cumulativeDirection": "FWD_TO_AFT",
+      "limits": {
+        "21<=ZFCG<22": "16479",
+        "22<=ZFCG<23": "16088",
+        "23<=ZFCG<23.5": "15893",
+        "23.5<=ZFCG<24": "15698",
+        "24<=ZFCG<24.5": "15502",
+        "24.5<=ZFCG<25": "15307",
+        "25<=ZFCG<26": "14916",
+        "26<=ZFCG<27": "14526",
+        "27<=ZFCG<28": "14135",
+        "28<=ZFCG<29": "13744",
+        "29<=ZFCG<30": "13354",
+        "30<=ZFCG<38": "10229"
+      }
+    },
+    {
+      "zone": "ZE",
+      "group": "FWD_CANTILEVER",
+      "hArm": "24.475",
+      "cumulativeDirection": "FWD_TO_AFT",
+      "limits": {
+        "21<=ZFCG<22": "20284",
+        "22<=ZFCG<23": "19821",
+        "23<=ZFCG<23.5": "19589",
+        "23.5<=ZFCG<24": "19357",
+        "24<=ZFCG<24.5": "19125",
+        "24.5<=ZFCG<25": "18893",
+        "25<=ZFCG<26": "18429",
+        "26<=ZFCG<27": "17965",
+        "27<=ZFCG<28": "17501",
+        "28<=ZFCG<29": "17037",
+        "29<=ZFCG<30": "16573",
+        "30<=ZFCG<38": "12862"
+      }
+    },
+    {
+      "zone": "ZF",
+      "group": "WING_BOX",
+      "hArm": null,
+      "cumulativeDirection": null,
+      "limits": null
+    },
+    {
+      "zone": "ZG",
+      "group": "WING_BOX",
+      "hArm": null,
+      "cumulativeDirection": null,
+      "limits": null
+    },
+    {
+      "zone": "ZH",
+      "group": "WING_BOX",
+      "hArm": null,
+      "cumulativeDirection": null,
+      "limits": null
+    },
+    {
+      "zone": "ZJ",
+      "group": "AFT_CANTILEVER",
+      "hArm": "32.732",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "28450",
+        "22<=ZFCG<23": "29014",
+        "23<=ZFCG<23.5": "29579",
+        "23.5<=ZFCG<24": "29861",
+        "24<=ZFCG<24.5": "30143",
+        "24.5<=ZFCG<25": "30425",
+        "25<=ZFCG<26": "30708",
+        "26<=ZFCG<27": "31272",
+        "27<=ZFCG<28": "31837",
+        "28<=ZFCG<29": "32401",
+        "29<=ZFCG<30": "32965",
+        "30<=ZFCG<38": "33530"
+      }
+    },
+    {
+      "zone": "ZK",
+      "group": "AFT_CANTILEVER",
+      "hArm": "34.993",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "26664",
+        "22<=ZFCG<23": "27228",
+        "23<=ZFCG<23.5": "27792",
+        "23.5<=ZFCG<24": "28075",
+        "24<=ZFCG<24.5": "28357",
+        "24.5<=ZFCG<25": "28639",
+        "25<=ZFCG<26": "28921",
+        "26<=ZFCG<27": "29486",
+        "27<=ZFCG<28": "30050",
+        "28<=ZFCG<29": "30615",
+        "29<=ZFCG<30": "31179",
+        "30<=ZFCG<38": "31743"
+      }
+    },
+    {
+      "zone": "ZL",
+      "group": "AFT_CANTILEVER",
+      "hArm": "38.419",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "22348",
+        "22<=ZFCG<23": "22811",
+        "23<=ZFCG<23.5": "23273",
+        "23.5<=ZFCG<24": "23504",
+        "24<=ZFCG<24.5": "23735",
+        "24.5<=ZFCG<25": "23966",
+        "25<=ZFCG<26": "24197",
+        "26<=ZFCG<27": "24660",
+        "27<=ZFCG<28": "25122",
+        "28<=ZFCG<29": "25584",
+        "29<=ZFCG<30": "26046",
+        "30<=ZFCG<38": "26509"
+      }
+    },
+    {
+      "zone": "ZM",
+      "group": "AFT_CANTILEVER",
+      "hArm": "40.002",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "20302",
+        "22<=ZFCG<23": "20691",
+        "23<=ZFCG<23.5": "21080",
+        "23.5<=ZFCG<24": "21274",
+        "24<=ZFCG<24.5": "21468",
+        "24.5<=ZFCG<25": "21663",
+        "25<=ZFCG<26": "21857",
+        "26<=ZFCG<27": "22246",
+        "27<=ZFCG<28": "22635",
+        "28<=ZFCG<29": "23024",
+        "29<=ZFCG<30": "23413",
+        "30<=ZFCG<38": "23802"
+      }
+    },
+    {
+      "zone": "ZP",
+      "group": "AFT_CANTILEVER",
+      "hArm": "41.979",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "17534",
+        "22<=ZFCG<23": "17831",
+        "23<=ZFCG<23.5": "18128",
+        "23.5<=ZFCG<24": "18277",
+        "24<=ZFCG<24.5": "18426",
+        "24.5<=ZFCG<25": "18574",
+        "25<=ZFCG<26": "18723",
+        "26<=ZFCG<27": "19020",
+        "27<=ZFCG<28": "19318",
+        "28<=ZFCG<29": "19615",
+        "29<=ZFCG<30": "19912",
+        "30<=ZFCG<38": "20209"
+      }
+    },
+    {
+      "zone": "ZR",
+      "group": "AFT_CANTILEVER",
+      "hArm": "45.144",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "12249",
+        "22<=ZFCG<23": "12400",
+        "23<=ZFCG<23.5": "12551",
+        "23.5<=ZFCG<24": "12626",
+        "24<=ZFCG<24.5": "12701",
+        "24.5<=ZFCG<25": "12777",
+        "25<=ZFCG<26": "12852",
+        "26<=ZFCG<27": "13003",
+        "27<=ZFCG<28": "13154",
+        "28<=ZFCG<29": "13304",
+        "29<=ZFCG<30": "13455",
+        "30<=ZFCG<38": "13606"
+      }
+    },
+    {
+      "zone": "ZS",
+      "group": "AFT_CANTILEVER",
+      "hArm": "46.987",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "9716",
+        "22<=ZFCG<23": "9802",
+        "23<=ZFCG<23.5": "9888",
+        "23.5<=ZFCG<24": "9931",
+        "24<=ZFCG<24.5": "9973",
+        "24.5<=ZFCG<25": "10016",
+        "25<=ZFCG<26": "10059",
+        "26<=ZFCG<27": "10145",
+        "27<=ZFCG<28": "10231",
+        "28<=ZFCG<29": "10316",
+        "29<=ZFCG<30": "10402",
+        "30<=ZFCG<38": "10488"
+      }
+    },
+    {
+      "zone": "ZT",
+      "group": "AFT_CANTILEVER",
+      "hArm": "49.369",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "6489",
+        "22<=ZFCG<23": "6518",
+        "23<=ZFCG<23.5": "6547",
+        "23.5<=ZFCG<24": "6562",
+        "24<=ZFCG<24.5": "6576",
+        "24.5<=ZFCG<25": "6591",
+        "25<=ZFCG<26": "6605",
+        "26<=ZFCG<27": "6634",
+        "27<=ZFCG<28": "6663",
+        "28<=ZFCG<29": "6693",
+        "29<=ZFCG<30": "6722",
+        "30<=ZFCG<38": "6751"
+      }
+    },
+    {
+      "zone": "ZU",
+      "group": "AFT_CANTILEVER",
+      "hArm": "51.833",
+      "cumulativeDirection": "AFT_TO_FWD",
+      "limits": {
+        "21<=ZFCG<22": "3739",
+        "22<=ZFCG<23": "3743",
+        "23<=ZFCG<23.5": "3747",
+        "23.5<=ZFCG<24": "3749",
+        "24<=ZFCG<24.5": "3751",
+        "24.5<=ZFCG<25": "3753",
+        "25<=ZFCG<26": "3755",
+        "26<=ZFCG<27": "3759",
+        "27<=ZFCG<28": "3763",
+        "28<=ZFCG<29": "3767",
+        "29<=ZFCG<30": "3771",
+        "30<=ZFCG<38": "3775"
+      }
+    }
+  ],
+  "notes": [
+    "FWD_CANTILEVER zones (ZA-ZE) cumulate nose-to-tail (ZA alone, ZB=ZA+ZB, ... ZE=ZA+...+ZE).",
+    "AFT_CANTILEVER zones (ZJ-ZU) cumulate tail-to-nose (ZU alone, ZT=ZU+ZT, ... ZJ=ZU+...+ZJ). Confirmed by Load&Trim Sheet Cumulative Load columns (AHM 560 s.72). See GROUND_TRUTH.md §21 Q2 - re-verify in Faz 3.",
+    "WING_BOX zones (ZF/ZG/ZH) have no printed limit (greyed out in source) - treated as unlimited.",
+    "Second table's first column header is printed as '25<=ZFCG<25' in the source (typo) - corrected here to '25<=ZFCG<26', consistent with the second column starting at 26. See docs/AHM560_ERRATA.md.",
+    "No table exists for ZFCG < 21 or ZFCG >= 38 - calculations outside this range must raise an error, not extrapolate."
+  ],
+  "source": {
+    "groundTruthRefs": [
+      "AHM 560 s.55-56 Sheet C-14 §9.1"
+    ]
+  }
+}

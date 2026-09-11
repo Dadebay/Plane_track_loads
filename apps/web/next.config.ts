@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  transpilePackages: ["@tua/ui", "@tua/wnb-core", "@tua/ahm-data", "@tua/documents", "@tua/messaging", "@tua/compare"],
+  transpilePackages: ["@tua/ui", "@tua/wnb-core", "@tua/ahm-data", "@tua/documents", "@tua/compare"],
   // @react-pdf/renderer's reconciler breaks if webpack bundles/minifies it
   // (loses internal state its reconciler depends on) — must be required
   // natively by Node instead. This only takes effect because

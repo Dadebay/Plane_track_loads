@@ -12,7 +12,7 @@
 // schema DSL has no native CHECK syntax.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   // "native" = whatever this machine is (macOS, for local dev) plus the
   // pilot server's Linux/glibc target — registry.npmjs.org and
   // binaries.prisma.sh are both unreachable from that server (SNI-based
@@ -68,6 +68,31 @@ enum UldStatus {
   LOST
 }
 
+/// Which tank an allocation row belongs to. INNER and OUTER are left/right
+/// pairs; CENTER and TRIM sit on the aircraft centreline — AHM 560
+/// Appendix I s.75, FUEL INDEX PER TANK TABLE, footnote (1).
+enum FuelTank {
+  INNER
+  OUTER
+  CENTER
+  TRIM
+}
+
+enum TankSide {
+  LEFT
+  RIGHT
+  CENTRE
+}
+
+/// How the tank distribution was produced. AUTOMATIC is not selectable yet:
+/// the approved AHM 560 publishes no refuelling schedule, so
+/// allocateFuelAutomatically() reports unavailable — see AHM560_ERRATA.md
+/// Kayıt 10 and wnb-core/src/fuel-tanks.ts.
+enum RefuelMode {
+  MANUAL
+  AUTOMATIC
+}
+
 enum UldCondition {
   SERVICEABLE
   DAMAGED
@@ -77,23 +102,12 @@ enum UldCondition {
 enum DocumentType {
   LIR
   LS
+  /// Loading Instruction / Report as a ramp working form: every position
+  /// printed with an ONLOAD line and a blank REPORT line to write back what
+  /// was actually loaded. Distinct from LIR, which is the finished record.
+  EDP
   ENV
   NOTOC
-}
-
-enum MessageType {
-  LDM
-  CPM
-  MVT
-  FFM
-  FBL
-}
-
-enum OutgoingMessageStatus {
-  PENDING
-  RETRYING
-  SENT
-  FAILED
 }
 
 // ---------------------------------------------------------------------------
@@ -113,13 +127,13 @@ model User {
   stationId String?
   station   Station? @relation(fields: [stationId], references: [id])
 
-  createdLoadPlans   LoadPlan[]        @relation("LoadPlanCreatedBy")
-  preparedDocuments  Document[]        @relation("DocumentPreparedBy")
-  checkedDocuments   Document[]        @relation("DocumentCheckedBy")
-  approvedDocuments  Document[]        @relation("DocumentApprovedBy")
+  createdLoadPlans   LoadPlan[]    @relation("LoadPlanCreatedBy")
+  preparedDocuments  Document[]    @relation("DocumentPreparedBy")
+  checkedDocuments   Document[]    @relation("DocumentCheckedBy")
+  approvedDocuments  Document[]    @relation("DocumentApprovedBy")
   auditLogs          AuditLog[]
   uldMovements       UldMovement[]
-  sentMessages       OutgoingMessage[] @relation("MessageCreatedBy")
+  offloadedLoadItems LoadItem[]    @relation("LoadItemOffloadedBy")
 
   @@map("users")
 }
@@ -130,13 +144,18 @@ model Station {
   icao     String @unique
   name     String
   timezone String
+  /// Shown as the second line of the station picker, the way a controller
+  /// disambiguates two airports with similar names. Nullable: a station can
+  /// be registered from its codes alone.
+  city     String?
+  country  String?
 
-  users              User[]
-  legsFrom           FlightLeg[]   @relation("LegFromStation")
-  legsTo             FlightLeg[]   @relation("LegToStation")
-  uldsAssigned       Uld[]         @relation("UldAssignedStation")
-  uldsCurrent        Uld[]         @relation("UldCurrentStation")
-  uldMovements       UldMovement[]
+  users        User[]
+  legsFrom     FlightLeg[]   @relation("LegFromStation")
+  legsTo       FlightLeg[]   @relation("LegToStation")
+  uldsAssigned Uld[]         @relation("UldAssignedStation")
+  uldsCurrent  Uld[]         @relation("UldCurrentStation")
+  uldMovements UldMovement[]
 
   @@map("stations")
 }
@@ -145,6 +164,11 @@ model Aircraft {
   id           String  @id @default(cuid())
   registration String  @unique
   type         String
+  /// IATA aircraft type code shown in the flight list's TYPE column
+  /// (e.g. "332" for an A330-200). Display only — it never reaches a
+  /// calculation, and `ahmDataRef` remains what selects the AHM data set.
+  /// Nullable: an aircraft can be registered before its code is known.
+  iataTypeCode String?
   msn          String?
   /// Default AHM data reference, e.g. "a330-243p2f/ed1-rev0" — a display
   /// convenience, not a foreign key. The AHM revision actually used for a
@@ -170,6 +194,7 @@ model AhmDocument {
   approvedBy    String
 
   wnbCalculations WnbCalculation[]
+  loadPlans       LoadPlan[]
 
   @@unique([aircraftType, edition, revision])
   @@map("ahm_documents")
@@ -191,8 +216,8 @@ model Flight {
 
   legs FlightLeg[]
 
-  uldsCurrent   Uld[]         @relation("UldCurrentFlight")
-  uldMovements  UldMovement[] @relation("UldMovementFlight")
+  uldsCurrent  Uld[]         @relation("UldCurrentFlight")
+  uldMovements UldMovement[] @relation("UldMovementFlight")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -202,16 +227,16 @@ model Flight {
 }
 
 model FlightLeg {
-  id      String @id @default(cuid())
-  seq     Int
-  via     String?
-  stdDep  DateTime
-  staArr  DateTime
-  etdDep  DateTime?
-  atdDep  DateTime?
+  id     String    @id @default(cuid())
+  seq    Int
+  via    String?
+  stdDep DateTime
+  staArr DateTime
+  etdDep DateTime?
+  atdDep DateTime?
   /// Actual time of arrival — MVT ARR event (AHM 011/780). No `etaArr`
   /// counterpart exists yet; only actual movement events are tracked.
-  ataArr  DateTime?
+  ataArr DateTime?
 
   flightId String
   flight   Flight @relation(fields: [flightId], references: [id])
@@ -221,11 +246,10 @@ model FlightLeg {
   toStationId   String
   toStation     Station @relation("LegToStation", fields: [toStationId], references: [id])
 
-  loadPlans        LoadPlan[]
-  fuelRecord       FuelRecord?
-  wnbCalculations  WnbCalculation[]
-  documents        Document[]
-  outgoingMessages OutgoingMessage[]
+  loadPlans       LoadPlan[]
+  fuelRecord      FuelRecord?
+  wnbCalculations WnbCalculation[]
+  documents       Document[]
 
   @@unique([flightId, seq])
   @@map("flight_legs")
@@ -252,6 +276,13 @@ model LoadPlan {
   cockpitCrew Int?
   courierCrew Int?
 
+  /// The exact AHM edition/revision this plan was built against. Without it
+  /// a finalized result cannot be reconstructed: the same load produces a
+  /// different DOW/DOI under Ed.1 Rev.0 than under Rev.2. Nullable only for
+  /// drafts created before this column existed.
+  ahmDocumentId String?
+  ahmDocument   AhmDocument? @relation(fields: [ahmDocumentId], references: [id])
+
   loadItems LoadItem[]
 
   createdAt DateTime @default(now())
@@ -262,7 +293,7 @@ model LoadPlan {
 }
 
 model LoadItem {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   position    String
   /// Disambiguates position codes that AHM 560 lists with more than one
   /// ULD-size variant (e.g. "12P" as PALLET_88x125 or PALLET_96x125,
@@ -273,26 +304,50 @@ model LoadItem {
   uldType     String?
   uldCode     String?
   awb         String?
-  weight      Decimal @db.Decimal(10, 1)
+  /// GROSS weight — tare plus net. This is the only weight W&B and the
+  /// documents ever consume (AHM 560 works in gross ULD weights), so the
+  /// column keeps its original name rather than being renamed under the
+  /// running system. `tareWeight` and `netWeight` below decompose it.
+  weight      Decimal  @db.Decimal(10, 1)
+  /// Empty weight of the ULD itself, from uld-types.json. Null for loose
+  /// load and for rows entered before the breakdown existed.
+  tareWeight  Decimal? @db.Decimal(10, 1)
+  /// Payload inside the ULD. A CHECK constraint in the migration enforces
+  /// weight = tareWeight + netWeight whenever both are present.
+  netWeight   Decimal? @db.Decimal(10, 1)
   contentCode String?
   deck        Deck
+
+  /// The inventory ULD physically in this position, when one was picked
+  /// from the ULD list rather than typed free-hand. Restrict on delete: an
+  /// assigned ULD must be offloaded, never deleted out from under a plan.
+  uldId String?
+  uld   Uld?    @relation(fields: [uldId], references: [id])
+
+  /// Set by the audited offload action instead of deleting the row, so the
+  /// plan keeps a record that this ULD was here and was taken off.
+  offloadedAt   DateTime?
+  offloadedById String?
+  offloadedBy   User?     @relation("LoadItemOffloadedBy", fields: [offloadedById], references: [id])
+  offloadReason String?
 
   loadPlanId String
   loadPlan   LoadPlan @relation(fields: [loadPlanId], references: [id])
 
   @@index([loadPlanId])
+  @@index([uldId])
   @@map("load_items")
 }
 
 model Uld {
-  id             String       @id @default(cuid())
-  code           String       @unique
-  typeCode       String
-  serial         String?
-  ownerCode      String?
-  status         UldStatus    @default(AVAILABLE)
-  condition      UldCondition @default(SERVICEABLE)
-  baseplateCode  String?
+  id            String       @id @default(cuid())
+  code          String       @unique
+  typeCode      String
+  serial        String?
+  ownerCode     String?
+  status        UldStatus    @default(AVAILABLE)
+  condition     UldCondition @default(SERVICEABLE)
+  baseplateCode String?
 
   assignedStationId String?
   assignedStation   Station? @relation("UldAssignedStation", fields: [assignedStationId], references: [id])
@@ -304,6 +359,7 @@ model Uld {
   currentFlight     Flight?  @relation("UldCurrentFlight", fields: [currentFlightId], references: [id])
 
   movements UldMovement[]
+  loadItems LoadItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -315,35 +371,61 @@ model Uld {
 /// zaman". Append-only log; Uld.currentStationId/currentFlightId are
 /// denormalized snapshots of the latest movement for fast list queries.
 model UldMovement {
-  id     String @id @default(cuid())
-  uldId  String
-  uld    Uld    @relation(fields: [uldId], references: [id])
+  id    String @id @default(cuid())
+  uldId String
+  uld   Uld    @relation(fields: [uldId], references: [id])
 
   stationId String
   station   Station @relation(fields: [stationId], references: [id])
   flightId  String?
   flight    Flight? @relation("UldMovementFlight", fields: [flightId], references: [id])
 
-  note        String?
-  recordedAt  DateTime @default(now())
+  note         String?
+  recordedAt   DateTime @default(now())
   recordedById String?
-  recordedBy   User?   @relation(fields: [recordedById], references: [id])
+  recordedBy   User?    @relation(fields: [recordedById], references: [id])
 
   @@index([uldId, recordedAt])
   @@map("uld_movements")
 }
 
 model FuelRecord {
-  id           String  @id @default(cuid())
-  density      Decimal @db.Decimal(5, 3)
-  takeoffFuel  Decimal @db.Decimal(10, 1)
-  tripFuel     Decimal @db.Decimal(10, 1)
-  taxiFuel     Decimal @db.Decimal(10, 1)
+  id          String  @id @default(cuid())
+  density     Decimal @db.Decimal(5, 3)
+  takeoffFuel Decimal @db.Decimal(10, 1)
+  tripFuel    Decimal @db.Decimal(10, 1)
+  taxiFuel    Decimal @db.Decimal(10, 1)
+
+  /// Ramp/block fuel is takeoffFuel + taxiFuel and is therefore derived,
+  /// not stored — one number, one place.
+  refuelMode RefuelMode @default(MANUAL)
+
+  allocations FuelTankAllocation[]
 
   legId String    @unique
   leg   FlightLeg @relation(fields: [legId], references: [id])
 
   @@map("fuel_records")
+}
+
+/// One tank's share of the takeoff fuel. The rows must sum exactly to
+/// FuelRecord.takeoffFuel — validated by wnb-core's validateTankAllocation()
+/// in Decimal, and re-validated server-side before finalization.
+///
+/// Storing the distribution (rather than only the total) is what makes a
+/// finalized calculation reconstructable: the same total in different tanks
+/// is a different index and a different lateral moment.
+model FuelTankAllocation {
+  id     String   @id @default(cuid())
+  tank   FuelTank
+  side   TankSide
+  weight Decimal  @db.Decimal(10, 1)
+
+  fuelRecordId String
+  fuelRecord   FuelRecord @relation(fields: [fuelRecordId], references: [id], onDelete: Cascade)
+
+  @@unique([fuelRecordId, tank, side])
+  @@map("fuel_tank_allocations")
 }
 
 // ---------------------------------------------------------------------------
@@ -356,6 +438,13 @@ model WnbCalculation {
   id           String   @id @default(cuid())
   edition      Int
   inputHash    String
+  /// The complete WnbInput this row was produced from — load items with
+  /// tare/net/gross, fuel record with its tank allocations, crew counts and
+  /// the AHM edition/revision. `resultJson` alone cannot be re-derived;
+  /// with this, the run can be replayed byte for byte. Nullable only for
+  /// rows written before this column existed; the table is INSERT-only so
+  /// they can never be backfilled.
+  inputJson    Json?
   resultJson   Json
   calculatedAt DateTime @default(now())
 
@@ -384,11 +473,11 @@ model Document {
   leg   FlightLeg @relation(fields: [legId], references: [id])
 
   preparedById String
-  preparedBy   User   @relation("DocumentPreparedBy", fields: [preparedById], references: [id])
+  preparedBy   User    @relation("DocumentPreparedBy", fields: [preparedById], references: [id])
   checkedById  String
-  checkedBy    User   @relation("DocumentCheckedBy", fields: [checkedById], references: [id])
+  checkedBy    User    @relation("DocumentCheckedBy", fields: [checkedById], references: [id])
   approvedById String?
-  approvedBy   User?  @relation("DocumentApprovedBy", fields: [approvedById], references: [id])
+  approvedBy   User?   @relation("DocumentApprovedBy", fields: [approvedById], references: [id])
 
   @@index([legId, type, edition])
   @@map("documents")
@@ -396,50 +485,6 @@ model Document {
 
 /// Faz 13 — which SITA/email address receives which message type.
 /// @tua/messaging's address-book.ts validates the sita/email shape; this
-/// table is just the persistence @tua/messaging deliberately has none of
-/// (CLAUDE.md rule #1's framework-independence, applied package-wide).
-model MessageAddress {
-  id          String      @id @default(cuid())
-  messageType MessageType
-  label       String
-  sita        String?
-  email       String?
-  active      Boolean     @default(true)
-
-  outgoingMessages OutgoingMessage[]
-
-  @@map("message_addresses")
-}
-
-/// Faz 13 — one row per LDM/CPM/MVT/FFM/FBL send attempt. Unlike
-/// Document/WnbCalculation this is NOT insert-only: status/attempts move
-/// PENDING -> RETRYING -> SENT|FAILED as @tua/messaging's queue.ts state
-/// machine (sendWithRetry) advances it — it's operational job-queue state,
-/// not a generated artifact, so CLAUDE.md rule #5 doesn't apply here.
-model OutgoingMessage {
-  id            String                @id @default(cuid())
-  messageType   MessageType
-  body          String
-  status        OutgoingMessageStatus @default(PENDING)
-  attempts      Int                   @default(0)
-  lastError     String?
-  createdAt     DateTime              @default(now())
-  nextAttemptAt DateTime?
-  sentAt        DateTime?
-
-  legId String
-  leg   FlightLeg @relation(fields: [legId], references: [id])
-
-  addressId String
-  address   MessageAddress @relation(fields: [addressId], references: [id])
-
-  createdById String
-  createdBy   User   @relation("MessageCreatedBy", fields: [createdById], references: [id])
-
-  @@index([legId, messageType])
-  @@map("outgoing_messages")
-}
-
 /// Append-only audit trail, written automatically by a Prisma client
 /// extension (packages/db/src/audit.ts) on every create/update/delete.
 model AuditLog {

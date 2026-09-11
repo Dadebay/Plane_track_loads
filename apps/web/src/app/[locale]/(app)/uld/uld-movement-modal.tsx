@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { getUldMovements, recordUldMovement, type UldMovementRow } from "./actions";
 import type { StationOption } from "./uld-form-modal";
+import { formatDateTimeInZone } from "@/lib/format-date";
 
 export interface FlightOption {
   id: string;
@@ -32,7 +33,6 @@ export function UldMovementModal({
 }) {
   const t = useTranslations("uld.movement");
   const tCommon = useTranslations("common");
-  const locale = useLocale();
 
   const [movements, setMovements] = useState<UldMovementRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -132,15 +132,7 @@ export function UldMovementModal({
                       {m.stationIata}
                       {m.flightNo ? ` · ${m.flightNo}` : ""}
                     </span>
-                    <span className="text-xs text-fg-subtle">
-                      {new Intl.DateTimeFormat(locale, {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }).format(new Date(m.recordedAt))}
-                    </span>
+                    <span className="text-xs text-fg-subtle">{formatDateTimeInZone(new Date(m.recordedAt))}</span>
                   </div>
                   {m.note ? <span className="text-fg-subtle">{m.note}</span> : null}
                   {m.recordedByName ? (

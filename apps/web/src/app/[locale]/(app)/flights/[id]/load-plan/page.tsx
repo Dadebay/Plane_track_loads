@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { db } from "@tua/db";
 import { getLoadPlanAhmData } from "@/lib/load-plan-ahm";
+import { formatDateTimeInZone } from "@/lib/format-date";
 import type { LoadDraftInit } from "./load-draft-store";
 import { LoadPlanShell } from "./load-plan-shell";
 
@@ -14,12 +15,12 @@ export default async function LoadPlanPage({ params }: { params: Promise<{ id: s
       fromStation: true,
       toStation: true,
       loadPlans: { orderBy: { version: "desc" }, take: 1, include: { loadItems: true } },
-      fuelRecord: true,
+      fuelRecord: { include: { allocations: true } },
     },
   });
   if (!leg) notFound();
 
-  const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef);
+  const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef, leg.flight.aircraft.registration);
 
   const latestPlan = leg.loadPlans[0] ?? null;
 
@@ -27,6 +28,8 @@ export default async function LoadPlanPage({ params }: { params: Promise<{ id: s
     items: (latestPlan?.loadItems ?? []).map((li) => ({
       position: li.position,
       weight: li.weight.toString(),
+      tareWeight: li.tareWeight?.toString(),
+      netWeight: li.netWeight?.toString(),
       uldCode: li.uldCode ?? undefined,
       awb: li.awb ?? undefined,
       contentCode: li.contentCode ?? undefined,
@@ -40,9 +43,20 @@ export default async function LoadPlanPage({ params }: { params: Promise<{ id: s
           taxiFuel: leg.fuelRecord.taxiFuel.toString(),
         }
       : { density: "0.785", takeoffFuel: "0", tripFuel: "0", taxiFuel: "0" },
+    fuelAllocations: (leg.fuelRecord?.allocations ?? []).map((a) => ({
+      tank: a.tank,
+      side: a.side,
+      weight: a.weight.toString(),
+    })),
     cockpitCrew: latestPlan?.cockpitCrew ?? null,
     courierCrew: latestPlan?.courierCrew ?? null,
   };
+
+  // Formatted here, in the departure station's zone, rather than in the
+  // client: a date rendered from the browser's own zone would differ from
+  // the server's first paint and break hydration (the same failure the
+  // flights list had with weekday names).
+  const [stdDepDate, stdDepTime] = formatDateTimeInZone(leg.stdDep, leg.fromStation.timezone).split(", ");
 
   return (
     <LoadPlanShell
@@ -51,6 +65,8 @@ export default async function LoadPlanPage({ params }: { params: Promise<{ id: s
       registration={leg.flight.aircraft.registration}
       fromIata={leg.fromStation.iata}
       toIata={leg.toStation.iata}
+      stdDepDate={stdDepDate ?? ""}
+      stdDepTime={stdDepTime ?? ""}
       ahmData={ahmData}
       initialDraft={initialDraft}
       planVersion={latestPlan?.version ?? 0}

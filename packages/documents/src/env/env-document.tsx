@@ -10,296 +10,475 @@ import {
   Polyline,
   Circle,
   Rect,
-  Polygon,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { chrome, Watermark } from "../shared/chrome";
+import { AirlineLogo } from "../shared/logo";
+import { COLOR, FONT, RULE } from "../shared/tokens";
 import type { EnvCgPoint, EnvInput, EnvPlottedPoint } from "./types";
 
-// Chart-scale bounds — a presentation choice (how much of the index/weight
-// plane to draw), not an AHM 560 data value, so it isn't sourced from
-// cg-limits.json (CLAUDE.md rule #3 concerns AHM *limits*, not the axis
-// zoom level chosen to keep those limits legible). Matches the plan spec's
-// own fixed range (docs/IMPLEMENTATION_PLAN.md Faz 11).
-const INDEX_MIN = 40;
-const INDEX_MAX = 200;
-const WEIGHT_MIN = 110000;
-const WEIGHT_MAX = 240000;
+/**
+ * CG ENVELOPE.
+ *
+ * Laid out to match the sheet the crew already reads: a boxed header table
+ * (station / flight / date / aircraft / signatures / edition), the document
+ * title, a boxed legend, then the chart in its own frame. The rest of our
+ * documents use the shared `DocumentBand`; this one does not, because the
+ * envelope is the page the crew compares against the previous provider's
+ * print most often and a matching layout is what makes that comparison
+ * quick.
+ *
+ * Two deliberate differences from that reference sheet:
+ *
+ * - Its own header table overflows the page and clips the ED NO column
+ *   (Bulgu #6). Ours is a flex row, so the last column always fits.
+ * - The NOT FOR OPERATIONAL USE watermark stays until validation completes
+ *   (CLAUDE.md rule #8), and an out-of-envelope point still prints its
+ *   warning band. Neither appears on the reference sheet.
+ */
 
-const CHART_X = 60;
-const CHART_Y = 20;
-const CHART_W = 460;
-const CHART_H = 380;
+/** Chart frame and plot box, in PDF points. Pure layout: every data bound
+ * comes from `input.extent` (@tua/wnb-core), so no axis value is fixed here
+ * and no curve can fall off the chart when a revision moves a breakpoint. */
+const FRAME = { w: 392, h: 344 } as const;
 
-function xForIndex(index: number): number {
-  return CHART_X + ((index - INDEX_MIN) / (INDEX_MAX - INDEX_MIN)) * CHART_W;
+/** Type sizes for this sheet only. The rest of our documents take them from
+ * `FONT`; the envelope is set a little larger because it is read at arm's
+ * length next to the chart, and because it mirrors the sheet the crew
+ * already compares it against. */
+const ENV_FONT = { headerLabel: 8, headerValue: 9, title: 10.5, legend: 7.5, tick: 6.8 } as const;
+
+/** The chart grid is an aid to reading a point off the axes, not content.
+ * `COLOR.grid` (used by the dense position tables) is too strong here — it
+ * competed with the limit curves — so the envelope uses a lighter rule. */
+const GRID_COLOR = "#e8e8e8";
+const PLOT = { x: 40, y: 14, w: 330, h: 292 } as const;
+
+function scaler(extent: EnvInput["extent"]) {
+  const indexMin = Number(extent.indexMin);
+  const indexMax = Number(extent.indexMax);
+  const weightMin = Number(extent.weightMin);
+  const weightMax = Number(extent.weightMax);
+
+  return {
+    x: (index: number) => PLOT.x + ((index - indexMin) / (indexMax - indexMin)) * PLOT.w,
+    y: (weight: number) => PLOT.y + PLOT.h - ((weight - weightMin) / (weightMax - weightMin)) * PLOT.h,
+  };
 }
-function yForWeight(weight: number): number {
-  return CHART_Y + CHART_H - ((weight - WEIGHT_MIN) / (WEIGHT_MAX - WEIGHT_MIN)) * CHART_H;
-}
 
-function starPoints(cx: number, cy: number, outerR: number, innerR: number): string {
-  const points: string[] = [];
-  for (let i = 0; i < 10; i++) {
-    const r = i % 2 === 0 ? outerR : innerR;
-    const angle = (Math.PI / 5) * i - Math.PI / 2;
-    points.push(`${(cx + r * Math.cos(angle)).toFixed(2)},${(cy + r * Math.sin(angle)).toFixed(2)}`);
-  }
-  return points.join(" ");
+/** The reference marks take-off CG with an eight-armed asterisk rather than
+ * a filled star; drawn as strokes so it reads the same at print size. */
+function asteriskArms(cx: number, cy: number, r: number): [number, number, number, number][] {
+  return Array.from({ length: 4 }, (_, i) => {
+    const angle = (Math.PI / 4) * i;
+    const dx = r * Math.cos(angle);
+    const dy = r * Math.sin(angle);
+    return [cx - dx, cy - dy, cx + dx, cy + dy] as [number, number, number, number];
+  });
 }
 
 const styles = StyleSheet.create({
-  page: { padding: 24, fontSize: 8, fontFamily: "Helvetica" },
-  title: { fontSize: 14, fontWeight: 700, marginBottom: 8 },
-  headerGrid: {
+  headerTable: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    rowGap: 4,
-    columnGap: 4,
-    marginBottom: 10,
-    borderTop: 1,
-    borderColor: "#999999",
-    paddingTop: 6,
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.ink,
   },
-  headerField: { width: "23%", flexDirection: "column" },
-  headerLabel: { fontSize: 6.5, color: "#555555" },
-  headerValue: { fontSize: 8.5, fontWeight: 700 },
-  chartWrap: { alignItems: "center" },
-  warningBox: {
+  logoCell: {
+    flex: 102,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+  },
+  headerFields: { flex: 543, flexDirection: "column" },
+  headerRow: { flexDirection: "row" },
+  headerLabelRow: { backgroundColor: COLOR.fill },
+  headerDivider: { borderTopWidth: RULE.hairline, borderTopStyle: "solid", borderTopColor: COLOR.ink },
+  headerCell: {
+    borderLeftWidth: RULE.hairline,
+    borderLeftStyle: "solid",
+    borderLeftColor: COLOR.ink,
+    paddingVertical: 3,
+    paddingHorizontal: 2,
+    justifyContent: "center",
+  },
+  headerLabel: { fontSize: ENV_FONT.headerLabel, fontWeight: 700, textAlign: "center" },
+  headerValue: { fontSize: ENV_FONT.headerValue, textAlign: "center" },
+
+  title: {
+    fontSize: ENV_FONT.title,
+    fontWeight: 700,
+    textAlign: "center",
+    letterSpacing: 1.1,
+    marginTop: 9,
+    marginBottom: 7,
+  },
+  titleRule: { borderTopWidth: RULE.hairline, borderTopStyle: "solid", borderTopColor: COLOR.ink },
+
+  legend: {
     marginTop: 6,
-    marginBottom: 6,
-    border: 1,
-    borderColor: "#cc0000",
-    backgroundColor: "#fdeaea",
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.grid,
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+  },
+  legendRow: { flexDirection: "row", justifyContent: "center", gap: 14 },
+  legendItem: { flexDirection: "row", alignItems: "center", gap: 3 },
+  legendLabel: { fontSize: ENV_FONT.legend },
+
+  chartWrap: { marginTop: 14, alignItems: "center" },
+  chartFrame: {
+    borderWidth: 1.2,
+    borderStyle: "solid",
+    borderColor: COLOR.ink,
     padding: 6,
   },
-  warningText: { fontSize: 9, fontWeight: 700, color: "#cc0000" },
-  legend: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 10, justifyContent: "center" },
-  legendItem: { flexDirection: "row", alignItems: "center", gap: 3 },
-  legendLabel: { fontSize: 7 },
-  siBox: { marginTop: 10, border: 1, borderColor: "#999999", padding: 6, minHeight: 30 },
-  siLabel: { fontSize: 7, fontWeight: 700, marginBottom: 3 },
-  watermark: {
-    position: "absolute",
-    top: "45%",
-    left: "10%",
-    fontSize: 40,
-    color: "#cc0000",
-    opacity: 0.25,
-    transform: "rotate(-30deg)",
+
+  warningBox: {
+    marginTop: 6,
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.danger,
+    backgroundColor: COLOR.dangerFill,
+    padding: 5,
   },
+  warningText: { fontSize: FONT.label, fontWeight: 700, color: COLOR.danger },
 });
 
-function HeaderField({ label, value }: { label: string; value: string }) {
+type Scale = ReturnType<typeof scaler>;
+
+/** Station / flight / date / aircraft / signatures / edition, boxed. */
+function HeaderTable({ header }: { header: EnvInput["header"] }) {
+  const columns: { label: string; value: string; flex: number }[] = [
+    { label: "STATION", value: header.station, flex: 64 },
+    { label: "FLIGHT", value: header.flightNo, flex: 62 },
+    { label: "DATE", value: header.date, flex: 83 },
+    { label: "A/C", value: header.registration, flex: 64 },
+    { label: "Prepared by", value: header.preparedBy, flex: 66 },
+    { label: "Approved by", value: header.checkedBy, flex: 66 },
+    { label: "ED NO", value: header.editionNo, flex: 38 },
+  ];
+
   return (
-    <View style={styles.headerField}>
-      <Text style={styles.headerLabel}>{label}</Text>
-      <Text style={styles.headerValue}>{value}</Text>
+    <View style={styles.headerTable}>
+      <View style={styles.logoCell}>
+        <AirlineLogo height={26} />
+      </View>
+      <View style={styles.headerFields}>
+        <View style={[styles.headerRow, styles.headerLabelRow]}>
+          {columns.map((column) => (
+            <View key={column.label} style={[styles.headerCell, { flex: column.flex }]}>
+              <Text style={styles.headerLabel}>{column.label}</Text>
+            </View>
+          ))}
+        </View>
+        <View style={[styles.headerRow, styles.headerDivider]}>
+          {columns.map((column) => (
+            <View key={column.label} style={[styles.headerCell, { flex: column.flex }]}>
+              <Text style={styles.headerValue}>{column.value}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
     </View>
   );
 }
 
-function CurveLine({ points, color, dashed }: { points: EnvCgPoint[]; color: string; dashed?: boolean }) {
-  const sorted = [...points].sort((a, b) => Number(a.weight) - Number(b.weight));
-  const coords = sorted.map((p) => `${xForIndex(Number(p.index))},${yForWeight(Number(p.weight))}`).join(" ");
+/**
+ * One limit curve, drawn closed.
+ *
+ * AHM 560 publishes a forward and an aft breakpoint list; the envelope they
+ * describe is the area between them, bounded at the table's lowest and
+ * highest weight. Forward is walked up, aft is walked back down, and the
+ * outline is closed. No breakpoint is invented: the closing segments join
+ * existing endpoints at the same weight.
+ */
+function CurveOutline({
+  curve,
+  color,
+  dashed,
+  scale,
+}: {
+  curve: { forward: EnvCgPoint[]; aft: EnvCgPoint[] };
+  color: string;
+  dashed?: boolean;
+  scale: Scale;
+}) {
+  const byWeight = (points: EnvCgPoint[]) => [...points].sort((a, b) => Number(a.weight) - Number(b.weight));
+  const forward = byWeight(curve.forward);
+  const aft = byWeight(curve.aft).reverse();
+  const outline = [...forward, ...aft, forward[0]].filter((p): p is EnvCgPoint => Boolean(p));
+  if (outline.length < 3) return null;
+
+  const coords = outline.map((p) => `${scale.x(Number(p.index))},${scale.y(Number(p.weight))}`).join(" ");
   return (
     <Polyline
       points={coords}
       stroke={color}
-      strokeWidth={1.5}
+      strokeWidth={1.2}
       fill="none"
-      strokeDasharray={dashed ? "4,3" : undefined}
+      strokeDasharray={dashed ? "5,3" : undefined}
     />
   );
 }
 
-function PointMarker({ point, shape, color }: { point: EnvPlottedPoint; shape: "circle" | "star" | "square"; color: string }) {
-  const cx = xForIndex(Number(point.index));
-  const cy = yForWeight(Number(point.weight));
-  const markColor = point.withinEnvelope ? color : "#cc0000";
+function PointMarker({
+  point,
+  shape,
+  color,
+  scale,
+}: {
+  point: EnvPlottedPoint;
+  shape: "circle" | "asterisk" | "square";
+  color: string;
+  scale: Scale;
+}) {
+  const cx = scale.x(Number(point.index));
+  const cy = scale.y(Number(point.weight));
+  // An out-of-envelope point is printed in the danger colour whatever its
+  // legend colour: the reader must not have to compare coordinates to see it.
+  const markColor = point.withinEnvelope ? color : COLOR.danger;
 
-  if (shape === "circle") {
-    return <Circle cx={cx} cy={cy} r={4} fill={markColor} />;
-  }
-  if (shape === "square") {
-    return <Rect x={cx - 3.5} y={cy - 3.5} width={7} height={7} fill={markColor} />;
-  }
-  return <Polygon points={starPoints(cx, cy, 6, 2.6)} fill={markColor} />;
+  if (shape === "circle") return <Circle cx={cx} cy={cy} r={3.4} fill={markColor} />;
+  if (shape === "square") return <Rect x={cx - 3} y={cy - 3} width={6} height={6} fill={markColor} />;
+  return (
+    <G>
+      {asteriskArms(cx, cy, 4.6).map(([x1, y1, x2, y2]) => (
+        <Line key={`${x1}-${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={markColor} strokeWidth={1.3} />
+      ))}
+    </G>
+  );
 }
 
-function LegendSwatch({ shape, color }: { shape: "line" | "dashed-line" | "circle" | "star" | "square" | "hline-red" | "hline-black"; color: string }) {
-  if (shape === "line" || shape === "dashed-line" || shape === "hline-red" || shape === "hline-black") {
+function LegendSwatch({ shape, color }: { shape: LegendShape; color: string }) {
+  if (shape === "line" || shape === "dashed-line") {
     return (
-      <Svg width={16} height={8}>
+      <Svg width={22} height={8}>
         <Line
           x1={0}
           y1={4}
-          x2={16}
+          x2={22}
           y2={4}
           stroke={color}
-          strokeWidth={1.5}
-          strokeDasharray={shape === "dashed-line" ? "4,3" : undefined}
+          strokeWidth={1.4}
+          strokeDasharray={shape === "dashed-line" ? "5,3" : undefined}
         />
       </Svg>
     );
   }
   return (
     <Svg width={10} height={10}>
-      {shape === "circle" ? <Circle cx={5} cy={5} r={4} fill={color} /> : null}
-      {shape === "square" ? <Rect x={1.5} y={1.5} width={7} height={7} fill={color} /> : null}
-      {shape === "star" ? <Polygon points={starPoints(5, 5, 5, 2.2)} fill={color} /> : null}
+      {shape === "circle" ? <Circle cx={5} cy={5} r={3.4} fill={color} /> : null}
+      {shape === "square" ? <Rect x={1.6} y={1.6} width={6.8} height={6.8} fill={color} /> : null}
+      {shape === "asterisk" ? (
+        <G>
+          {asteriskArms(5, 5, 4.4).map(([x1, y1, x2, y2]) => (
+            <Line key={`${x1}-${y1}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth={1.3} />
+          ))}
+        </G>
+      ) : null}
     </Svg>
   );
 }
 
-function Legend({ hasCorrected }: { hasCorrected: boolean }) {
-  const items: { shape: Parameters<typeof LegendSwatch>[0]["shape"]; color: string; label: string }[] = [
-    { shape: "dashed-line", color: "#1d4ed8", label: "TAKE OFF LIMITS" },
-    { shape: "line", color: "#15803d", label: "ZERO FUEL LIMITS" },
-    { shape: "hline-red", color: "#cc0000", label: "LANDING LIMIT (MLW)" },
-    { shape: "hline-black", color: "#111111", label: "MIN WEIGHT" },
-    { shape: "circle", color: "#15803d", label: "ZERO FUEL CG" },
-    { shape: "star", color: "#1d4ed8", label: "TAKE OFF CG" },
+type LegendShape = "line" | "dashed-line" | "circle" | "asterisk" | "square";
+
+/** Seven entries on two centred rows, as the crew's sheet prints them. The
+ * corrected-ZFCG entry is always listed, so the key reads the same whether
+ * or not this flight had an LMC. */
+function Legend() {
+  const rows: { shape: LegendShape; color: string; label: string }[][] = [
+    [
+      { shape: "dashed-line", color: COLOR.takeoff, label: "Take off limits" },
+      { shape: "line", color: COLOR.forward, label: "Zero fuel limits" },
+      { shape: "line", color: COLOR.danger, label: "Landing limits" },
+      { shape: "line", color: COLOR.ink, label: "Min. weight limit" },
+      { shape: "circle", color: COLOR.forward, label: "Zero fuel CG" },
+      { shape: "asterisk", color: COLOR.takeoff, label: "Take off CG" },
+    ],
+    [{ shape: "square", color: COLOR.corrected, label: "Zero fuel CG (corrected)" }],
   ];
-  if (hasCorrected) items.push({ shape: "square", color: "#7e22ce", label: "ZERO FUEL CG (CORRECTED)" });
 
   return (
     <View style={styles.legend}>
-      {items.map((item) => (
-        <View key={item.label} style={styles.legendItem}>
-          <LegendSwatch shape={item.shape} color={item.color} />
-          <Text style={styles.legendLabel}>{item.label}</Text>
+      {rows.map((row, i) => (
+        <View key={row[0]!.label} style={[styles.legendRow, i > 0 ? { marginTop: 3 } : {}]}>
+          {row.map((item) => (
+            <View key={item.label} style={styles.legendItem}>
+              <LegendSwatch shape={item.shape} color={item.color} />
+              <Text style={styles.legendLabel}>{item.label}</Text>
+            </View>
+          ))}
         </View>
       ))}
     </View>
   );
 }
 
+/** Index of a breakpoint list at `weight`, linearly interpolated between the
+ * two breakpoints that bracket it — the same reading the limit check makes.
+ * Clamped to the list's own ends: a weight outside the published table has no
+ * interpolated value, and extrapolating one would invent a limit. */
+function indexAtWeight(points: EnvCgPoint[], weight: number): number {
+  const sorted = [...points].sort((a, b) => Number(a.weight) - Number(b.weight));
+  const first = sorted[0]!;
+  const last = sorted[sorted.length - 1]!;
+  if (weight <= Number(first.weight)) return Number(first.index);
+  if (weight >= Number(last.weight)) return Number(last.index);
+
+  for (let i = 1; i < sorted.length; i++) {
+    const low = sorted[i - 1]!;
+    const high = sorted[i]!;
+    if (weight > Number(high.weight)) continue;
+    const span = Number(high.weight) - Number(low.weight);
+    const ratio = span === 0 ? 0 : (weight - Number(low.weight)) / span;
+    return Number(low.index) + ratio * (Number(high.index) - Number(low.index));
+  }
+  return Number(last.index);
+}
+
+function Chart({ input, scale }: { input: EnvInput; scale: Scale }) {
+  const bottom = PLOT.y + PLOT.h;
+  const right = PLOT.x + PLOT.w;
+  const mlwSpan = {
+    forward: indexAtWeight(input.takeoffLimits.forward, Number(input.mlw)),
+    aft: indexAtWeight(input.takeoffLimits.aft, Number(input.mlw)),
+  };
+
+  return (
+    <Svg width={FRAME.w} height={FRAME.h}>
+      {/* Grid first, so limits and points draw over it. */}
+      {input.extent.indexTicks.map((tick) => (
+        <Line
+          key={`xg-${tick}`}
+          x1={scale.x(Number(tick))}
+          y1={PLOT.y}
+          x2={scale.x(Number(tick))}
+          y2={bottom}
+          stroke={GRID_COLOR}
+          strokeWidth={0.35}
+        />
+      ))}
+      {input.extent.weightTicks.map((tick) => (
+        <Line
+          key={`yg-${tick}`}
+          x1={PLOT.x}
+          y1={scale.y(Number(tick))}
+          x2={right}
+          y2={scale.y(Number(tick))}
+          stroke={GRID_COLOR}
+          strokeWidth={0.35}
+        />
+      ))}
+
+      <Line x1={PLOT.x} y1={PLOT.y} x2={PLOT.x} y2={bottom} stroke={COLOR.ink} strokeWidth={0.8} />
+      <Line x1={PLOT.x} y1={bottom} x2={right} y2={bottom} stroke={COLOR.ink} strokeWidth={0.8} />
+
+      {input.extent.indexTicks.map((tick) => (
+        <G key={`xt-${tick}`}>
+          <Line
+            x1={scale.x(Number(tick))}
+            y1={bottom}
+            x2={scale.x(Number(tick))}
+            y2={bottom + 3}
+            stroke={COLOR.ink}
+            strokeWidth={0.8}
+          />
+          <Text x={scale.x(Number(tick)) - 6} y={bottom + 13} style={{ fontSize: ENV_FONT.tick }}>
+            {tick}
+          </Text>
+        </G>
+      ))}
+      {input.extent.weightTicks.map((tick) => (
+        <G key={`yt-${tick}`}>
+          <Line
+            x1={PLOT.x - 3}
+            y1={scale.y(Number(tick))}
+            x2={PLOT.x}
+            y2={scale.y(Number(tick))}
+            stroke={COLOR.ink}
+            strokeWidth={0.8}
+          />
+          <Text x={PLOT.x - 32} y={scale.y(Number(tick)) + 2.5} style={{ fontSize: ENV_FONT.tick }}>
+            {`${(Number(tick) / 1000).toFixed(0)}k`}
+          </Text>
+        </G>
+      ))}
+
+      <CurveOutline curve={input.takeoffLimits} color={COLOR.takeoff} dashed scale={scale} />
+      <CurveOutline curve={input.zfwLimits} color={COLOR.forward} scale={scale} />
+
+      {/* No landing CG table is published (GROUND_TRUTH §21 Q3), so MLW is a
+          weight-axis reference rather than an index-bounded curve. It is drawn
+          across the take-off envelope only: outside that envelope there is no
+          usable configuration for the line to say anything about. */}
+      <Line
+        x1={scale.x(mlwSpan.forward)}
+        y1={scale.y(Number(input.mlw))}
+        x2={scale.x(mlwSpan.aft)}
+        y2={scale.y(Number(input.mlw))}
+        stroke={COLOR.danger}
+        strokeWidth={1.2}
+      />
+      <Line
+        x1={PLOT.x}
+        y1={scale.y(Number(input.minWeight))}
+        x2={right}
+        y2={scale.y(Number(input.minWeight))}
+        stroke={COLOR.ink}
+        strokeWidth={1}
+      />
+
+      <PointMarker point={input.zfcg} shape="circle" color={COLOR.forward} scale={scale} />
+      <PointMarker point={input.tocg} shape="asterisk" color={COLOR.takeoff} scale={scale} />
+      {input.zfcgCorrected ? (
+        <PointMarker point={input.zfcgCorrected} shape="square" color={COLOR.corrected} scale={scale} />
+      ) : null}
+    </Svg>
+  );
+}
+
 function EnvDocument({ input }: { input: EnvInput }) {
+  // Passed down explicitly rather than held in module state: two ENV renders
+  // can be in flight at once (the documents page generates in parallel), and
+  // a shared binding would let one flight's extent draw another's curves.
+  const scale = scaler(input.extent);
+
   const outOfEnvelopePoints: string[] = [];
   if (!input.zfcg.withinEnvelope) outOfEnvelopePoints.push("ZFCG");
   if (!input.tocg.withinEnvelope) outOfEnvelopePoints.push("TOCG");
   if (input.zfcgCorrected && !input.zfcgCorrected.withinEnvelope) outOfEnvelopePoints.push("ZFCG (CORRECTED)");
 
-  const xTicks: number[] = [];
-  for (let i = INDEX_MIN; i <= INDEX_MAX; i += 20) xTicks.push(i);
-  const yTicks: number[] = [];
-  for (let w = WEIGHT_MIN; w <= WEIGHT_MAX; w += 20000) yTicks.push(w);
-
   return (
     // Fixed creationDate/modificationDate — see lir-document.tsx's identical
     // comment. Determinism applies to document *content*, not render time.
     <Document creationDate={new Date(0)} modificationDate={new Date(0)}>
-      <Page size="A4" style={styles.page}>
-        {input.watermark ? <Text style={styles.watermark}>NOT FOR OPERATIONAL USE</Text> : null}
+      <Page size="A4" style={chrome.page}>
+        <Watermark show={input.watermark} />
 
-        <Text style={styles.title}>CG ENVELOPE</Text>
+        <HeaderTable header={input.header} />
 
-        <View style={styles.headerGrid}>
-          <HeaderField label="STATION" value={input.station} />
-          <HeaderField label="FLIGHT" value={input.flightNo} />
-          <HeaderField label="DATE" value={input.date} />
-          <HeaderField label="A/C" value={`${input.registration} (${input.aircraftType})`} />
-          <HeaderField label="PREPARED BY" value={input.preparedBy} />
-          <HeaderField label="CHECKED BY" value={input.checkedBy} />
-          <HeaderField label="ED NO" value={input.editionNo} />
-        </View>
+        <Text style={styles.title}>{`CG ENVELOPE — ${input.header.aircraftType.toUpperCase()}`}</Text>
+        <View style={styles.titleRule} />
 
         {outOfEnvelopePoints.length > 0 ? (
           <View style={styles.warningBox}>
             <Text style={styles.warningText}>
-              OUT OF ENVELOPE: {outOfEnvelopePoints.join(", ")} — do not use this configuration until corrected.
+              {`OUT OF ENVELOPE: ${outOfEnvelopePoints.join(", ")} — do not use this configuration until corrected.`}
             </Text>
           </View>
         ) : null}
 
+        <Legend />
+
         <View style={styles.chartWrap}>
-          <Svg width={CHART_X * 2 + CHART_W} height={CHART_Y + CHART_H + 40}>
-            <Line x1={CHART_X} y1={CHART_Y} x2={CHART_X} y2={CHART_Y + CHART_H} stroke="#333333" strokeWidth={1} />
-            <Line
-              x1={CHART_X}
-              y1={CHART_Y + CHART_H}
-              x2={CHART_X + CHART_W}
-              y2={CHART_Y + CHART_H}
-              stroke="#333333"
-              strokeWidth={1}
-            />
-
-            {xTicks.map((tick) => (
-              <G key={`xt-${tick}`}>
-                <Line
-                  x1={xForIndex(tick)}
-                  y1={CHART_Y + CHART_H}
-                  x2={xForIndex(tick)}
-                  y2={CHART_Y + CHART_H + 3}
-                  stroke="#333333"
-                  strokeWidth={1}
-                />
-                <Text x={xForIndex(tick) - 6} y={CHART_Y + CHART_H + 12} style={{ fontSize: 6 }}>
-                  {tick}
-                </Text>
-              </G>
-            ))}
-            {yTicks.map((tick) => (
-              <G key={`yt-${tick}`}>
-                <Line
-                  x1={CHART_X - 3}
-                  y1={yForWeight(tick)}
-                  x2={CHART_X}
-                  y2={yForWeight(tick)}
-                  stroke="#333333"
-                  strokeWidth={1}
-                />
-                <Text x={CHART_X - 34} y={yForWeight(tick) + 2} style={{ fontSize: 6 }}>
-                  {(tick / 1000).toFixed(0)}k
-                </Text>
-              </G>
-            ))}
-            <Text x={CHART_X + CHART_W / 2 - 10} y={CHART_Y + CHART_H + 24} style={{ fontSize: 7 }}>
-              INDEX
-            </Text>
-            <Text x={CHART_X - 45} y={CHART_Y - 6} style={{ fontSize: 7 }}>
-              WEIGHT (KG)
-            </Text>
-
-            <CurveLine points={input.takeoffLimits.forward} color="#1d4ed8" dashed />
-            <CurveLine points={input.takeoffLimits.aft} color="#1d4ed8" dashed />
-            <CurveLine points={input.zfwLimits.forward} color="#15803d" />
-            <CurveLine points={input.zfwLimits.aft} color="#15803d" />
-
-            <Line
-              x1={CHART_X}
-              y1={yForWeight(Number(input.mlw))}
-              x2={CHART_X + CHART_W}
-              y2={yForWeight(Number(input.mlw))}
-              stroke="#cc0000"
-              strokeWidth={1.5}
-            />
-            <Line
-              x1={CHART_X}
-              y1={yForWeight(Number(input.minWeight))}
-              x2={CHART_X + CHART_W}
-              y2={yForWeight(Number(input.minWeight))}
-              stroke="#111111"
-              strokeWidth={1}
-            />
-
-            <PointMarker point={input.zfcg} shape="circle" color="#15803d" />
-            <PointMarker point={input.tocg} shape="star" color="#1d4ed8" />
-            {input.zfcgCorrected ? <PointMarker point={input.zfcgCorrected} shape="square" color="#7e22ce" /> : null}
-          </Svg>
-        </View>
-
-        <Legend hasCorrected={Boolean(input.zfcgCorrected)} />
-
-        <View style={styles.siBox}>
-          <Text style={styles.siLabel}>POINTS</Text>
-          <Text>
-            ZFCG: {input.zfcg.weight} kg / index {input.zfcg.index} — TOCG: {input.tocg.weight} kg / index{" "}
-            {input.tocg.index}
-            {input.zfcgCorrected
-              ? ` — ZFCG (CORRECTED): ${input.zfcgCorrected.weight} kg / index ${input.zfcgCorrected.index}`
-              : ""}
-          </Text>
+          <View style={styles.chartFrame}>
+            <Chart input={input} scale={scale} />
+          </View>
         </View>
       </Page>
     </Document>

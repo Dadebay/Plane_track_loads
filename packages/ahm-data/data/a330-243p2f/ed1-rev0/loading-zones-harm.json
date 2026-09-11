@@ -1,0 +1,34 @@
+{
+  "zones": [
+    { "zone": "A", "frontHArm": "14.648", "rearHArm": "16.883" },
+    { "zone": "B", "frontHArm": "16.883", "rearHArm": "19.143" },
+    { "zone": "C", "frontHArm": "19.143", "rearHArm": "21.404" },
+    { "zone": "D", "frontHArm": "21.404", "rearHArm": "23.665" },
+    { "zone": "E", "frontHArm": "23.665", "rearHArm": "25.925" },
+    { "zone": "F", "frontHArm": "25.925", "rearHArm": "28.186" },
+    { "zone": "G", "frontHArm": "28.186", "rearHArm": "30.446" },
+    { "zone": "H", "frontHArm": "30.446", "rearHArm": "32.707" },
+    { "zone": "J", "frontHArm": "32.707", "rearHArm": "34.968" },
+    { "zone": "K", "frontHArm": "34.968", "rearHArm": "37.228" },
+    { "zone": "L", "frontHArm": "37.228", "rearHArm": "39.489" },
+    { "zone": "M", "frontHArm": "39.489", "rearHArm": "41.749" },
+    { "zone": "P", "frontHArm": "41.749", "rearHArm": "44.010" },
+    { "zone": "R", "frontHArm": "44.010", "rearHArm": "46.677" },
+    { "zone": "S", "frontHArm": "46.677", "rearHArm": "49.141" },
+    { "zone": "T", "frontHArm": "49.141", "rearHArm": "51.605" },
+    { "zone": "U", "frontHArm": "51.605", "rearHArm": "54.068" }
+  ],
+  "notes": [
+    "H-arm is measured from the aircraft nose datum, in metres, the same datum as index-formula.json refSta (33.1555).",
+    "The zones tile the main deck without gaps: every zone's rear H-arm equals the next zone's front H-arm.",
+    "Zone pitch is 2.261 m (89 in) from B to R, 2.235 m for A, and 2.667 / 2.464 m for the tapering aft zones R..U.",
+    "These are the seventeen main-deck LOADING ZONES A..U shared by the cargo index, LMC index and lateral imbalance tables. They are NOT the combined-load zones ZA..ZU in combined-load.json, which carry their own hArm values."
+  ],
+  "source": {
+    "documentTitle": "AHM 560 - Airbus A330-243 P2F - Appendix I, LOAD AND TRIM SHEET page 2 (printed p.74), Ed.1 Rev.0, effective 15.03.2023",
+    "groundTruthRefs": [
+      "AHM 560 Appendix I s.74 - LOADING ZONES H-arm TABLE",
+      "AHM560_ERRATA.md Kayit 9"
+    ]
+  }
+}

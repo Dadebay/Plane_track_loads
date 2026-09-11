@@ -11,19 +11,27 @@
 
 import { Decimal } from "decimal.js";
 import {
+  calculatePositionIndexes,
   calculateWnb,
   checkCombinedLoad,
   checkCompartmentLimits,
   checkEnvelope,
   checkLateralImbalance,
+  collectSideBySideLoads,
+  crossCheckCargoIndexCard,
+  buildPositionFootprints,
+  findPositionConflicts,
+  positionKey,
   expandLoadToZones,
   getDowDoi,
   ZfcgOutOfRangeError,
   WnbError,
   type CgLimits,
   type CombinedLoadCheck,
+  type CargoIndexTable,
   type CombinedLoadZone,
   type Compartment,
+  type CardCrossCheck,
   type DowDoiCell,
   type EnvelopeCheck,
   type FuelIndexTable,
@@ -31,8 +39,13 @@ import {
   type ImbalanceCheck,
   type IndexFormula,
   type LimitCheck,
+  type LateralImbalanceLimits,
   type LongPalletDistribution,
   type Position,
+  type PositionConfiguration,
+  type PositionConflict,
+  type PositionFootprint,
+  type PositionIndexBreakdown,
   type StabRoundingRule,
   type StabTrimPoint,
   type WeightLimits,
@@ -55,11 +68,54 @@ export interface LoadPlanAhmData {
   dowDoiMatrix: Record<string, DowDoiCell[]>;
   cockpitMaxSeats: number;
   courierMaxSeats: number;
+  /** The printed CARGO LOADING INDEX TABLE card, for the side-by-side
+   * cross-check in the position list. `null` for a revision whose card page
+   * we do not hold — the computed index is shown on its own. */
+  cargoIndexTable: CargoIndexTable | null;
+  /** The plate's position rows, used to derive footprints and therefore
+   * which positions are mutually exclusive. `null` for a revision whose
+   * plate page we do not hold — conflicts are then not checked. */
+  positionConfigurations: PositionConfiguration[] | null;
+  /** Lower-deck codes that also exist as L/R half units. */
+  halfContainerPositions: string[];
+  /** LATERAL IMBALANCE CAUTION constants. `null` for a revision without the
+   * plate; `fuelDataAvailable` false while the fuel table is untranscribed. */
+  lateralImbalance: LateralImbalanceLimits | null;
+  /** ULD type code -> printed tare weight, from uld-types.json. Lets the
+   * server derive gross from a picked ULD instead of trusting the client. */
+  uldTares: Record<string, string>;
+  /** Where this flight's DOW/DOI comes from, for the breakdown screen.
+   * Read-only: the published cell is the authority, never rebuilt here. */
+  dowDoiBreakdown: DowDoiBreakdown;
+}
+
+/**
+ * The published DOW/DOI matrix for one registration, plus everything needed
+ * to explain a cell: the printed per-occupant crew weights that make it
+ * decomposable, and the airframe's basic weight as `aircraft.json` holds it.
+ *
+ * `bew` is shown, never calculated from — see AHM560_ERRATA.md Kayıt 11.
+ */
+export interface DowDoiBreakdown {
+  registration: string;
+  edition: number;
+  revision: number;
+  bew: string;
+  bewCgMac: string;
+  bewIndex: string;
+  crewWeights: { cockpitKg: string; courierKg: string };
+  cockpitOptions: number[];
+  courierOptions: number[];
+  cells: DowDoiCell[];
 }
 
 export interface DraftLoadItem {
   position: string;
+  /** Gross. Derived from tare + net when both are entered; the server
+   * re-derives it and never trusts this value. */
   weight: string;
+  tareWeight?: string;
+  netWeight?: string;
   uldCode?: string;
   awb?: string;
   contentCode?: string;
@@ -123,9 +179,19 @@ export interface LiveWnbResult {
     landingIsApproximate: boolean;
   } | null;
   positionOverloads: PositionOverload[];
+  /** Per-position index units, live as the loadmaster types. Computed
+   * independently of DOW/DOI so the index still shows before a crew
+   * version has been picked. */
+  positionIndexes: PositionIndexBreakdown;
+  /** Each loaded zone's exact index against the printed CARGO LOADING INDEX
+   * TABLE card. Empty when this AHM revision carries no card. */
+  cardIndexRows: CardCrossCheck[];
   compartments: LimitCheck[];
   combinedLoad: CombinedLoadResult;
   lateralImbalance: ImbalanceCheck;
+  /** Pairs of loaded positions that share floor. Empty when this AHM
+   * revision carries no position plate. */
+  positionConflicts: PositionConflict[];
   allWithinEnvelope: boolean;
 }
 
@@ -146,6 +212,83 @@ function checkPositionOverloads(items: DraftLoadItem[], positions: Position[]): 
   return overloads;
 }
 
+/**
+ * Per-position index units plus the printed-card cross-check.
+ *
+ * Deliberately tolerant: a draft can transiently name a position the
+ * resolved set does not contain (an item saved against a variant the user
+ * has since switched away from), and that must not blank the whole panel —
+ * `calculateWnb` will still surface it as a hard error when the plan is
+ * saved.
+ */
+function computePositionIndexes(
+  draft: LoadPlanDraft,
+  ahmData: LoadPlanAhmData,
+  positions: Position[],
+): { indexes: PositionIndexBreakdown; card: CardCrossCheck[] } {
+  const known = new Set(positions.map((p) => p.code));
+  const items = draft.items.filter((i) => known.has(i.position) && i.weight !== "");
+
+  let indexes: PositionIndexBreakdown;
+  try {
+    indexes = calculatePositionIndexes(items, positions);
+  } catch {
+    indexes = { rows: [], totalIndex: "0.00", totalWeight: "0" };
+  }
+
+  if (!ahmData.cargoIndexTable) return { indexes, card: [] };
+
+  try {
+    const zones = expandLoadToZones(items, ahmData.longPalletDistribution);
+    return { indexes, card: crossCheckCargoIndexCard(zones, positions, ahmData.cargoIndexTable) };
+  } catch {
+    return { indexes, card: [] };
+  }
+}
+
+
+/**
+ * Positions that share floor with another loaded position — AHM 560
+ * Appendix I s.74's alternative row configurations, resolved by footprint
+ * overlap in wnb-core. Returns nothing when this AHM revision carries no
+ * position plate, rather than pretending the load is conflict-free.
+ */
+function computePositionConflicts(draft: LoadPlanDraft, ahmData: LoadPlanAhmData): PositionConflict[] {
+  if (!ahmData.positionConfigurations) return [];
+  const footprints: PositionFootprint[] = buildPositionFootprints(
+    ahmData.positions,
+    ahmData.positionConfigurations,
+    ahmData.indexFormula,
+    ahmData.halfContainerPositions,
+  );
+  const occupied = draft.items
+    .filter((item) => item.weight !== "")
+    .map((item) => {
+      // A code with only one variant carries no uldType on the draft item;
+      // look it up so the footprint key is complete either way.
+      const uldType = item.uldType ?? ahmData.positions.find((p) => p.code === item.position)?.uldType;
+      return uldType ? positionKey(uldType, item.position) : null;
+    })
+    .filter((key): key is string => key !== null);
+  return findPositionConflicts(occupied, footprints);
+}
+
+/** The lateral imbalance check, fed from the load plan. Still reports
+ * NOT_AVAILABLE with today's data — the fuel half of the source table is
+ * untranscribed (AHM560_ERRATA.md Kayıt 10) — but the payload rows it
+ * returns are shown to the controller as provisional information. */
+function computeLateralImbalance(draft: LoadPlanDraft, ahmData: LoadPlanAhmData): ImbalanceCheck {
+  if (!ahmData.positionConfigurations) {
+    return checkLateralImbalance({ sideBySide: [], limits: null });
+  }
+  const sideBySide = collectSideBySideLoads(
+    draft.items.filter((item) => item.weight !== ""),
+    ahmData.positions,
+    ahmData.positionConfigurations,
+  );
+  return checkLateralImbalance({ sideBySide, limits: ahmData.lateralImbalance });
+}
+
 export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, registration: string): LiveWnbResult {
   const positions = resolvePositions(ahmData.positions, draft.items);
 
@@ -163,6 +306,9 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
   }
 
   const positionOverloads = checkPositionOverloads(draft.items, positions);
+  const positionConflicts = computePositionConflicts(draft, ahmData);
+  const lateralImbalanceCheck = computeLateralImbalance(draft, ahmData);
+  const { indexes: positionIndexes, card: cardIndexRows } = computePositionIndexes(draft, ahmData, positions);
 
   if (!dowDoi.available) {
     return {
@@ -172,9 +318,12 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
       blockingError: { code: "DOW_DOI_NOT_FOUND", message: dowDoi.reason },
       envelope: null,
       positionOverloads,
+      positionConflicts,
+      positionIndexes,
+      cardIndexRows,
       compartments: [],
       combinedLoad: { available: false, reason: "dowDoiNotSet" },
-      lateralImbalance: checkLateralImbalance(draft.items, draft.fuel),
+      lateralImbalance: lateralImbalanceCheck,
       allWithinEnvelope: false,
     };
   }
@@ -195,7 +344,16 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "calculateWnb failed";
-    const code = err instanceof WnbError ? err.name : "UNKNOWN";
+    // A stable code, not `err.name`: class names survive dev but can be
+    // mangled by a production minifier, and the UI translates on this
+    // value (wnb-panel.tsx). Unmapped engine errors keep their English
+    // message rather than being flattened into a generic failure.
+    const code =
+      err instanceof ZfcgOutOfRangeError
+        ? "ZFCG_OUT_OF_RANGE"
+        : err instanceof WnbError
+          ? err.name
+          : "UNKNOWN";
     return {
       positions,
       dowDoi,
@@ -203,9 +361,12 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
       blockingError: { code, message },
       envelope: null,
       positionOverloads,
+      positionConflicts,
+      positionIndexes,
+      cardIndexRows,
       compartments: [],
       combinedLoad: { available: false, reason: "calculationFailed" },
-      lateralImbalance: checkLateralImbalance(draft.items, draft.fuel),
+      lateralImbalance: lateralImbalanceCheck,
       allWithinEnvelope: false,
     };
   }
@@ -231,9 +392,12 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
       blockingError: { code: "ENVELOPE_RANGE", message },
       envelope: null,
       positionOverloads,
+      positionConflicts,
+      positionIndexes,
+      cardIndexRows,
       compartments: [],
       combinedLoad: { available: false, reason: "envelopeRangeError" },
-      lateralImbalance: checkLateralImbalance(draft.items, draft.fuel),
+      lateralImbalance: lateralImbalanceCheck,
       allWithinEnvelope: false,
     };
   }
@@ -251,7 +415,7 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
     };
   }
 
-  const lateralImbalance = checkLateralImbalance(draft.items, draft.fuel);
+  const lateralImbalance = lateralImbalanceCheck;
 
   return {
     positions,
@@ -260,6 +424,9 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
     blockingError: null,
     envelope,
     positionOverloads,
+    positionConflicts,
+    positionIndexes,
+    cardIndexRows,
     compartments,
     combinedLoad,
     lateralImbalance,

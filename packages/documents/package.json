@@ -14,7 +14,8 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src test --ext .ts,.tsx",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "samples": "vite-node scripts/render-samples.ts"
   },
   "dependencies": {
     "@tua/wnb-core": "workspace:*",
@@ -26,6 +27,7 @@
     "typescript": "^5.7.0",
     "vitest": "^2.1.8",
     "@types/node": "^22.10.0",
-    "@types/react": "^19.0.0"
+    "@types/react": "^19.0.0",
+    "vite-node": "^2.1.9"
   }
 }

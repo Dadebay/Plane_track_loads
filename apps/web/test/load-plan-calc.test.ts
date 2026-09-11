@@ -28,8 +28,43 @@ const ahmData: LoadPlanAhmData = {
     decimals: ahm.indexFormula.roundingRules.stab.decimals,
   },
   dowDoiMatrix: { "EZ-F429": ahm.dowDoiMatrix["EZ-F429"], "EZ-F430": ahm.dowDoiMatrix["EZ-F430"] },
+  cargoIndexTable: null,
   cockpitMaxSeats: ahm.crewIndex.cockpit.maxSeats,
   courierMaxSeats: ahm.crewIndex.courier.reduce((sum, c) => sum + c.maxSeats, 0),
+  positionConfigurations:
+    ahm.positionConfigurations?.configurations.map((c) => ({
+      id: c.id,
+      label: c.label,
+      deck: c.deck,
+      longitudinalInches: c.longitudinalInches,
+      lateralInches: c.lateralInches,
+      lateralPlacement: c.lateralPlacement,
+    })) ?? null,
+  halfContainerPositions: ahm.positionConfigurations?.halfContainerPositions ?? [],
+  lateralImbalance: ahm.lateralImbalance
+    ? {
+        limit: ahm.lateralImbalance.limit,
+        operationalMargin: ahm.lateralImbalance.operationalMargin,
+        payload: ahm.lateralImbalance.payload.map((p) => ({ category: p.category, yArm: p.yArm })),
+        fuelDataAvailable: ahm.lateralImbalance.fuel.status !== "SOURCE_NOT_TRANSCRIBED",
+      }
+    : null,
+  uldTares: Object.fromEntries(ahm.uldTypes.types.map((t) => [t.typeCode, t.tareWeight])),
+  dowDoiBreakdown: {
+    registration: "EZ-F430",
+    edition: ahm.aircraft.edition,
+    revision: ahm.aircraft.revision,
+    bew: ahm.aircraft.registrations[1]!.bew,
+    bewCgMac: ahm.aircraft.registrations[1]!.bewCgMac,
+    bewIndex: ahm.aircraft.registrations[1]!.bewIndex,
+    crewWeights: {
+      cockpitKg: ahm.dowDoiMatrix.crewWeights.cockpitKg,
+      courierKg: ahm.dowDoiMatrix.crewWeights.courierKg,
+    },
+    cockpitOptions: [1, 2, 3, 4],
+    courierOptions: [0, 1, 2, 3, 4, 5, 6],
+    cells: ahm.dowDoiMatrix["EZ-F430"],
+  },
 };
 
 // AHM 560's own dow-doi-matrix.json cell for EZ-F430, 2 cockpit + 3

@@ -1,7 +1,12 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { PageHeader, DataTable, type DataTableColumn } from "@tua/ui";
+import { useTranslations } from "next-intl";
+import {
+  DataTable,
+  type DataTableColumn,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
+import { formatDateTime } from "@/lib/format-date";
 
 export interface CalculationRow {
   id: string;
@@ -16,7 +21,6 @@ export interface CalculationRow {
 
 export function AhmCalculationsView({ rows }: { rows: CalculationRow[] }) {
   const t = useTranslations("admin.ahm");
-  const locale = useLocale();
 
   const columns: DataTableColumn<CalculationRow>[] = [
     { key: "flightNo", header: t("calculations.flight"), render: (r) => r.flightNo },
@@ -30,7 +34,7 @@ export function AhmCalculationsView({ rows }: { rows: CalculationRow[] }) {
     {
       key: "calculatedAt",
       header: t("calculations.calculatedAt"),
-      render: (r) => new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "short" }).format(r.calculatedAt),
+      render: (r) => `${formatDateTime(r.calculatedAt)} UTC`,
     },
   ];
 

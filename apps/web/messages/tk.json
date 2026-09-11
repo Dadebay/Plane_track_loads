@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "TUA Ýük Gözegçilik"
+    "name": "Ýük Gözegçilik"
   },
   "nav": {
     "flightSelection": "Gatnaw saýlamak",
@@ -9,8 +9,9 @@
     "uldStock": "ULD Ammary",
     "admin": "Dolandyryş",
     "validation": "Barlag",
-    "messages": "Habarlar",
-    "account": "Hasabym"
+    "account": "Hasabym",
+    "collapseSidebar": "Nawigasiýany ýygnamak",
+    "expandSidebar": "Nawigasiýany açmak"
   },
   "documents": {
     "generate": {
@@ -40,7 +41,12 @@
       "preparedBy": "Taýýarlan",
       "checkedBy": "Barlan",
       "issuedAt": "Sene",
-      "download": "Ýükle"
+      "download": "Ýükle",
+      "document": "Resminama",
+      "preview": "{name} gözden geçir",
+      "downloadNamed": "{name} ýükle",
+      "generateNamed": "{flightNo} üçin {type} döret",
+      "newEdition": "{flightNo} üçin täze {type} neşri"
     }
   },
   "common": {
@@ -73,7 +79,16 @@
     "station": "Stansiýa",
     "local": "Ýerli",
     "utc": "UTC",
-    "today": "Şu gün"
+    "today": "Şu gün",
+    "weekdays": {
+      "1": "Duşenbe",
+      "2": "Sişenbe",
+      "3": "Çarşenbe",
+      "4": "Penşenbe",
+      "5": "Anna",
+      "6": "Şenbe",
+      "7": "Ýekşenbe"
+    }
   },
   "theme": {
     "label": "Tema",
@@ -92,7 +107,7 @@
       "title": "Gatnaw saýlamak",
       "startDateTime": "Başlangyç sene we wagt",
       "endDateTime": "Ahyrky sene we wagt",
-      "routes": "Ugurlar",
+      "routes": "Ugur",
       "flightNumber": "Gatnaw belgisi",
       "dayOfWeek": "Hepdäniň güni",
       "allDays": "Ähli günler",
@@ -100,12 +115,24 @@
       "allAircraft": "Ähli uçarlar",
       "serviceType": "Hyzmat görnüşi",
       "allTypes": "Ähli görnüşler",
-      "schTimeDep": "Tertip. uçuş wagty",
-      "estTimeDep": "Çak. uçuş wagty",
-      "actTimeDep": "Hakyky uçuş wagty",
-      "schTimeArr": "Tertip. gonuş wagty",
+      "schTimeDep": "Tertip. uçuş",
+      "estTimeDep": "Çak. uçuş",
+      "actTimeDep": "Hakyky uçuş",
+      "schTimeArr": "Tertip. gonuş",
       "allStations": "Ähli stansiýalar",
-      "noStations": "Stansiýa ýok"
+      "noStations": "Stansiýa ýok",
+      "via": "Üsti bilen",
+      "day": "Gün",
+      "actions": "Amal",
+      "clearFilters": "Süzgüçleri arassala",
+      "openLoadPlan": "{flightNo} üçin ýük meýilnamasyny aç",
+      "openDocuments": "{flightNo} üçin resminamalary aç",
+      "flightNumberPrefix": "Gatnadyjy kody",
+      "flightNumberPlaceholder": "Belgi",
+      "openLoadPlanShort": "Ýük meýilnamasyny aç",
+      "flightNoShort": "Gatnaw",
+      "registrationShort": "Bellig.",
+      "serviceTypeShort": "Hyzmat"
     },
     "form": {
       "flightNo": "Gatnaw belgisi",
@@ -135,7 +162,9 @@
       "title": "Gatnaw tertibi",
       "addFlight": "Gatnaw goş",
       "editFlight": "Gatnawy üýtget",
-      "exportPdf": "PDF"
+      "exportPdf": "PDF",
+      "deleteUnavailable": "Ýük meýilnamasy bolan gatnaw pozulyp bilinmeýär — ýatyryň.",
+      "selectRowFirst": "Ilki gatnawy saýlaň"
     },
     "status": {
       "reserved": "Bellenen",
@@ -145,6 +174,17 @@
       "departed": "Uçdy",
       "arrived": "Geldi",
       "cancelled": "Ýatyrylan"
+    },
+    "timeline": {
+      "now": "N",
+      "close": "Ýap",
+      "dragHint": "Wagt boýunça hereket etmek üçin çepe ýa-da saga süýräň, ýa-da ok düwmelerini ulanyň.",
+      "markers": {
+        "std": "STD",
+        "etd": "ETD",
+        "atd": "ATD",
+        "sta": "STA"
+      }
     }
   },
   "uld": {
@@ -208,7 +248,9 @@
       "generate": "Kod döret",
       "valid": "Dogry ULD kody",
       "invalid": "Nädogry ULD kody"
-    }
+    },
+    "selectOneFirst": "Ilki bir sany ULD saýlaň",
+    "deleteInUse": "Bu ULD ýük meýilnamasynda — pozulyp bilinmeýär. Zaýalanan ýa-da ýitirilen diýip belläň."
   },
   "wnb": {
     "zfw": "ZFW (Ýangyçsyz agram)",
@@ -252,7 +294,6 @@
       "mainDeck": "Ýokarky güwerte",
       "lowerDeck": "Aşaky güwerte",
       "empty": "Boş",
-      "occupied": "{weight} kg",
       "overloaded": "Aşa ýüklenen",
       "selectVariant": "ULD ölçegi"
     },
@@ -271,7 +312,14 @@
         "P": "Palet/ULD",
         "S": "Barlag ýüki",
         "E": "Enjam"
-      }
+      },
+      "index": "Indeks birlikleri",
+      "overMaxGross": "Pozisiýanyň iň ýokary agramyndan ({max} kg) geçýär",
+      "tareWeight": "Tara (kg)",
+      "netWeight": "Netto (kg)",
+      "grossWeight": "Brutto (kg)",
+      "grossDerived": "Tara + netto-dan alnan",
+      "readOnly": "Bu meýilnama tamamlandy we üýtgedip bolmaýar."
     },
     "panel": {
       "title": "Agram we deňagramlylyk",
@@ -279,7 +327,15 @@
       "withinEnvelope": "Çägiň içinde",
       "outsideEnvelope": "Çägiň daşynda",
       "landingApproximate": "Gonuş üçin çäk çap edilmedik — ZFW çägi çemeleşme hökmünde ulanylýar",
-      "notEnoughLoad": "Agyrlyk merkezi çägini barlamak üçin ýeterlik ýük ýok — ýük goşmagy dowam ediň"
+      "notEnoughLoad": "Agyrlyk merkezi çägini barlamak üçin ýeterlik ýük ýok — ýük goşmagy dowam ediň",
+      "loadIndex": "Ýük indeksi",
+      "totalTrafficLoad": "Umumy söwda ýüki (kg)",
+      "indexCard": "Indeks kartasy bilen deňeşdirme",
+      "indexCardNote": "Zolagyň ýüki · hasaplanan indeks · çap edilen karta. Karta 500 kg aralykda bitin birlige tegeleýär, şonuň üçin kiçi tapawutlar kadaly.",
+      "engineErrorTitle": "Hasaplama bes edildi",
+      "engineErrorDetail": "Hasaplaýjynyň düzgüni (iňlisçe, žurnalda ýazylyşy ýaly):",
+      "zfcgOutOfRange": "Birleşen ýük tablisasy 21–38 % MAC aralygyny öz içine alýar. Bu ýük ZFCG-ni şol aralykdan çykarýar, şonuň üçin ýük guşagy okalyp bilmeýär. Ýüki uçaryň merkezine tarap paýlaň.",
+      "combinedLoadUnavailable": "Bu ýük üçin birleşen ýük barlagy elýeterli däl."
     },
     "violations": {
       "title": "Bozulmalar",
@@ -288,7 +344,8 @@
       "compartmentExceeded": "{target}: {actual} kg {max} kg-dan geçýär",
       "combinedLoadExceeded": "{zone} zolagy: jemi {load} kg {max} kg-dan geçýär",
       "combinedLoadUnavailable": "Jemi ýük barlagy elýeterli däl: {reason}",
-      "lateralImbalanceUnavailable": "Gapdal deňagramlylyk maglumaty ýok (AHM 560 s.74 çykarylyp bilinmedi)"
+      "lateralImbalanceUnavailable": "Gapdal deňagramlylyk maglumaty ýok (AHM 560 s.74 çykarylyp bilinmedi)",
+      "indexCardMismatch": "{zone} zolagy: hasaplanan indeks {computed}, çap edilen kartadan ({printed}) kartanyň takyklygynyň rugsat berýäninden köp tapawutlanýar"
     },
     "fuel": {
       "title": "Ýangyç",
@@ -308,6 +365,175 @@
       "optimizing": "Optimizasiýa edilýär…",
       "success": "Ýüküň paýlanyşy agyrlyk merkezi çäginiň içine getirildi",
       "noSolution": "Çägiň içinde paýlanyş tapylmady"
+    },
+    "loading": "Taslak ýüklenýär…",
+    "workspace": {
+      "orientation": "Burun çepde, guýruk sagda",
+      "noConfigurations": "Bu AHM redaksiýasynda pozisiýa konfigurasiýa sahypasy ýok, şonuň üçin iş meýdany çyzylyp bilinmeýär. Aşakdaky pozisiýa sanawy işleýär.",
+      "blockedByList": "{positions} tarapyndan petiklendi",
+      "state": {
+        "EMPTY": "Boş",
+        "LOADED": "Ýüklenen",
+        "OVERLOADED": "Iň ýokary agramdan ýokary",
+        "BLOCKED": "Başga pozisiýa tarapyndan petiklendi",
+        "READ_ONLY": "Tamamlanan, diňe okamak üçin"
+      }
+    },
+    "tables": {
+      "pass": "Bolýar",
+      "fail": "Aşdy",
+      "conflicts": "Pozisiýa gapma-garşylyklary",
+      "overlapMetres": "{metres} m umumy meýdan",
+      "positionIndex": "Pozisiýa indeksi",
+      "position": "Pozisiýa",
+      "weight": "Agram",
+      "indexUnits": "Indeks",
+      "total": "Jemi",
+      "noLoad": "Heniz hiç zat ýüklenmedi",
+      "combinedLoad": "Zolak boýunça birleşen ýük",
+      "combinedLoadCaption": "Zolak boýunça toplanan birleşen ýük, {band} aralygy",
+      "zone": "Zolak",
+      "cumulativeLoad": "Toplanan",
+      "maxCumulative": "Iň ýokary",
+      "margin": "Ätiýaç",
+      "result": "Netije",
+      "compartments": "Bölümler",
+      "compartment": "Bölüm",
+      "actual": "Hakyky",
+      "max": "Iň ýokary",
+      "lateralImbalance": "Gapdal deňsizlik",
+      "lateralProvisional": "Wagtlaýyn we maglumat üçin: çeşme tablisasynyň ýangyç bölegi göçürilmedi, şonuň üçin jemi gapdal deňsizlik aýdylyp bilinmeýär.",
+      "noSideBySide": "Gapdal-gapdal pozisiýa ýüklenmedi",
+      "category": "Kategoriýa",
+      "left": "Çep",
+      "right": "Sag",
+      "difference": "Tapawut",
+      "yArm": "Y-egni (m)",
+      "moment": "Moment (kg.m)",
+      "totalWithMargin": "Operasion ätiýaç bilen jemi",
+      "limit": "Çäk",
+      "sbs": {
+        "MAIN_SBS_88": "Esasy SBS 88\"",
+        "MAIN_SBS_96": "Esasy SBS 96\"",
+        "LOWER_LD3": "Aşaky LD3"
+      },
+      "lateralImbalanceUnavailable": "Gapdal deňagramsyzlyk barlanyp bilinmeýär: AHM 560-yň gapdal tablisasynyň ýangyç bölegi tassyklanan çeşmeden göçürilmedi."
+    },
+    "envelope": {
+      "title": "CG bukjasy",
+      "indexAxis": "Indeks birlikleri",
+      "inside": "bukjanyň içinde",
+      "outside": "bukjanyň daşynda",
+      "informational": "Maglumat üçin. Meýilnamanyň saklanyp bilinjekdigini serweriň öz barlagy kesgitleýär."
+    },
+    "tanks": {
+      "title": "Bak boýunça ýangyç paýlanyşy",
+      "clear": "Arassala",
+      "empty": "Heniz paýlanmady. Boş goýuň ýa-da ähli baky giriziň.",
+      "balanced": "Paýlanyş {total} kg jemleýär",
+      "difference": "{total} kg uçuş ýangygyna garşy {allocated} kg paýlandy ({difference} kg)",
+      "manualOnly": "Diňe el bilen: tassyklanan AHM 560 ýangyç guýmak tertibini çap etmeýär.",
+      "slot": {
+        "OUTER_LEFT": "Daşky çep",
+        "INNER_LEFT": "Içki çep",
+        "CENTER_CENTRE": "Merkez",
+        "INNER_RIGHT": "Içki sag",
+        "OUTER_RIGHT": "Daşky sag",
+        "TRIM_CENTRE": "Trim"
+      }
+    },
+    "sidebar": {
+      "title": "Ýük we deňagramlylyk",
+      "flightDetails": "Gatnaw maglumatlary",
+      "date": "Sene",
+      "time": "Wagt",
+      "station": "Stansiýa",
+      "flightNumber": "Gatnaw belgisi",
+      "departurePort": "Uçuş porty",
+      "arrivalPort": "Gonuş porty",
+      "flightSummary": "Gatnaw jemi",
+      "aircraftReg": "Uçaryň bellige alyş belgisi",
+      "crewCode": "Ekipaž kody",
+      "zeroFuel": "Ýangyçsyz",
+      "takeOff": "Uçuş",
+      "landing": "Gonuş",
+      "cgTrim": "CG we trim",
+      "payload": "Peýdaly ýük",
+      "maxPayload": "Iň köp peýdaly ýük",
+      "actualPayload": "Hakyky peýdaly ýük",
+      "lateralImbalance": "Gapdal deňagramsyzlyk",
+      "uldSummary": "ULD jemi",
+      "loadedTare": "Ýüklenen tara agramy",
+      "loadedNet": "Ýüklenen arassa agram",
+      "loadedGross": "Ýüklenen umumy agram",
+      "notAvailable": "Elýeterli däl",
+      "notComputedYet": "Ekipaž we ýangyç girizilmegine garaşylýar",
+      "allWeights": "Ähli agramlar kilogramda",
+      "cgRange": "CG aralygy",
+      "forwardLimit": "Öň çäk",
+      "aftLimit": "Yzky çäk",
+      "actualIndex": "Hakyky"
+    },
+    "backToFlights": "Gatnawlara dolan",
+    "fuelModal": {
+      "title": "Ýangyç paýlanyşy",
+      "open": "Ýangyç maglumaty",
+      "refuelMode": "Ýangyç guýuş tertibi",
+      "modeAutomatic": "Awtomatik",
+      "modeManual": "El bilen",
+      "totalFuel": "Jemi ýangyç (kg)",
+      "tanksConfiguration": "Ýangyç baklarynyň sazlanyşy",
+      "leftWing": "Çep ganat",
+      "centerAndTrim": "Merkez we trim",
+      "rightWing": "Sag ganat",
+      "innerTank": "Içki bak",
+      "outerTank": "Daşky bak",
+      "centerTank": "Merkezi bak",
+      "trimTank": "Trim bagy",
+      "clear": "Arassala",
+      "notDistributed": "Heniz paýlanmady. Boş goýuň ýa-da ähli baky dolduryň.",
+      "balanced": "Paýlanyş jemi {total} kg",
+      "difference": "{total} kg uçuş ýangyjyna garşy {allocated} kg paýlandy ({difference} kg)",
+      "asymmetry": "Çep/sag tapawudy: {detail} kg",
+      "fuelIndex": "Ýangyç indeksi",
+      "lateralMoment": "Gapdal moment",
+      "tankIndexLabel": "Indeks: elýeterli däl",
+      "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) wagtlaýyn — tassyklanan skaner çap edilen takyklykda ynamly okalyp bilinmeýär. AHM560_ERRATA.md Kayit 10-a serediň.",
+      "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE tassyklanan çeşmeden göçürilmedi.",
+      "automaticUnavailable": "Awtomatik paýlanyş elýeterli däl: tassyklanan AHM 560 ýangyç guýuş tertibini çap etmeýär. Bak agramlaryny el bilen giriziň."
+    },
+    "dowModal": {
+      "title": "DOW / DOI",
+      "open": "DOW / DOI",
+      "published": "AHM 560 tarapyndan çap edilen",
+      "publishedSource": "AHM 560 Edition {edition} Revision {revision}, s.6 §III — şu ekipaž görnüşi üçin matrisa öýjügi. Loadsheet şu sandan hasaplanýar.",
+      "crewVersion": "Ekipaž görnüşi",
+      "crewWeights": "Çap edilen bellik: kokpitde her adam {cockpit} kg, kuryer {courier} kg — goş goşulan.",
+      "composition": "Öýjük nähili bölünýär",
+      "impliedBasic": "Matrisanyň çak edýän esasy agramy",
+      "crewTotal": "Ekipaž",
+      "compositionNote": "Çap edilen öýjük ekipažy we hemişelik istif kalemlerini eýýäm öz içine alýar, şonuň üçin bu diňe düşündiriş. Bu ýerdäki hiç zat hasaba täzeden goşulmaýar.",
+      "basicWeight": "Esasy boş agram",
+      "bew": "BEW",
+      "bewCg": "BEW CG",
+      "bewIndex": "BEW indeksi",
+      "bewDisagrees": "Bu esasy agram DOW/DOI matrisasy bilen {gap} kg tapawut edýär — ol uçaryň öňki tartymyndan. Loadsheet bu sany däl, matrisany ulanýar. AHM560_ERRATA.md Kayit 11-e serediň.",
+      "fixedItems": "Resminama, kuryer, goş we palto istifi · içmek suwy · galyndy tanky",
+      "fixedItemsUnavailable": "Olaryň agramy çap edilen öýjügiň içinde eýýäm bar, emma elimizdäki tassyklanan AHM sahypalary olar üçin aýry-aýry gol (arm) çap etmeýär, şonuň üçin sanawlaşdyrylyp bilinmeýär. Çak edilen baha bilen doldurylman, açyk sorag hökmünde bellenildi."
+    },
+    "errorLog": {
+      "title": "Ýalňyşlyk žurnaly",
+      "clear": "Arassa",
+      "blockingCount": "{count} päsgelçilik",
+      "nothingToReport": "Päsgelçilik, duýduryş ýa-da elýeterli däl barlag ýok.",
+      "crewNotSet": "Ekipaž görnüşi bellenmedik, şonuň üçin DOW/DOI gözlenip bilinmeýär.",
+      "calculationFailed": "Agram we deňagramlylyk hasaplanyp bilinmedi: {detail}",
+      "positionOverload": "{position} pozisiýasynda {actual} kg bar, iň ýokary çägi {max} kg.",
+      "compartmentExceeded": "{target}: {actual} kg çap edilen {max} kg çäginden ýokary.",
+      "outOfEnvelope": "{phase} CG çap edilen zarfyň daşynda.",
+      "landingApproximate": "Bu uçar üçin gonuş CG tablisasy çap edilmedik; takmyn hökmünde ZFW zarfy ulanylýar.",
+      "combinedLoadExceeded": "{zone} zolagynda birleşen ýük: {actual} kg, {max} kg çäginden ýokary.",
+      "combinedLoadUnavailable": "Birleşen ýük barlanyp bilinmedi: {reason}"
     }
   },
   "auth": {
@@ -416,56 +642,6 @@
       "classificationINVESTIGATE": "Barlanmaly",
       "note": "Bellik",
       "noFields": "Heniz meýdan deňeşdirilmedi"
-    }
-  },
-  "messages": {
-    "generate": {
-      "title": "Habar döret",
-      "messageType": "Habar görnüşi",
-      "leg": "Gatnaw",
-      "event": "Waka",
-      "address": "Salgy",
-      "generate": "Döret we ugrat",
-      "generating": "Ugradylýar…",
-      "success": "{type} ugradyldy",
-      "noFinalizedPlans": "Tamamlanan ýük meýilnamasy bolan gatnaw ýok",
-      "errors": {
-        "unauthorized": "Rugsat ýok",
-        "validation": "Meýdançalary barlaň",
-        "notFound": "Tapylmady",
-        "loadPlanNotFinalized": "Bu gatnawyň ýük meýilnamasy entek tamamlanmady",
-        "invalidAddress": "Salgy nädogry (SITA ýa-da e-poçta gerek)"
-      }
-    },
-    "addressBook": {
-      "title": "Salgy kitaby",
-      "label": "At",
-      "sita": "SITA salgysy",
-      "email": "E-poçta",
-      "add": "Goş",
-      "success": "Salgy goşuldy",
-      "errors": {
-        "unauthorized": "Rugsat ýok",
-        "validation": "Meýdançalary barlaň",
-        "invalidAddress": "Salgy nädogry (SITA ýa-da e-poçta gerek)"
-      }
-    },
-    "incomingCpm": {
-      "title": "Gelen CPM (kabul ediş) derňew",
-      "placeholder": "Gelen CPM habaryny bu ýere ýapyşdyryň",
-      "parse": "Derňe"
-    },
-    "list": {
-      "title": "Ugradylan habarlar",
-      "type": "Görnüşi",
-      "flight": "Gatnaw",
-      "address": "Salgy",
-      "status": "Ýagdaýy",
-      "attempts": "Synanyşyk",
-      "retry": "Gaýtala",
-      "createdBy": "Kim",
-      "createdAt": "Sene",
-      "empty": "Entek habar ugradylmady"
     }
   },
   "account": {

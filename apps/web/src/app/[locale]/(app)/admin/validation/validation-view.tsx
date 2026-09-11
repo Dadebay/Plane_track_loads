@@ -1,7 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { PageHeader, DataTable, StatusBadge, type DataTableColumn, type BadgeTone } from "@tua/ui";
+import {
+  DataTable,
+  StatusBadge,
+  type DataTableColumn,
+  type BadgeTone,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
 import type { Classification, DiffReportSummary, ScenarioStatus } from "@tua/compare";
 
 export interface ScenarioRow {

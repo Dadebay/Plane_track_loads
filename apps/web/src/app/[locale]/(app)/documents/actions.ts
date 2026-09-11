@@ -4,13 +4,32 @@ import { revalidatePath } from "next/cache";
 import { Decimal } from "decimal.js";
 import { z } from "zod";
 import { db, Prisma } from "@tua/db";
-import { renderEnvPdf, renderLirPdf, renderLoadsheetPdf, type LirCell } from "@tua/documents";
-import { checkCompartmentLimits, checkEnvelope, type LmcChange, type Position, type WnbResult } from "@tua/wnb-core";
+import {
+  ENV_CHART_FRAME,
+  renderEdpPdf,
+  renderEnvPdf,
+  renderLirPdf,
+  renderLoadsheetPdf,
+  type DocumentHeader,
+} from "@tua/documents";
+import {
+  buildEnvelopeExtent,
+  checkCompartmentLimits,
+  checkEnvelope,
+  type LmcChange,
+  type WnbResult,
+} from "@tua/wnb-core";
 import { auth } from "@/auth";
+import {
+  buildDocumentLayout,
+  buildEdpPlannedLoad,
+  buildEdpSections,
+  buildUldLines,
+} from "@/lib/document-layout";
 import { getLoadPlanAhmData, resolveAhmDocumentForAircraft } from "@/lib/load-plan-ahm";
 import { resolvePositions, type DraftLoadItem, type LoadPlanAhmData } from "@/lib/load-plan-calc";
-import { getPositionRect } from "@/lib/aircraft-layout";
 import { storeDocument } from "@/lib/document-storage";
+import { formatDateTimePartsInZone } from "@/lib/format-date";
 
 const generateLirSchema = z.object({
   legId: z.string().min(1),
@@ -46,6 +65,14 @@ function formatDate(date: Date): string {
   const day = String(date.getUTCDate()).padStart(2, "0");
   const month = String(date.getUTCMonth() + 1).padStart(2, "0");
   return `${day}/${month}/${date.getUTCFullYear()}`;
+}
+
+/** Trailing configuration token of a type designation, e.g. "P2F". Falls back
+ * to the whole designation when it carries no variant. */
+function variantOf(aircraftType: string): string {
+  const tokens = aircraftType.trim().split(/\s+/);
+  const last = tokens[tokens.length - 1] ?? aircraftType;
+  return tokens.length > 1 && /^[A-Z0-9]{2,4}$/.test(last) ? last : aircraftType;
 }
 
 function formatTime(date: Date): string {
@@ -115,30 +142,12 @@ async function computeLmcContext(
   return { lastMinuteChanges, underloadBeforeLmc };
 }
 
-/** Shared by generateLir and generateLoadsheet — one cell per AHM position, fwd-to-aft ordered, empty positions carry weight: null. */
-function buildCells(ahmData: LoadPlanAhmData, draftItems: DraftLoadItem[], positions: Position[]): LirCell[] {
-  const itemByPosition = new Map(draftItems.map((item) => [item.position, item]));
-
-  return positions
-    .map((pos) => {
-      const item = itemByPosition.get(pos.code);
-      const cell: LirCell = {
-        code: pos.code,
-        deck: pos.deck,
-        maxGross: pos.maxGross,
-        uldCode: item?.uldCode ?? null,
-        awb: item?.awb ?? null,
-        weight: item ? item.weight : null,
-      };
-      return cell;
-    })
-    .sort((a, b) => {
-      const rectA = getPositionRect(a.code, a.deck);
-      const rectB = getPositionRect(b.code, b.deck);
-      const deckOrder = a.deck === b.deck ? 0 : a.deck === "MAIN" ? -1 : 1;
-      if (deckOrder !== 0) return deckOrder;
-      return (rectA?.x ?? 0) - (rectB?.x ?? 0);
-    });
+/** Sum of the gross weights actually loaded — the figure the LIR prints
+ * as TOTAL TRAFFIC LOAD. Decimal, never float (CLAUDE.md rule #2). */
+function totalGrossWeight(draftItems: DraftLoadItem[]): string {
+  return draftItems
+    .reduce((sum, item) => sum.plus(new Decimal(item.weight)), new Decimal(0))
+    .toString();
 }
 
 export async function generateLir(input: z.infer<typeof generateLirSchema>): Promise<GenerateLirResult> {
@@ -177,17 +186,17 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
   const draftItems = loadPlan.loadItems.map((li) => ({
     position: li.position,
     weight: li.weight.toString(),
+    tareWeight: li.tareWeight?.toString(),
+    netWeight: li.netWeight?.toString(),
+    contentCode: li.contentCode ?? undefined,
     uldCode: li.uldCode ?? undefined,
     awb: li.awb ?? undefined,
     uldType: li.uldType ?? undefined,
   }));
-  const positions = resolvePositions(ahmData.positions, draftItems);
-  const cells = buildCells(ahmData, draftItems, positions);
-
   const priorEditions = await db.document.count({ where: { legId: data.legId, type: "LIR" } });
   const edition = priorEditions + 1;
 
-  const pdfBuffer = await renderLirPdf({
+  const header: DocumentHeader = {
     station: leg.fromStation.iata,
     flightNo: leg.flight.flightNo,
     date: formatDate(leg.flight.date),
@@ -196,13 +205,19 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
     editionNo: String(edition).padStart(2, "0"),
     preparedBy: session.user.name ?? session.user.email ?? "",
     checkedBy: checker.name,
+  };
+
+  const pdfBuffer = await renderLirPdf({
+    header,
     mainDeckMaxLoad: ahmData.mainDeckMaxLoad,
     compartments: ahmData.compartments.map((c) => ({
       number: c.number,
       description: c.description,
       lirSubLimit: c.lirSubLimit,
+      pairedWith: c.pairedWith,
+      maxGrossPair: c.maxGrossPair,
     })),
-    cells,
+    layout: buildDocumentLayout(ahmData, draftItems),
     specialInformation: data.specialInformation ?? "",
     watermark: process.env.DOCUMENTS_WATERMARK !== "false",
   });
@@ -263,7 +278,7 @@ export async function generateLoadsheet(
       flight: { include: { aircraft: true } },
       fromStation: true,
       toStation: true,
-      fuelRecord: true,
+      fuelRecord: { include: { allocations: { orderBy: [{ tank: "asc" }, { side: "asc" }] } } },
       loadPlans: { orderBy: { version: "desc" }, take: 1, include: { loadItems: true } },
     },
   });
@@ -290,12 +305,14 @@ export async function generateLoadsheet(
   const draftItems = loadPlan.loadItems.map((li) => ({
     position: li.position,
     weight: li.weight.toString(),
+    tareWeight: li.tareWeight?.toString(),
+    netWeight: li.netWeight?.toString(),
+    contentCode: li.contentCode ?? undefined,
     uldCode: li.uldCode ?? undefined,
     awb: li.awb ?? undefined,
     uldType: li.uldType ?? undefined,
   }));
   const positions = resolvePositions(ahmData.positions, draftItems);
-  const cells = buildCells(ahmData, draftItems, positions);
   const compartments = checkCompartmentLimits(draftItems, positions, ahmData.compartments, ahmData.mainDeckMaxLoad);
 
   const zfwEnvelope = checkEnvelope(wnb.zfw, wnb.lizfw, "ZFW", ahmData.cgLimits.zfw);
@@ -307,19 +324,21 @@ export async function generateLoadsheet(
   const edition = priorEditions + 1;
 
   const pdfBuffer = await renderLoadsheetPdf({
-    station: leg.fromStation.iata,
+    header: {
+      station: leg.fromStation.iata,
+      flightNo: leg.flight.flightNo,
+      date: formatDate(leg.stdDep),
+      aircraftType: leg.flight.aircraft.type,
+      registration: leg.flight.aircraft.registration,
+      editionNo: String(edition).padStart(2, "0"),
+      preparedBy: session.user.name ?? session.user.email ?? "",
+      checkedBy: checker.name,
+    },
     destination: leg.toStation.iata,
-    flightNo: leg.flight.flightNo,
-    date: formatDate(leg.stdDep),
     time: formatTime(leg.stdDep),
-    aircraftType: leg.flight.aircraft.type,
-    registration: leg.flight.aircraft.registration,
     version: "",
     cockpitCrew: loadPlan.cockpitCrew,
     courierCrew: loadPlan.courierCrew,
-    editionNo: String(edition).padStart(2, "0"),
-    preparedBy: session.user.name ?? session.user.email ?? "",
-    checkedBy: checker.name,
 
     ahmEdition: ahmDocument.edition,
     ahmRevision: ahmDocument.revision,
@@ -360,7 +379,22 @@ export async function generateLoadsheet(
     towAftLimit: roundIndex(towEnvelope.aftLimit),
 
     compartments,
-    cells,
+    layout: buildDocumentLayout(ahmData, draftItems),
+    ulds: buildUldLines(ahmData, draftItems),
+
+    refuelMode: leg.fuelRecord.refuelMode,
+    // Printed only when the operator actually recorded a tank split. AHM
+    // 560's FUEL LATERAL MOMENT PER TANK TABLE is still untranscribed
+    // (AHM560_ERRATA.md Kayıt 10), so an absent allocation prints as
+    // "not available" rather than as an assumed distribution.
+    fuelDistribution:
+      leg.fuelRecord.allocations.length > 0
+        ? leg.fuelRecord.allocations.map((allocation) => ({
+            tank: allocation.tank,
+            side: allocation.side,
+            weight: allocation.weight.toString(),
+          }))
+        : null,
 
     lastMinuteChanges: lmc.lastMinuteChanges,
 
@@ -446,23 +480,41 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
   const priorEditions = await db.document.count({ where: { legId: data.legId, type: "ENV" } });
   const edition = priorEditions + 1;
 
+  const zfcg = { weight: wnb.zfw, index: wnb.lizfw, withinEnvelope: zfwEnvelope.withinEnvelope };
+  const tocg = { weight: wnb.tow, index: wnb.litow, withinEnvelope: towEnvelope.withinEnvelope };
+
   const pdfBuffer = await renderEnvPdf({
-    station: leg.fromStation.iata,
-    flightNo: leg.flight.flightNo,
-    date: formatDate(leg.flight.date),
-    aircraftType: leg.flight.aircraft.type,
-    registration: leg.flight.aircraft.registration,
-    editionNo: String(edition).padStart(2, "0"),
-    preparedBy: session.user.name ?? session.user.email ?? "",
-    checkedBy: checker.name,
+    header: {
+      station: leg.fromStation.iata,
+      flightNo: leg.flight.flightNo,
+      date: formatDate(leg.flight.date),
+      aircraftType: leg.flight.aircraft.type,
+      registration: leg.flight.aircraft.registration,
+      editionNo: String(edition).padStart(2, "0"),
+      preparedBy: session.user.name ?? session.user.email ?? "",
+      checkedBy: checker.name,
+    },
 
     zfwLimits: ahmData.cgLimits.zfw,
     takeoffLimits: ahmData.cgLimits.takeoff,
     mlw: ahmData.weightLimits.mlw,
     minWeight: ahmData.weightLimits.min,
 
-    zfcg: { weight: wnb.zfw, index: wnb.lizfw, withinEnvelope: zfwEnvelope.withinEnvelope },
-    tocg: { weight: wnb.tow, index: wnb.litow, withinEnvelope: towEnvelope.withinEnvelope },
+    // Same extent the live chart on the load-plan page uses, so the
+    // printed envelope and the one the controller approved are the same
+    // picture (Aşama 7 "paylaşılan yerleşim verisi").
+    extent: buildEnvelopeExtent({
+      curves: [ahmData.cgLimits.zfw, ahmData.cgLimits.takeoff],
+      points: [zfcg, tocg],
+      weightReferences: [ahmData.weightLimits.mlw, ahmData.weightLimits.min],
+      // Same fixed frame on every ENV, so two flights can be laid side by
+      // side; data outside it still widens the axis.
+      minimumIndexRange: ENV_CHART_FRAME.index,
+      minimumWeightRange: ENV_CHART_FRAME.weight,
+    }),
+
+    zfcg,
+    tocg,
     zfcgCorrected: null,
 
     watermark: process.env.DOCUMENTS_WATERMARK !== "false",
@@ -486,6 +538,118 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
     "create",
     document.id,
     { type: "ENV", edition, legId: data.legId, flightNo: leg.flight.flightNo },
+    session.user.id,
+  );
+
+  revalidatePath("/[locale]/documents", "page");
+  return { ok: true, documentId: document.id };
+}
+
+const generateEdpSchema = z.object({
+  legId: z.string().min(1),
+  checkedById: z.string().min(1),
+  specialInformation: z.string().optional(),
+});
+
+/**
+ * EDP — the ramp's Loading Instruction / Report working form.
+ *
+ * Same plan as the LIR, printed differently: every position gets a blank
+ * REPORT line to write back what actually went in. Separate document with its
+ * own edition sequence, because the two are signed at different moments.
+ */
+export async function generateEdp(input: z.infer<typeof generateEdpSchema>): Promise<GenerateLirResult> {
+  const session = await auth();
+  if (!session?.user) return { ok: false, error: "unauthorized" };
+
+  const parsed = generateEdpSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "validation" };
+  const data = parsed.data;
+
+  // CLAUDE.md rule #7 — prepared_by <> checked_by.
+  if (data.checkedById === session.user.id) {
+    return { ok: false, error: "preparedEqualsChecked" };
+  }
+
+  const checker = await db.user.findUnique({ where: { id: data.checkedById } });
+  if (!checker) return { ok: false, error: "notFound" };
+
+  const leg = await db.flightLeg.findUnique({
+    where: { id: data.legId },
+    include: {
+      flight: { include: { aircraft: true } },
+      fromStation: true,
+      toStation: true,
+      loadPlans: { orderBy: { version: "desc" }, take: 1, include: { loadItems: true } },
+    },
+  });
+  if (!leg) return { ok: false, error: "notFound" };
+
+  const loadPlan = leg.loadPlans[0];
+  if (!loadPlan || loadPlan.status !== "FINALIZED") {
+    return { ok: false, error: "loadPlanNotFinalized" };
+  }
+
+  const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef);
+  const draftItems = loadPlan.loadItems.map((li) => ({
+    position: li.position,
+    weight: li.weight.toString(),
+    tareWeight: li.tareWeight?.toString(),
+    netWeight: li.netWeight?.toString(),
+    contentCode: li.contentCode ?? undefined,
+    uldCode: li.uldCode ?? undefined,
+    awb: li.awb ?? undefined,
+    uldType: li.uldType ?? undefined,
+  }));
+
+  const priorEditions = await db.document.count({ where: { legId: data.legId, type: "EDP" } });
+  const edition = priorEditions + 1;
+  const destination = leg.toStation.iata;
+
+  const pdfBuffer = await renderEdpPdf({
+    header: {
+      station: leg.fromStation.iata,
+      flightNo: leg.flight.flightNo,
+      date: formatDate(leg.flight.date),
+      aircraftType: leg.flight.aircraft.type,
+      registration: leg.flight.aircraft.registration,
+      editionNo: String(edition).padStart(2, "0"),
+      preparedBy: session.user.name ?? session.user.email ?? "",
+      checkedBy: checker.name,
+    },
+    // Scheduled departure in the departure station's own zone: the ramp
+    // reads this sheet at that station, where local time is the only time.
+    time: formatDateTimePartsInZone(leg.stdDep, leg.fromStation.timezone).time,
+    // VERSION on the ramp sheet is the airframe's configuration variant, the
+    // trailing token of the type designation ("Airbus A330-243 P2F" -> P2F).
+    // A type with no variant token prints the type itself rather than a guess.
+    version: variantOf(leg.flight.aircraft.type),
+    from: leg.fromStation.iata,
+    to: destination,
+    plannedLoad: buildEdpPlannedLoad(draftItems, destination),
+    sections: buildEdpSections(ahmData, draftItems, destination),
+    specialInformation: data.specialInformation ?? "",
+    watermark: process.env.DOCUMENTS_WATERMARK !== "false",
+  });
+
+  const stored = await storeDocument("EDP", data.legId, edition, pdfBuffer);
+
+  const document = await db.document.create({
+    data: {
+      type: "EDP",
+      edition,
+      pdfPath: stored.pdfPath,
+      sha256: stored.sha256,
+      legId: data.legId,
+      preparedById: session.user.id,
+      checkedById: data.checkedById,
+    },
+  });
+
+  await writeAudit(
+    "create",
+    document.id,
+    { type: "EDP", edition, legId: data.legId, flightNo: leg.flight.flightNo },
     session.user.id,
   );
 

@@ -2,56 +2,17 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { renderLoadsheetPdf } from "../src/loadsheet/loadsheet-document";
 import type { LoadsheetInput } from "../src/loadsheet/types";
-import type { LirCell } from "../src/lir/types";
+import { header, layout, totalTrafficLoad, ulds } from "./fixtures";
 
-// docs/AHM560_GROUND_TRUTH.md §19 — T5 692, SGN -> ASB, 2026-08-11, EZ-F430.
-const mainDeckCodes = [
-  "ABL", "ABR", "BCL", "BCR", "CEL", "CER", "EFL", "EFR", "FHL", "FHR",
-  "HJL", "HJR", "JKL", "JKR", "KML", "KMR", "MPL", "MPR", "PP", "RR", "SS", "TT",
-];
-const mainWeights = [717, 834, 915, 919, 925, 952, 956, 1019, 1022, 1029, 1285, 1104, 1089, 1094, 1068, 1096, 1575, 1702, 2125, 1856, 1528, 2119];
-const mainUld = ["06154", "06115", "06298", "06017", "06589", "06586", "06743", "06141", "0029", "06505", "06507", "06628", "06683", "06668", "06591", "06273", "06730", "06102", "06014", "06332", "06243", "06064"];
-
-const cells: LirCell[] = mainDeckCodes.map((code, i) => ({
-  code,
-  deck: "MAIN",
-  maxGross: "2000",
-  uldCode: mainUld[i]!,
-  awb: null,
-  weight: String(mainWeights[i]),
-}));
-
-const lowerRows: [string, string | null, number][] = [
-  ["11", "05185", 472],
-  ["12P", "06645", 800],
-  ["13P", "06672", 835],
-  ["21P", "06116", 846],
-  ["22P", "06094", 871],
-  ["31P", "06044", 876],
-  ["32P", "0002", 916],
-  ["41P", "06530", 1003],
-  ["42P", "06284", 1050],
-  ["52", null, 340],
-  ["53", null, 340],
-];
-for (const [code, uld, w] of lowerRows) {
-  cells.push({ code, deck: "LOWER", maxGross: "3174", uldCode: uld, awb: null, weight: String(w) });
-}
-
+// docs/AHM560_GROUND_TRUTH.md §19 — T5 692, SGN -> ASB, 2026-08-11,
+// EZ-F430, with this project's own (corrected) DOW/DOI and underload.
 const sampleInput: LoadsheetInput = {
-  station: "SGN",
+  header,
   destination: "ASB",
-  flightNo: "T5 692",
-  date: "11/08/2026",
   time: "22:00",
-  aircraftType: "A330-243",
-  registration: "EZ-F430",
   version: "P2F",
   cockpitCrew: 2,
   courierCrew: 3,
-  editionNo: "01",
-  preparedBy: "Bezirgen",
-  checkedBy: "Checker User",
 
   ahmEdition: 1,
   ahmRevision: 0,
@@ -63,7 +24,7 @@ const sampleInput: LoadsheetInput = {
   passengerCount: 0,
   cabinBagWeight: "0",
 
-  ttl: "35278",
+  ttl: totalTrafficLoad,
   zfw: "146321.7",
   mzfw: "170000",
   takeoffFuel: "44700",
@@ -78,31 +39,38 @@ const sampleInput: LoadsheetInput = {
 
   underloadBeforeLmc: "23678.3",
 
-  lizfw: "106.07",
+  lizfw: "104.97",
   litow: "109.39",
-  lilaw: "106.5",
+  lilaw: "106.21",
   maczfw: "26.4",
   mactow: "26.7",
   maclaw: "26.5",
-  stab: { value: "4.1", direction: "DOWN" },
+  stab: { value: "4.1", direction: "UP" },
 
-  zfwForwardLimit: "87.4",
-  zfwAftLimit: "154.3",
-  towForwardLimit: "71.1",
-  towAftLimit: "166.6",
+  zfwForwardLimit: "89.2",
+  zfwAftLimit: "152.4",
+  towForwardLimit: "80.1",
+  towAftLimit: "168.3",
 
   compartments: [
-    { target: "main deck", actual: "26929", max: "62000", withinLimit: true },
-    { target: "compartment 1 (FWD)", actual: "3824", max: "18869", withinLimit: true },
-    { target: "compartment 5 (BULK)", actual: "680", max: "3468", withinLimit: true },
+    { target: "main deck", actual: "12000", max: "62000", withinLimit: true },
+    { target: "compartment 1", actual: "2530", max: "18869", withinLimit: true },
   ],
-  cells,
+  layout,
+  ulds,
+
+  refuelMode: "MANUAL",
+  fuelDistribution: null,
 
   lastMinuteChanges: [],
 
-  specialInformation: "Handle with care.",
+  specialInformation: "",
   watermark: true,
 };
+
+async function sha(input: LoadsheetInput): Promise<string> {
+  return createHash("sha256").update(await renderLoadsheetPdf(input)).digest("hex");
+}
 
 describe("renderLoadsheetPdf", () => {
   it("renders a valid PDF without throwing", async () => {
@@ -111,29 +79,61 @@ describe("renderLoadsheetPdf", () => {
   });
 
   it("produces byte-identical output for identical input (determinism)", async () => {
-    const a = await renderLoadsheetPdf(sampleInput);
-    const b = await renderLoadsheetPdf(sampleInput);
-    const hashA = createHash("sha256").update(a).digest("hex");
-    const hashB = createHash("sha256").update(b).digest("hex");
-    expect(hashA).toBe(hashB);
+    expect(await sha(sampleInput)).toBe(await sha(sampleInput));
+  });
+
+  it("fits the T5 692 golden load on a single A4 page", async () => {
+    const text = (await renderLoadsheetPdf(sampleInput)).toString("latin1");
+    expect((text.match(/\/Type\s*\/Page(?!s)/g) ?? []).length).toBe(1);
+    expect(text).toMatch(/MediaBox \[0 0 595\.28\d* 841\.89\d*\]/);
   });
 
   it("produces different output when the watermark flag differs", async () => {
-    const withWatermark = await renderLoadsheetPdf({ ...sampleInput, watermark: true });
-    const without = await renderLoadsheetPdf({ ...sampleInput, watermark: false });
-    expect(withWatermark.equals(without)).toBe(false);
+    expect(await sha({ ...sampleInput, watermark: true })).not.toBe(
+      await sha({ ...sampleInput, watermark: false }),
+    );
   });
 
   it("produces different output when MACTOW differs", async () => {
-    const a = await renderLoadsheetPdf(sampleInput);
-    const b = await renderLoadsheetPdf({ ...sampleInput, mactow: "99.9" });
-    expect(a.equals(b)).toBe(false);
+    expect(await sha(sampleInput)).not.toBe(await sha({ ...sampleInput, mactow: "27.9" }));
   });
 
-  it("fits the full T5 692 golden load on a single A4 page", async () => {
-    const buffer = await renderLoadsheetPdf(sampleInput);
-    const text = buffer.toString("latin1");
-    const pageCount = (text.match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
-    expect(pageCount).toBe(1);
+  it("shows the AHM edition/revision it was computed against (Bulgu #2)", async () => {
+    expect(await sha(sampleInput)).not.toBe(await sha({ ...sampleInput, ahmRevision: 2 }));
+  });
+
+  it("distinguishes an exceeded compartment from a compliant one", async () => {
+    const exceeded: LoadsheetInput = {
+      ...sampleInput,
+      compartments: sampleInput.compartments.map((c) =>
+        c.target === "compartment 1" ? { ...c, actual: "19000", withinLimit: false } : c,
+      ),
+    };
+    expect(await sha(sampleInput)).not.toBe(await sha(exceeded));
+  });
+
+  it("prints per-tank fuel when an allocation exists, and says so when it does not", async () => {
+    const allocated: LoadsheetInput = {
+      ...sampleInput,
+      refuelMode: "AUTOMATIC",
+      fuelDistribution: [
+        { tank: "INNER", side: "LEFT", weight: "15000" },
+        { tank: "INNER", side: "RIGHT", weight: "15000" },
+        { tank: "CENTRE", side: "CENTRE", weight: "14700" },
+      ],
+    };
+    expect(await sha(sampleInput)).not.toBe(await sha(allocated));
+  });
+
+  it("prints LILAW/MACLAW, which the reference loadsheet omits (Bulgu #5)", async () => {
+    expect(await sha(sampleInput)).not.toBe(await sha({ ...sampleInput, maclaw: "25.0" }));
+  });
+
+  it("renders an LMC block without throwing", async () => {
+    const buffer = await renderLoadsheetPdf({
+      ...sampleInput,
+      lastMinuteChanges: [{ position: "ABL", weightDelta: "-717", description: "OFFLOAD" }],
+    });
+    expect(buffer.subarray(0, 5).toString("latin1")).toBe("%PDF-");
   });
 });

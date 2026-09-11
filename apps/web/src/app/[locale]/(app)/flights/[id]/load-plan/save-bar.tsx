@@ -20,31 +20,44 @@ export function SaveBar({
   const tWnb = useTranslations("wnb");
   const items = useLoadDraftStore((s) => s.items);
   const fuel = useLoadDraftStore((s) => s.fuel);
+  const fuelAllocations = useLoadDraftStore((s) => s.fuelAllocations);
   const cockpitCrew = useLoadDraftStore((s) => s.cockpitCrew);
   const courierCrew = useLoadDraftStore((s) => s.courierCrew);
 
   const mutation = useMutation({
     mutationKey: ["saveLoadPlan", legId],
-    mutationFn: (finalize: boolean) => saveLoadPlan({ legId, items, fuel, cockpitCrew, courierCrew, finalize }),
+    mutationFn: (finalize: boolean) =>
+      saveLoadPlan({
+        legId,
+        items,
+        // Manual is the only mode the approved AHM supports — it publishes
+        // no refuelling schedule (AHM560_ERRATA.md Kayıt 10). An empty
+        // distribution is legal; a non-empty one must sum exactly, which
+        // the server re-checks in Decimal.
+        fuel: { ...fuel, refuelMode: "MANUAL", allocations: fuelAllocations },
+        cockpitCrew,
+        courierCrew,
+        finalize,
+      }),
   });
 
   const canSave = !result.blockingError && result.allWithinEnvelope && cockpitCrew !== null && courierCrew !== null;
 
+  /**
+   * The server returns one violation per failed rule, each already naming
+   * the rule and the source field in English (the brief's requirement).
+   * Show the first one verbatim rather than flattening it into a generic
+   * translated string — an operational message that says which position is
+   * over its limit beats a localized one that does not.
+   */
   function errorMessage(): string | null {
     if (!mutation.data || mutation.data.ok) return null;
+    const first = mutation.data.violations?.[0];
+    if (first) return first.message;
     switch (mutation.data.error) {
-      case "cgOutOfEnvelope":
-        return t("saveBlockedEnvelope", { phase: mutation.data.errorDetail?.phase ?? "" });
-      case "weightLimitExceeded":
-        return mutation.data.errorDetail?.message ?? tWnb("errors.weightLimitExceeded");
-      case "positionOverload":
-        return t("saveBlockedWeight", {
-          limitName: mutation.data.errorDetail?.position ?? "",
-          actual: "",
-          max: "",
-        });
-      case "crewNotSet":
-        return t("crew.notSet" as never);
+      case "unauthorized":
+      case "forbidden":
+        return tWnb("errors.weightLimitExceeded") === "" ? null : t("saveBlockedRole" as never);
       default:
         return mutation.data.error ?? null;
     }

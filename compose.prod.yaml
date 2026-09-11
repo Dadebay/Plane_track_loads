@@ -36,8 +36,8 @@ services:
       DATABASE_URL: "postgresql://tua:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/tua_load_control?schema=public"
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
       NEXT_PUBLIC_APP_URL: "https://${DOMAIN:?set DOMAIN in .env}"
-      DOCUMENTS_WATERMARK: ${DOCUMENTS_WATERMARK:-true}
-      NEXT_PUBLIC_DEFAULT_LOCALE: "tk"
+      DOCUMENTS_WATERMARK: ${DOCUMENTS_WATERMARK:-false}
+      NEXT_PUBLIC_DEFAULT_LOCALE: "en"
       NODE_ENV: production
     # Generated LIR/LS/ENV PDFs (document-storage.ts) and the message
     # outbox (message-transport.ts) live under /app/.data on local disk —

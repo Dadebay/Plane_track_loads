@@ -1,10 +1,15 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { PageHeader, DataTable, type DataTableColumn } from "@tua/ui";
+import { useTranslations } from "next-intl";
+import {
+  DataTable,
+  type DataTableColumn,
+} from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
 import type { AhmDataSet } from "@tua/ahm-data";
 import type { AhmDocument } from "@tua/db";
 import { Link } from "@/i18n/navigation";
+import { formatDate } from "@/lib/format-date";
 
 function KeyValueTable({ rows }: { rows: [string, string][] }) {
   return (
@@ -36,7 +41,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function AhmDetailView({ doc, data }: { doc: AhmDocument; data: AhmDataSet }) {
   const t = useTranslations("admin.ahm");
-  const locale = useLocale();
 
   const positionColumns: DataTableColumn<(typeof data.positions.positions)[number]>[] = [
     { key: "code", header: "Code", render: (p) => p.code },
@@ -136,7 +140,7 @@ export function AhmDetailView({ doc, data }: { doc: AhmDocument; data: AhmDataSe
       <Section title={t("detail.sections.aircraft")}>
         <KeyValueTable
           rows={[
-            [t("list.effectiveDate"), new Intl.DateTimeFormat(locale).format(new Date(doc.effectiveDate))],
+            [t("list.effectiveDate"), formatDate(new Date(doc.effectiveDate))],
             [t("list.approvedBy"), doc.approvedBy],
             ["MTW", data.aircraft.weightLimits.mtw],
             ["MTOW", data.aircraft.weightLimits.mtow],

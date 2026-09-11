@@ -129,6 +129,16 @@ export async function deleteUld(uldId: string): Promise<UldActionResult> {
   const before = await db.uld.findUnique({ where: { id: uldId } });
   if (!before) return { ok: false, error: "notFound" };
 
+  // A ULD that has been loaded is part of a load plan's record, and load
+  // plans feed calculations and documents that are INSERT-only (CLAUDE.md
+  // rule #5). Deleting it would leave those pointing at nothing.
+  const loadedCount = await db.loadItem.count({ where: { uldId } });
+  if (loadedCount > 0) return { ok: false, error: "uldInUse" };
+
+  // Movements are an append-only trail of where this ULD has been. They are
+  // deleted with it only because it never entered a load plan — anything
+  // that did is refused above. This is the one place the trail may go, and
+  // only together with the record it belongs to.
   await db.uldMovement.deleteMany({ where: { uldId } });
   await db.uld.delete({ where: { id: uldId } });
 

@@ -1,42 +1,58 @@
 "use client";
 
 import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { FileText, Package } from "lucide-react";
 import {
   DataTable,
-  DatePicker,
-  FilterField,
-  FilterPanel,
-  PageHeader,
   Pagination,
   StatusBadge,
   type DataTableColumn,
   type FlightStatus,
 } from "@tua/ui";
+import { PageHeader } from "@/components/page-header";
+import { Link } from "@/i18n/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { FlightFilters } from "@/components/flight-filters";
+import { FlightTimeline, type TimelineMarker } from "./flight-timeline";
 import type { FlightLegRow, FlightListFilters } from "@/lib/flight-queries";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { formatDateTimePartsInZone } from "@/lib/format-date";
 
 // Locally-shaped subset of Prisma's Station type — importing the real type
 // from @tua/db (even as `import type`) risks a bundler pulling the whole
 // @tua/db module graph (Prisma client + extensions) into the client
 // bundle when mixed with any value import from a sibling module. See
 // flight-queries.ts / pagination.ts split for the same reasoning.
+
 interface StationOption {
   id: string;
   iata: string;
+  icao: string;
   name: string;
+  city?: string | null;
+  country?: string | null;
 }
 
-// Jan 1 2024 was a Monday — used as a stable reference date to generate
-// correctly-localized weekday names for the day-of-week filter without a
-// hardcoded 7-language translation table.
-function weekdayOptions(locale: string): { value: number; label: string }[] {
-  return Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(Date.UTC(2024, 0, 1 + i));
-    return { value: i + 1, label: new Intl.DateTimeFormat(locale, { weekday: "long" }).format(date) };
-  });
+// Weekday names come from the message files, never from Intl: browser ICU has
+// no Turkmen weekday data and silently falls back to English, while Node ships
+// full ICU — that mismatch produced a hydration error. `en-US` short names are
+// only used as a stable key to derive the ISO day number (1 = Mon .. 7 = Sun);
+// that dataset exists in every runtime, so both sides agree.
+const ISO_WEEKDAY: Record<string, number> = {
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+  Sun: 7,
+};
+
+function isoWeekday(date: Date, timeZone: string): number {
+  const short = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone }).format(date);
+  return ISO_WEEKDAY[short] ?? 1;
 }
 
 export function FlightsListView({
@@ -45,47 +61,33 @@ export function FlightsListView({
   filters,
   stations,
   serviceTypes,
+  flightNumberPrefixes,
+  registrations,
 }: {
   rows: FlightLegRow[];
   total: number;
   filters: FlightListFilters;
   stations: StationOption[];
   serviceTypes: string[];
+  /** Carrier prefixes present in the schedule, e.g. ["T5"]. */
+  flightNumberPrefixes: string[];
+  /** Every active aircraft in the fleet. */
+  registrations: string[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const locale = useLocale();
   const t = useTranslations("flights.list");
   const tCommon = useTranslations("common");
   const tStatus = useTranslations("flights.status");
+  const tTimeline = useTranslations("flights.timeline");
 
-  const [utcMode, setUtcMode] = useState(false);
-  const [pending, setPending] = useState({
-    from: filters.from ?? "",
-    to: filters.to ?? "",
-    flightNo: filters.flightNo ?? "",
-    registration: filters.registration ?? "",
-    dayOfWeek: filters.dayOfWeek ? String(filters.dayOfWeek) : "",
-    serviceType: filters.serviceType ?? "",
-    dateFrom: filters.dateFrom ?? "",
-    dateTo: filters.dateTo ?? "",
-  });
+  const [selectedLegId, setSelectedLegId] = useState<string | null>(null);
 
   function navigateWithParams(mutate: (params: URLSearchParams) => void) {
     const params = new URLSearchParams(searchParams.toString());
     mutate(params);
     router.push(`${pathname}?${params.toString()}`);
-  }
-
-  function applyFilters() {
-    navigateWithParams((params) => {
-      for (const [key, value] of Object.entries(pending)) {
-        if (value) params.set(key, value);
-        else params.delete(key);
-      }
-      params.set("page", "1");
-    });
   }
 
   function handleSort(key: string) {
@@ -107,16 +109,32 @@ export function FlightsListView({
     });
   }
 
-  function formatTime(date: Date | null, timezone: string): string {
-    if (!date) return "—";
-    return new Intl.DateTimeFormat(locale, {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: utcMode ? "UTC" : timezone,
-    }).format(new Date(date));
+  /**
+   * Every timestamp is shown in its own station's local zone, with the zone
+   * named on the line. There is no Local/UTC toggle on this page: a
+   * departure and an arrival belong to different zones, so one page-wide
+   * switch could only ever be right for half the columns. Labelling each
+   * value is what keeps it unambiguous.
+   */
+  function formatTime(date: Date | null, timezone: string) {
+    if (!date) return <span className="text-fg-subtle">—</span>;
+    const parts = formatDateTimePartsInZone(new Date(date), timezone);
+    return (
+      <span className="flex flex-col leading-tight">
+        <span>{parts.date}</span>
+        <span className="text-fg-muted">
+          {parts.time} ({tCommon("local")})
+        </span>
+      </span>
+    );
+  }
+
+  /** Weekday of the scheduled departure, read in the station's own zone —
+   * a flight leaving 23:00 ASB is Saturday there even when it is already
+   * Sunday in UTC. Follows the Local/UTC switch for the same reason the
+   * times do. */
+  function weekdayLabel(date: Date, timezone: string): string {
+    return tCommon(`weekdays.${isoWeekday(new Date(date), timezone)}` as never);
   }
 
   const columns: DataTableColumn<FlightLegRow>[] = [
@@ -140,142 +158,122 @@ export function FlightsListView({
       header: t("routes"),
       render: (r) => `${r.fromStation.iata}${r.via ? `-${r.via}` : ""}-${r.toStation.iata}`,
     },
-    { key: "flightNo", header: t("flightNumber"), sortable: true, render: (r) => r.flight.flightNo },
+    { key: "flightNo", header: t("flightNoShort"), sortable: true, render: (r) => r.flight.flightNo },
     {
       key: "reg",
-      header: t("aircraftRegistration"),
+      header: t("registrationShort"),
       render: (r) => r.flight.aircraft.registration,
       hideOnCard: true,
     },
-    { key: "type", header: tCommon("type"), render: (r) => r.flight.aircraft.type, hideOnCard: true },
-    { key: "svcType", header: t("serviceType"), render: (r) => r.flight.serviceType, hideOnCard: true },
+    {
+      key: "type",
+      header: tCommon("type"),
+      // The IATA type code the crew reads on every other system ("332"),
+      // with the full model name as the tooltip. Falls back to the model
+      // name for an aircraft whose code has not been entered yet.
+      render: (r) => (
+        <span title={r.flight.aircraft.type}>{r.flight.aircraft.iataTypeCode ?? r.flight.aircraft.type}</span>
+      ),
+      hideOnCard: true,
+    },
+    { key: "svcType", header: t("serviceTypeShort"), render: (r) => r.flight.serviceType, hideOnCard: true },
+    {
+      key: "day",
+      header: t("day"),
+      render: (r) => weekdayLabel(r.stdDep, r.fromStation.timezone),
+      hideOnCard: true,
+    },
+    {
+      key: "actions",
+      header: t("actions"),
+      render: (r) => (
+        // Stops a click on an action from also triggering the row click.
+        <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <Link
+            href={`/flights/${r.id}/load-plan`}
+            aria-label={t("openLoadPlan", { flightNo: r.flight.flightNo })}
+            title={t("openLoadPlan", { flightNo: r.flight.flightNo })}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-fg-muted hover:bg-bg-muted hover:text-fg"
+          >
+            <Package className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <Link
+            href={`/documents?legId=${r.id}`}
+            aria-label={t("openDocuments", { flightNo: r.flight.flightNo })}
+            title={t("openDocuments", { flightNo: r.flight.flightNo })}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-fg-muted hover:bg-bg-muted hover:text-fg"
+          >
+            <FileText className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </span>
+      ),
+    },
   ];
 
   const pageSize = filters.pageSize ?? DEFAULT_PAGE_SIZE;
   const pageCount = Math.max(1, Math.ceil(total / pageSize));
-  const days = weekdayOptions(locale);
+  const selectedLeg = rows.find((r) => r.id === selectedLegId) ?? null;
+
+  /** `T5 3431 ASB-URC 10/09/2026 05:40 (LOCAL) EZ-F430` — the line the crew
+   * reads at the top of their current system's strip. */
+  function timelineTitle(leg: FlightLegRow): string {
+    const parts = formatDateTimePartsInZone(new Date(leg.stdDep), leg.fromStation.timezone);
+    return `${leg.flight.flightNo} ${leg.fromStation.iata}-${leg.toStation.iata} ${parts.date} ${parts.time} (${tCommon("local")}) ${leg.flight.aircraft.registration}`;
+  }
+
+  /** Only timestamps the schedule holds. A leg with no actual departure
+   * gets no ATD marker rather than a placeholder one. */
+  function timelineMarkers(leg: FlightLegRow): TimelineMarker[] {
+    const markers: TimelineMarker[] = [
+      { key: "std", label: tTimeline("markers.std"), at: new Date(leg.stdDep), tone: "scheduled" },
+    ];
+    if (leg.etdDep) markers.push({ key: "etd", label: tTimeline("markers.etd"), at: new Date(leg.etdDep), tone: "estimated" });
+    if (leg.atdDep) markers.push({ key: "atd", label: tTimeline("markers.atd"), at: new Date(leg.atdDep), tone: "actual" });
+    markers.push({ key: "sta", label: tTimeline("markers.sta"), at: new Date(leg.staArr), tone: "scheduled" });
+    return markers;
+  }
+
 
   return (
     <div className="flex flex-col">
-      <PageHeader
-        title={t("title")}
-        actions={
-          <button
-            type="button"
-            onClick={() => setUtcMode((m) => !m)}
-            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium text-fg hover:bg-bg-muted"
-          >
-            {utcMode ? tCommon("utc") : tCommon("local")}
-          </button>
-        }
-      />
+      <PageHeader title={t("title")} />
       <div className="flex flex-col gap-4 p-4 sm:p-6">
-        <FilterPanel
-          trailing={
-            <button
-              type="button"
-              onClick={applyFilters}
-              className="inline-flex h-11 items-center rounded-md bg-brand-500 px-4 text-sm font-medium text-fg-on-brand sm:h-9"
-            >
-              {tCommon("filter")}
-            </button>
-          }
-        >
-          <FilterField label={tCommon("from")}>
-            <select
-              value={pending.from}
-              onChange={(e) => setPending((p) => ({ ...p, from: e.target.value }))}
-              className="h-11 rounded-md border border-border bg-bg px-3 text-sm sm:h-9"
-            >
-              <option value="">{t("allStations")}</option>
-              {stations.map((s) => (
-                <option key={s.id} value={s.iata}>
-                  {s.iata} — {s.name}
-                </option>
-              ))}
-            </select>
-          </FilterField>
-          <FilterField label={tCommon("to")}>
-            <select
-              value={pending.to}
-              onChange={(e) => setPending((p) => ({ ...p, to: e.target.value }))}
-              className="h-11 rounded-md border border-border bg-bg px-3 text-sm sm:h-9"
-            >
-              <option value="">{t("allStations")}</option>
-              {stations.map((s) => (
-                <option key={s.id} value={s.iata}>
-                  {s.iata} — {s.name}
-                </option>
-              ))}
-            </select>
-          </FilterField>
-          <FilterField label={t("flightNumber")}>
-            <input
-              value={pending.flightNo}
-              onChange={(e) => setPending((p) => ({ ...p, flightNo: e.target.value }))}
-              placeholder="692"
-              className="h-11 rounded-md border border-border bg-bg px-3 text-sm sm:h-9"
-            />
-          </FilterField>
-          <FilterField label={t("aircraftRegistration")}>
-            <input
-              value={pending.registration}
-              onChange={(e) => setPending((p) => ({ ...p, registration: e.target.value }))}
-              placeholder="EZ-F430"
-              className="h-11 rounded-md border border-border bg-bg px-3 text-sm sm:h-9"
-            />
-          </FilterField>
-          <FilterField label={t("dayOfWeek")}>
-            <select
-              value={pending.dayOfWeek}
-              onChange={(e) => setPending((p) => ({ ...p, dayOfWeek: e.target.value }))}
-              className="h-11 rounded-md border border-border bg-bg px-3 text-sm sm:h-9"
-            >
-              <option value="">{t("allDays")}</option>
-              {days.map((d) => (
-                <option key={d.value} value={d.value}>
-                  {d.label}
-                </option>
-              ))}
-            </select>
-          </FilterField>
-          <FilterField label={t("serviceType")}>
-            <select
-              value={pending.serviceType}
-              onChange={(e) => setPending((p) => ({ ...p, serviceType: e.target.value }))}
-              className="h-11 rounded-md border border-border bg-bg px-3 text-sm sm:h-9"
-            >
-              <option value="">{t("allTypes")}</option>
-              {serviceTypes.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </FilterField>
-          <FilterField label={t("startDateTime")}>
-            <DatePicker
-              value={pending.dateFrom}
-              onChange={(v) => setPending((p) => ({ ...p, dateFrom: v }))}
-              locale={locale}
-              labels={{ clear: tCommon("clear"), today: tCommon("today") }}
-            />
-          </FilterField>
-          <FilterField label={t("endDateTime")}>
-            <DatePicker
-              value={pending.dateTo}
-              onChange={(v) => setPending((p) => ({ ...p, dateTo: v }))}
-              locale={locale}
-              labels={{ clear: tCommon("clear"), today: tCommon("today") }}
-            />
-          </FilterField>
-        </FilterPanel>
+        {/* Grouped the way the crew's existing system groups them — dates,
+            routes, flight identity, aircraft — so the fields sit where the
+            controllers already expect them. On a phone the groups stack. */}
+        <FlightFilters
+          filters={filters}
+          stations={stations}
+          serviceTypes={serviceTypes}
+          flightNumberPrefixes={flightNumberPrefixes}
+          registrations={registrations}
+        />
+
+        {selectedLeg ? (
+          <FlightTimeline
+            // Remounted per leg, so the strip re-centres on the newly
+            // selected flight instead of keeping the previous pan.
+            key={selectedLeg.id}
+            title={timelineTitle(selectedLeg)}
+            timezone={selectedLeg.fromStation.timezone}
+            markers={timelineMarkers(selectedLeg)}
+            onClose={() => setSelectedLegId(null)}
+            openLoadPlanLabel={t("openLoadPlanShort")}
+            onOpenLoadPlan={() => router.push(`/flights/${selectedLeg.id}/load-plan`)}
+          />
+        ) : null}
 
         <div className="overflow-hidden rounded-lg border border-border">
           <DataTable
             columns={columns}
             rows={rows}
             rowKey={(r) => r.id}
+            // A click selects the leg and opens its timeline above the
+            // table. Opening the load plan stays an explicit action — the
+            // button on the timeline, or the icon in the action column — so
+            // inspecting a flight never navigates away by accident.
+            onRowClick={(r) => setSelectedLegId((current) => (current === r.id ? null : r.id))}
+            isRowSelected={(r) => r.id === selectedLegId}
             emptyState={tCommon("noResults")}
             sortKey={filters.sort}
             sortDirection={filters.dir}

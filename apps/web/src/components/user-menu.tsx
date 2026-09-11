@@ -7,7 +7,7 @@ import { ChevronUp, History, LogOut, User as UserIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@tua/ui";
 
-export function UserMenu() {
+export function UserMenu({ compact = false }: { compact?: boolean }) {
   const { data: session } = useSession();
   const t = useTranslations("account");
   const [open, setOpen] = useState(false);
@@ -40,7 +40,12 @@ export function UserMenu() {
       {open ? (
         <div
           role="menu"
-          className="absolute bottom-full left-0 z-20 mb-2 w-full min-w-64 overflow-hidden rounded-xl border border-border bg-bg shadow-xl"
+          className={cn(
+            "absolute bottom-full z-20 mb-2 min-w-64 overflow-hidden rounded-xl border border-border bg-bg shadow-xl",
+            // In the collapsed rail the trigger is 40px wide, so the menu
+            // cannot take its width — it opens alongside it instead.
+            compact ? "left-0" : "left-0 w-full",
+          )}
         >
           <div className="flex items-center gap-3 border-b border-border p-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-semibold text-fg-on-brand">
@@ -89,14 +94,25 @@ export function UserMenu() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex w-full items-center gap-2 rounded-md bg-brand-500 px-3 py-2 text-sm font-semibold text-fg-on-brand"
+        // Collapsed, the name has nowhere to go, so it becomes the button's
+        // accessible name and its tooltip instead of being truncated away.
+        aria-label={compact ? name : undefined}
+        title={compact ? name : undefined}
+        className={cn(
+          "flex items-center gap-2 rounded-md bg-brand-500 text-sm font-semibold text-fg-on-brand",
+          compact ? "h-10 w-10 justify-center" : "w-full px-3 py-2",
+        )}
       >
         <UserIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <span className="truncate">{name}</span>
-        <ChevronUp
-          className={cn("ml-auto h-3.5 w-3.5 shrink-0 transition-transform", !open && "rotate-180")}
-          aria-hidden="true"
-        />
+        {compact ? null : (
+          <>
+            <span className="truncate">{name}</span>
+            <ChevronUp
+              className={cn("ml-auto h-3.5 w-3.5 shrink-0 transition-transform", !open && "rotate-180")}
+              aria-hidden="true"
+            />
+          </>
+        )}
       </button>
     </div>
   );
