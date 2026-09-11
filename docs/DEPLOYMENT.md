@@ -107,6 +107,99 @@ Kayıt 6 açık, tank bazlı yakıt ve yanal denge verisi eksik. Filigransız
 üretilen bir belge, otorite kabulü alınmış bir belge değildir; paralel
 operasyonel validasyon ve havayolu/otorite kabulü hâlâ gereklidir.
 
+## Kısıtlı sunucuya dağıtım (npm erişimi yok, düşük RAM)
+
+Pilot sunucu iki şeyi yapamıyor: `registry.npmjs.org` ve `binaries.prisma.sh`
+adreslerine çıkamıyor (SNI bazlı engel) ve 1 GB'ın altındaki RAM'iyle
+`next build` çalıştıramıyor. Yani "klonla, kur, derle" yolu kapalı —
+**geliştirme makinesinde derlenip paket olarak gönderiliyor.**
+
+### Paketi hazırlama (geliştirme makinesinde)
+
+```bash
+pnpm --filter @tua/web build
+mkdir -p /tmp/bundle && cp -R apps/web/.next/standalone/. /tmp/bundle/
+mkdir -p /tmp/bundle/apps/web/.next
+cp -R apps/web/.next/static /tmp/bundle/apps/web/.next/static
+cp -R apps/web/public /tmp/bundle/apps/web/public
+# Prisma: standalone çıktısı query engine'i taşımıyor, elle ekleniyor
+SRC=$(ls -d node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client | head -1)
+REL=$(dirname $(dirname $SRC)); mkdir -p /tmp/bundle/$REL/.prisma
+cp -R $SRC /tmp/bundle/$REL/.prisma/
+# Belgelerdeki logo çalışma anında dosyadan okunuyor, o da izlenmiyor
+mkdir -p /tmp/bundle/packages/documents/assets
+cp packages/documents/assets/airline-logo.png /tmp/bundle/packages/documents/assets/
+# Migration'lar için şema
+cp -R packages/db/prisma /tmp/bundle/packages/db/prisma
+# macOS ikilileri işe yaramaz, çıkar
+rm -rf /tmp/bundle/node_modules/.pnpm/@img+sharp-* /tmp/bundle/node_modules/.pnpm/sharp@*
+rm -rf /tmp/bundle/node_modules/.pnpm/argon2@*/node_modules/argon2/prebuilds/darwin-*
+rm -f  /tmp/bundle/node_modules/.pnpm/@prisma+client@*/node_modules/.prisma/client/*darwin*
+tar czf tua-deploy.tar.gz -C /tmp/bundle .
+```
+
+Paket ~30 MB. `sharp` çıkarılabiliyor çünkü uygulama `next/image` kullanmıyor;
+`argon2` çıkarılamaz — parola doğrulaması ona bağlı, sunucuda **linux-x64**
+prebuild'i bulunmalı (mevcut kurulumdan kopyalanır veya Linux'ta üretilir).
+
+### Prisma CLI paketi
+
+Sunucu engine indiremediği için CLI de ayrı, kendi kendine yeten bir paket
+olarak gönderilir — pnpm'in symlink düzeni kopyalanamadığından **npm'in düz
+node_modules düzeniyle**:
+
+```bash
+mkdir /tmp/prisma-cli && cd /tmp/prisma-cli && npm init -y
+PRISMA_SKIP_POSTINSTALL_GENERATE=1 npm install prisma@<sürüm>
+E=node_modules/@prisma/engines
+rm -f $E/*darwin*
+cp <linux schema-engine> $E/schema-engine-debian-openssl-3.0.x
+cp <linux query engine>  $E/libquery_engine-debian-openssl-3.0.x.so.node
+chmod +x $E/schema-engine-debian-openssl-3.0.x
+```
+
+Linux engine'leri, CLI ile **aynı** engine commit'inden alınır:
+`https://binaries.prisma.sh/all_commits/<enginesVersion>/debian-openssl-3.0.x/schema-engine.gz`
+(`enginesVersion` için `@prisma/engines-version/package.json`).
+
+### Sunucuda
+
+```bash
+tar xzf tua-deploy.tar.gz -C ~/tua-new
+cp <eski kurulum>/.env ~/tua-new/.env          # DATABASE_URL, AUTH_SECRET, DOCUMENTS_WATERMARK
+cp -R <argon2 linux-x64 prebuild> ~/tua-new/node_modules/.pnpm/argon2@*/node_modules/argon2/prebuilds/
+node ~/prisma-cli/node_modules/prisma/build/index.js migrate deploy --schema ~/tua-new/packages/db/prisma/schema.prisma
+```
+
+`server.js` `.env` dosyasını **kendisi okumaz** — pm2'ye verilen sarmalayıcı
+okur:
+
+```bash
+#!/bin/bash
+set -a; . /path/to/app/.env; set +a
+export PORT=8080
+exec /path/to/node /path/to/app/apps/web/server.js
+```
+
+```bash
+pm2 start start.sh --name tua-web --interpreter bash && pm2 save
+```
+
+### `db push` ile kurulmuş bir veritabanını devralmak
+
+Pilot veritabanı migration geçmişi olmadan (`prisma db push`) kurulmuşsa
+`migrate deploy` **P3005** verir. Çözüm, hangi değişikliğin fiilen içeride
+olduğunu ölçüp uygulanmış olanları baseline'lamaktır:
+
+```bash
+prisma migrate resolve --applied <migration_adı>   # zaten içeride olan her biri
+prisma migrate deploy                              # kalanlar
+```
+
+Sütunları ararken kolon adlarının **camelCase** olduğuna dikkat edin
+(`"cockpitCrew"`, `"tareWeight"`) — snake_case arayan bir sorgu "yok" der ve
+yanlış baseline'a yol açar.
+
 ## Sağlık kontrolü
 
 | Uç nokta | Ne kontrol eder | Kimlik doğrulama |
