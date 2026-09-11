@@ -131,6 +131,8 @@ mkdir -p /tmp/bundle/packages/documents/assets
 cp packages/documents/assets/airline-logo.png /tmp/bundle/packages/documents/assets/
 # Migration'lar için şema
 cp -R packages/db/prisma /tmp/bundle/packages/db/prisma
+# Çökme koruyucusu — üretimde server.js yerine bu çalıştırılır
+cp apps/web/server-guard.mjs /tmp/bundle/apps/web/
 # macOS ikilileri işe yaramaz, çıkar
 rm -rf /tmp/bundle/node_modules/.pnpm/@img+sharp-* /tmp/bundle/node_modules/.pnpm/sharp@*
 rm -rf /tmp/bundle/node_modules/.pnpm/argon2@*/node_modules/argon2/prebuilds/darwin-*
@@ -172,13 +174,17 @@ node ~/prisma-cli/node_modules/prisma/build/index.js migrate deploy --schema ~/t
 ```
 
 `server.js` `.env` dosyasını **kendisi okumaz** — pm2'ye verilen sarmalayıcı
-okur:
+okur. Sunucu `server.js` yerine `server-guard.mjs` ile başlatılır: istemci
+yanıtın ortasında kaybolunca (sekme kapandı, yenilendi) Node `ECONNRESET`
+fırlatıyor, Next bunu yakalamıyor ve süreç ölüyor — pilot sunucu bu yüzden
+311 kez yeniden başlamıştı. Koruyucu o kodları yutar, başka her hatada
+çıkar (`apps/web/test/server-guard.test.ts` ikisini de doğruluyor).
 
 ```bash
 #!/bin/bash
 set -a; . /path/to/app/.env; set +a
 export PORT=8080
-exec /path/to/node /path/to/app/apps/web/server.js
+exec /path/to/node /path/to/app/apps/web/server-guard.mjs
 ```
 
 ```bash
