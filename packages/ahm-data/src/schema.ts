@@ -497,9 +497,39 @@ export interface AhmDataSet {
   fuelTankIndex: FuelTankIndexData | null;
 }
 
+/**
+ * Where the versioned AHM JSON lives, resolved at *runtime*.
+ *
+ * `import.meta.url` alone is not enough: a bundler inlines it at build
+ * time, so a deployed server went looking for the build machine's absolute
+ * path and failed with ENOENT on a server that had the data sitting right
+ * there. Each candidate is therefore checked on disk, and the first one
+ * that exists wins:
+ *
+ *   1. `AHM_DATA_PATH` — an explicit override for unusual layouts
+ *   2. next to this module (normal: running from source or node_modules)
+ *   3. relative to the working directory, for a Next standalone build,
+ *      which runs from `apps/web` with the workspace beside it
+ *
+ * Throwing with the full list beats a bare ENOENT: the next person sees
+ * where it looked instead of one path that means nothing to them.
+ */
 function dataRoot(): string {
-  const here = path.dirname(fileURLToPath(import.meta.url));
-  return path.join(here, "..", "data");
+  const candidates = [
+    process.env.AHM_DATA_PATH,
+    path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "data"),
+    path.join(process.cwd(), "packages", "ahm-data", "data"),
+    path.join(process.cwd(), "..", "..", "packages", "ahm-data", "data"),
+  ].filter((candidate): candidate is string => Boolean(candidate));
+
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+
+  throw new Error(
+    `AHM data directory not found. Looked in:\n  ${candidates.join("\n  ")}\n` +
+      "Set AHM_DATA_PATH to the directory holding the versioned AHM JSON.",
+  );
 }
 
 function readJson(filePath: string): unknown {
