@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { toDowDoiRows, toFuelIndexRows } from "@/lib/ahm-detail-rows";
 import {
   DataTable,
   type DataTableColumn,
@@ -50,23 +51,15 @@ export function AhmDetailView({ doc, data }: { doc: AhmDocument; data: AhmDataSe
     { key: "indexPerKg", header: "Index/kg", render: (p) => p.indexPerKg },
   ];
 
-  const fuelRows = Object.entries(data.fuelIndex).flatMap(([density, rows]) =>
-    rows.map((row) => ({ density, ...row })),
-  );
+  const fuelRows = toFuelIndexRows(data.fuelIndex as Record<string, unknown>);
   const fuelColumns: DataTableColumn<(typeof fuelRows)[number]>[] = [
     { key: "density", header: "Density", render: (r) => r.density },
     { key: "fuelWeight", header: "Fuel weight", render: (r) => r.fuelWeight },
     { key: "index", header: "Index", render: (r) => r.index },
   ];
 
-  const dowDoiRows = Object.entries(data.dowDoiMatrix)
-    .filter(([key]) => key !== "notes" && key !== "source")
-    .flatMap(([registration, cells]) =>
-      (cells as { cockpitCrew: number; courierCrew: number; dow: string; doi: string }[]).map((c) => ({
-        registration,
-        ...c,
-      })),
-    );
+  const dowDoiRows = toDowDoiRows(data.dowDoiMatrix as Record<string, unknown>);
+
   const dowDoiColumns: DataTableColumn<(typeof dowDoiRows)[number]>[] = [
     { key: "registration", header: "Registration", render: (r) => r.registration },
     { key: "cockpitCrew", header: "Cockpit", render: (r) => r.cockpitCrew },
