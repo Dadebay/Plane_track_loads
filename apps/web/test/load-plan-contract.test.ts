@@ -4,6 +4,7 @@ import {
   canEditLoadPlan,
   canFinalizeLoadPlan,
   checkCrewSet,
+  checkFinalizeReady,
   checkFuelAllocation,
   checkFuelConsistency,
   checkPositionsExist,
@@ -273,5 +274,35 @@ describe("checkCrewSet", () => {
   it("names each missing count separately", () => {
     const violations = checkCrewSet({ cockpitCrew: null, courierCrew: null });
     expect(violations.map((v) => v.code)).toEqual(["cockpitCrewNotSet", "courierCrewNotSet"]);
+  });
+});
+
+describe("checkFinalizeReady", () => {
+  /**
+   * The tank split is demanded only where the AHM can check it. Today's
+   * revision publishes no refuelling schedule and its per-tank index page is
+   * untranscribed, so blocking a finalize on it would stop real flights
+   * from being closed out for a figure nothing consumes.
+   */
+  it("lets a plan finalize without a tank split while the AHM tank data is unusable", () => {
+    expect(checkFinalizeReady(fuel(), false)).toEqual([]);
+  });
+
+  it("requires the split once the revision publishes usable tank data", () => {
+    const violations = checkFinalizeReady(fuel(), true);
+    expect(violations).toHaveLength(1);
+    expect(violations[0]?.code).toBe("fuelDistributionRequired");
+    expect(violations[0]?.field).toBe("fuel.allocations");
+  });
+
+  it("is satisfied by a split whatever the data status", () => {
+    const split = fuel({
+      allocations: [
+        { tank: "INNER", side: "LEFT", weight: "30700" },
+        { tank: "INNER", side: "RIGHT", weight: "30700" },
+      ],
+    });
+    expect(checkFinalizeReady(split, true)).toEqual([]);
+    expect(checkFinalizeReady(split, false)).toEqual([]);
   });
 });

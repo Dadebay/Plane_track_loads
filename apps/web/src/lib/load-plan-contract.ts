@@ -448,8 +448,19 @@ export function checkFuelConsistency(fuel: FuelInput): Violation[] {
 
 /** Rules that only block finalization. A draft may be incomplete; a
  * finalized plan may not. */
-export function checkFinalizeReady(fuel: FuelInput): Violation[] {
+export function checkFinalizeReady(fuel: FuelInput, tankFuelDataUsable: boolean): Violation[] {
   if (fuel.allocations.length > 0) return [];
+
+  // Demanding a tank split only makes sense where the AHM can check one.
+  // On today's revision it cannot: no refuelling schedule is published and
+  // the per-tank index page is untranscribed (AHM560_ERRATA.md Kayıt 10),
+  // so `getTankFuelIndex` throws and `allocateFuelAutomatically` reports
+  // unavailable. Blocking finalization on a figure nothing consumes stops
+  // real flights from being closed out and buys no safety — the controller
+  // may still enter the split, and the moment the card arrives and the file
+  // stops being provisional this becomes a hard requirement again.
+  if (!tankFuelDataUsable) return [];
+
   return [
     violation(
       "fuelDistributionRequired",

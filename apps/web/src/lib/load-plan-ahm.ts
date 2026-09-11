@@ -105,6 +105,7 @@ export async function getLoadPlanAhmData(
         }
       : null,
     uldTares: Object.fromEntries(ahm.uldTypes.types.map((t) => [t.typeCode, t.tareWeight])),
+    tankFuelDataUsable: ahm.fuelTankIndex !== null && !ahm.fuelTankIndex.provisional,
     dowDoiBreakdown: buildDowDoiBreakdown(ahm, registration, doc.edition, doc.revision),
   };
 }

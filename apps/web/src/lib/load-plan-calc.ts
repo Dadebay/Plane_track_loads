@@ -84,6 +84,13 @@ export interface LoadPlanAhmData {
   /** ULD type code -> printed tare weight, from uld-types.json. Lets the
    * server derive gross from a picked ULD instead of trusting the client. */
   uldTares: Record<string, string>;
+  /** True only when this revision publishes tank data that a calculation
+   * may use — i.e. `fuel-tank-index.json` exists and is no longer
+   * provisional. False today (AHM560_ERRATA.md Kayıt 10): the approved
+   * source publishes no refuelling schedule and the per-tank index page is
+   * untranscribed, so a tank split is a record of what the crew did, not an
+   * input to anything. */
+  tankFuelDataUsable: boolean;
   /** Where this flight's DOW/DOI comes from, for the breakdown screen.
    * Read-only: the published cell is the authority, never rebuilt here. */
   dowDoiBreakdown: DowDoiBreakdown;

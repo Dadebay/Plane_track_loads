@@ -100,7 +100,7 @@ export async function saveLoadPlan(input: SaveLoadPlanInput): Promise<SaveLoadPl
     ...checkRefuelMode(data.fuel),
     ...checkFuelConsistency(data.fuel),
     ...checkFuelAllocation(data.fuel),
-    ...(data.finalize ? checkFinalizeReady(data.fuel) : []),
+    ...(data.finalize ? checkFinalizeReady(data.fuel, ahmData.tankFuelDataUsable) : []),
   ];
   if (inputViolations.length > 0) {
     return { ok: false, error: inputViolations[0]!.code, violations: inputViolations };

@@ -50,6 +50,7 @@ const ahmData: LoadPlanAhmData = {
       }
     : null,
   uldTares: Object.fromEntries(ahm.uldTypes.types.map((t) => [t.typeCode, t.tareWeight])),
+  tankFuelDataUsable: ahm.fuelTankIndex !== null && !ahm.fuelTankIndex.provisional,
   dowDoiBreakdown: {
     registration: "EZ-F430",
     edition: ahm.aircraft.edition,
