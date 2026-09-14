@@ -27,6 +27,23 @@ yerel veritabanından şema + referans verisi (uçuşlar, istasyonlar, uçaklar,
 AHM belgeleri, ULD'ler, kullanıcılar) SQL olarak alınıp `psql` ile yükleniyor.
 Operasyonel tablolar (planlar, belgeler, hesaplar) bilerek boş bırakılır:
 
+PG16'nın `pg_dump`'ı dosyanın başına ve sonuna `\restrict` / `\unrestrict`
+satırları koyuyor; sunucudaki psql 15 bu meta-komutu tanımıyor ve dosyayı
+5. satırda reddediyor. Dökümü aldıktan sonra o iki satırı sil:
+
+```bash
+sed -i '' '/^\\restrict /d; /^\\unrestrict /d' ~/Downloads/tua-clean-bench.sql   # macOS
+sed -i    '/^\\restrict /d; /^\\unrestrict /d' ~/tua-clean-bench.sql             # Linux
+```
+
+Yükleme (sunucuda, Docker yok — Postgres orada sistem servisi):
+
+```bash
+set -a; . ~/tua-new/.env; set +a; U="${DATABASE_URL%%\?*}"
+pg_dump "$U" > ~/db-before-restore-$(date +%F-%H%M).sql
+psql "$U" -v ON_ERROR_STOP=1 -f ~/tua-clean-bench.sql
+```
+
 ```bash
 docker exec plane_track_loads-postgres-1 pg_dump -U tua -d tua_load_control \
   --clean --if-exists \
