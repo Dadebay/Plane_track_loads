@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
   // (and @tua/db, which re-exports it) external forces Next to leave them
   // as a real node_modules require, same reasoning as @react-pdf/renderer.
   serverExternalPackages: ["@react-pdf/renderer", "@prisma/client", "@tua/db"],
+  // The airline mark is read from disk at render time (documents/src/shared/
+  // logo.tsx), not imported, so Next's dependency tracing cannot see it and a
+  // standalone build would ship without it — every generated PDF would fall
+  // back to the plain disc. Name it explicitly.
+  outputFileTracingIncludes: {
+    "**": ["../../packages/documents/assets/**"],
+  },
   experimental: {
     typedRoutes: true,
   },
