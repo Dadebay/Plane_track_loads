@@ -1,0 +1,44 @@
+# One-off image used only to produce the pilot server's deploy bundle.
+# The repo's own Dockerfile builds on alpine (musl); that server is Ubuntu
+# 22.04 (glibc) running Node 22, so the native pieces — the Prisma query
+# engine, argon2, sharp — have to be built against glibc or they will not
+# load there. Nothing here ships to production as an image: we copy /app out.
+FROM node:22-bookworm-slim AS base
+RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends python3 build-essential openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+
+FROM base AS deps
+WORKDIR /repo
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
+COPY apps/web/package.json apps/web/package.json
+COPY packages/wnb-core/package.json packages/wnb-core/package.json
+COPY packages/ahm-data/package.json packages/ahm-data/package.json
+COPY packages/documents/package.json packages/documents/package.json
+COPY packages/db/package.json packages/db/package.json
+COPY packages/ui/package.json packages/ui/package.json
+COPY tools/compare/package.json tools/compare/package.json
+COPY packages/db/prisma packages/db/prisma
+RUN pnpm install --frozen-lockfile
+
+FROM base AS builder
+WORKDIR /repo
+COPY --from=deps /repo/node_modules ./node_modules
+COPY . .
+RUN pnpm --filter @tua/web... build
+
+FROM base AS bundle
+WORKDIR /app
+COPY --from=builder /repo/apps/web/.next/standalone ./
+COPY --from=builder /repo/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /repo/apps/web/public ./apps/web/public
+# `@prisma/client` and `@tua/db` are kept external (see next.config.ts), so
+# the traced bundle does not carry them — copy the real ones, engines and all.
+COPY --from=builder /repo/node_modules/.pnpm ./node_modules/.pnpm_prisma_tmp
+RUN set -e; \
+    src=$(find node_modules/.pnpm_prisma_tmp -maxdepth 1 -type d -name '@prisma+client@*' | head -1); \
+    mkdir -p node_modules/@prisma node_modules/.prisma; \
+    cp -RL "$src/node_modules/@prisma/client" node_modules/@prisma/client; \
+    cp -RL "$src/node_modules/.prisma/client" node_modules/.prisma/client; \
+    rm -rf node_modules/.pnpm_prisma_tmp
+COPY --from=builder /repo/packages/db/src ./packages/db/src
+COPY --from=builder /repo/packages/db/prisma ./packages/db/prisma
+RUN mkdir -p /app/.data
