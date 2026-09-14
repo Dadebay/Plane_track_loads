@@ -40,6 +40,9 @@ export interface DocumentRef {
   id: string;
   edition: number;
   issuedAt: string;
+  /** False when the stored PDF is gone — the row stays (insert-only), but
+   * there is nothing to open. */
+  available: boolean;
 }
 
 /** Current edition of each type held for one leg, keyed by DocumentType. */
@@ -138,7 +141,29 @@ export function DocumentsView({
           return (
             <span key={type} className="flex items-center gap-1.5">
               <span className="w-10 shrink-0 text-xs font-semibold text-fg">{type}</span>
-              {doc && filename ? (
+              {doc && filename && !doc.available ? (
+                // The edition exists but its file does not. Say so where the
+                // links would be, and leave the new-edition button available
+                // so the crew can produce a replacement.
+                <>
+                  <span className="w-9 shrink-0 text-xs tabular-nums text-fg-subtle">
+                    ED{String(doc.edition).padStart(2, "0")}
+                  </span>
+                  <span className="text-xs text-danger" title={tDocs("fileMissingHint", { name: filename })}>
+                    {tDocs("fileMissing")}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={!finalized.has(leg.id)}
+                    onClick={() => setGenerating({ leg, type })}
+                    aria-label={tDocs("newEdition", { type, flightNo: leg.flight.flightNo })}
+                    title={finalized.has(leg.id) ? tDocs("newEdition", { type, flightNo: leg.flight.flightNo }) : tGen("errors.loadPlanNotFinalized")}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border text-fg-muted hover:bg-bg-muted hover:text-fg disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </>
+              ) : doc && filename ? (
                 <>
                   <span className="w-9 shrink-0 text-xs tabular-nums text-fg-subtle">
                     ED{String(doc.edition).padStart(2, "0")}

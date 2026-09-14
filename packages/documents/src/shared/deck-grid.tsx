@@ -1,3 +1,4 @@
+import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { COLOR, RULE } from "./tokens";
 import type { DocumentDeckCell, DocumentDeckRow } from "./types";
@@ -47,7 +48,10 @@ const grid = StyleSheet.create({
     paddingVertical: 1,
   },
   boxBlocked: { backgroundColor: COLOR.blocked, borderColor: COLOR.blocked },
-  line: { fontSize: 6, textAlign: "center", paddingVertical: 1 },
+  // Holds a column open where a row has no position at all, so the rows below
+  // stay under their own numbers.
+  boxHidden: { paddingVertical: 1 },
+  line: { fontSize: 6, textAlign: "center", paddingVertical: 1, paddingHorizontal: 1 },
   lineWeight: { fontWeight: 700 },
   unavailable: { fontSize: 7, color: COLOR.inkMuted, paddingVertical: 3 },
 });
@@ -63,7 +67,7 @@ function identity(cell: DocumentDeckCell): string {
  * truncates: a clipped ULD code names a different container. */
 function identityStyle(text: string) {
   if (text.length <= 6) return {};
-  return { fontSize: text.length >= 10 ? 4.2 : 4.8, letterSpacing: -0.1 };
+  return { fontSize: text.length >= 10 ? 3.9 : 4.6, letterSpacing: -0.1 };
 }
 
 function Cell({
@@ -94,21 +98,86 @@ function Cell({
   );
 }
 
+/** A lower-deck position's column on the plate: the number without the size
+ * suffix, so `12P` sits under `12` and `12R`/`12L` under it too. */
+function columnKey(code: string): string {
+  return /^(\d+)/.exec(code)?.[1] ?? code;
+}
+
+/**
+ * The lower deck's shared column order, in plate order, with the wing box
+ * between compartments 2 and 3. Every row is laid out against it, so a
+ * pallet row leaves a hole where its container column has no pallet — which
+ * is how the plate reads, and why the crew can follow a column down.
+ */
+function lowerDeckColumns(rows: DocumentDeckRow[]): string[] {
+  const keys: string[] = [];
+  for (const row of rows) {
+    for (const cell of row.cells) {
+      const key = columnKey(cell.code);
+      if (!keys.includes(key)) keys.push(key);
+    }
+  }
+  keys.sort((a, b) => Number(a) - Number(b));
+
+  const withGap: string[] = [];
+  keys.forEach((key, i) => {
+    const previous = keys[i - 1];
+    if (previous?.startsWith("2") && key.startsWith("3")) withGap.push(GAP_COLUMN);
+    withGap.push(key);
+  });
+  return withGap;
+}
+
+const GAP_COLUMN = "\u0000gap";
+
+function GapCell({ width, showIdentity }: { width: string; showIdentity: boolean }) {
+  return (
+    <View style={[grid.column, { width }]}>
+      <Text style={grid.code}> </Text>
+      <View style={[grid.box, grid.boxBlocked]}>
+        {showIdentity ? <Text style={grid.line}> </Text> : null}
+        <Text style={[grid.line, grid.lineWeight]}> </Text>
+      </View>
+    </View>
+  );
+}
+
+function BlankCell({ width }: { width: string }) {
+  return (
+    <View style={[grid.column, { width }]}>
+      <Text style={grid.code}> </Text>
+      <View style={grid.boxHidden}>
+        <Text style={grid.line}> </Text>
+        <Text style={[grid.line, grid.lineWeight]}> </Text>
+      </View>
+    </View>
+  );
+}
+
 export function DeckGrid({
   rows,
   showIdentity = true,
+  alignColumns = false,
 }: {
   rows: DocumentDeckRow[];
   /** The LIR prints ULD identity and weight; the Loadsheet's distribution
    * block prints weight only, as the reference loadsheet does. */
   showIdentity?: boolean;
+  /** Lay every row against one column order (the lower deck). The main
+   * deck's rows are alternative configurations of the same floor, not
+   * columns of one grid, so they start at the left instead. */
+  alignColumns?: boolean;
 }) {
   // One column pitch for the whole deck, taken from its widest row, so a
   // position sits in the same place on every configuration row — the way the
   // printed plate aligns them. Rows with fewer positions stop short instead
   // of stretching their cells across the page.
-  const columns = rows.reduce((max, row) => Math.max(max, row.cells.length), 1);
-  const width = `${(100 / columns).toFixed(4)}%`;
+  const columnOrder = alignColumns ? lowerDeckColumns(rows) : [];
+  const columns = alignColumns
+    ? columnOrder.length
+    : rows.reduce((max, row) => Math.max(max, row.cells.length), 1);
+  const width = `${(100 / Math.max(columns, 1)).toFixed(4)}%`;
 
   // An AHM revision whose plate page we do not hold produces no rows
   // (`buildDeckLayout` returns empty rather than guessing). Say so on the
@@ -129,9 +198,42 @@ export function DeckGrid({
             <Text style={grid.gutterLabel}>{row.label}</Text>
           </View>
           <View style={grid.cells}>
-            {row.cells.map((cell) => (
-              <Cell key={`${row.id}/${cell.code}`} cell={cell} showIdentity={showIdentity} width={width} />
-            ))}
+            {alignColumns
+              ? columnOrder.map((key) => {
+                  if (key === GAP_COLUMN) {
+                    // The wing box only means something to a row that runs
+                    // across it. The bulk row sits entirely aft of it, so
+                    // shading a column there would invent a break in a row
+                    // that has none.
+                    const spansGap =
+                      row.cells.some((candidate) => columnKey(candidate.code).startsWith("1") || columnKey(candidate.code).startsWith("2")) &&
+                      row.cells.some((candidate) => ["3", "4"].includes(columnKey(candidate.code).charAt(0)));
+                    return spansGap ? (
+                      <GapCell key={`${row.id}/gap`} width={width} showIdentity={showIdentity} />
+                    ) : (
+                      <BlankCell key={`${row.id}/gap-blank`} width={width} />
+                    );
+                  }
+                  const cell = row.cells.find((candidate) => columnKey(candidate.code) === key);
+                  return cell ? (
+                    <Cell
+                      key={`${row.id}/${cell.code}`}
+                      cell={cell}
+                      showIdentity={showIdentity}
+                      width={width}
+                    />
+                  ) : (
+                    <BlankCell key={`${row.id}/blank-${key}`} width={width} />
+                  );
+                })
+              : row.cells.map((cell) => (
+                  <Cell
+                    key={`${row.id}/${cell.code}`}
+                    cell={cell}
+                    showIdentity={showIdentity}
+                    width={width}
+                  />
+                ))}
           </View>
         </View>
       ))}

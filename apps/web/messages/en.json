@@ -46,7 +46,9 @@
       "preview": "Preview {name}",
       "downloadNamed": "Download {name}",
       "generateNamed": "Generate {type} for {flightNo}",
-      "newEdition": "New {type} edition for {flightNo}"
+      "newEdition": "New {type} edition for {flightNo}",
+      "fileMissing": "File missing",
+      "fileMissingHint": "{name} is recorded but its file is no longer in the document store — generate a new edition."
     }
   },
   "common": {
@@ -345,7 +347,8 @@
       "combinedLoadExceeded": "Zone {zone}: cumulative {load} kg exceeds {max} kg",
       "combinedLoadUnavailable": "Combined load check unavailable: {reason}",
       "lateralImbalanceUnavailable": "Lateral imbalance data not available (AHM 560 s.74 not extractable)",
-      "indexCardMismatch": "Zone {zone}: computed index {computed} is further from the printed card ({printed}) than the card's own resolution allows"
+      "indexCardMismatch": "Zone {zone}: computed index {computed} is further from the printed card ({printed}) than the card's own resolution allows",
+      "notesTitle": "Notes — checks this AHM revision cannot run"
     },
     "fuel": {
       "title": "Fuel",
@@ -534,7 +537,8 @@
       "landingApproximate": "No landing CG table is published for this aircraft; the ZFW envelope is used as an approximation.",
       "combinedLoadExceeded": "Combined load at zone {zone}: {actual} kg above the {max} kg limit.",
       "combinedLoadUnavailable": "Combined load could not be checked: {reason}"
-    }
+    },
+    "saveSessionStale": "Your sign-in no longer matches this database — sign out and sign in again, then save."
   },
   "auth": {
     "signIn": "Sign in",

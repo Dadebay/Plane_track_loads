@@ -185,16 +185,6 @@ async function main() {
     }
   }
 
-  await ensureFlight("T5 692", new Date("2026-08-11"), "Scheduled intl. non-stop (cargo)", "LOADING", ez430.id, [
-    {
-      seq: 1,
-      fromId: sgn.id,
-      toId: asb.id,
-      stdDep: new Date("2026-08-11T15:00:00Z"), // 22:00 local SGN (UTC+7)
-      staArr: new Date("2026-08-11T21:00:00Z"), // ~02:00 local ASB next day (UTC+5)
-    },
-  ]);
-
   // The 10/09/2026 out-and-back day out of ASB, as the crew's own schedule
   // prints it. Local departure times are converted to UTC here; the UI
   // converts them back in each station's own zone.
@@ -232,49 +222,12 @@ async function main() {
     },
   ]);
 
-  await ensureFlight("T5 693", new Date("2026-08-14"), "Scheduled intl. non-stop (cargo)", "RESERVED", ez430.id, [
-    {
-      seq: 1,
-      fromId: asb.id,
-      toId: sgn.id,
-      stdDep: new Date("2026-08-14T18:00:00Z"),
-      staArr: new Date("2026-08-15T02:00:00Z"),
-    },
-  ]);
-
-  await ensureFlight("T5 700", new Date("2026-08-18"), "Scheduled intl. multi-stop (cargo)", "PLANNED", ez429.id, [
-    {
-      seq: 1,
-      fromId: asb.id,
-      toId: dxb.id,
-      stdDep: new Date("2026-08-18T04:00:00Z"),
-      staArr: new Date("2026-08-18T06:30:00Z"),
-    },
-    {
-      seq: 2,
-      fromId: dxb.id,
-      toId: fra.id,
-      stdDep: new Date("2026-08-18T08:30:00Z"),
-      staArr: new Date("2026-08-18T13:00:00Z"),
-    },
-  ]);
-
-  await ensureFlight("T5 701", new Date("2026-08-20"), "Ferry (no cargo)", "CANCELLED", ez429.id, [
-    {
-      seq: 1,
-      fromId: fra.id,
-      toId: asb.id,
-      stdDep: new Date("2026-08-20T10:00:00Z"),
-      staArr: new Date("2026-08-20T16:00:00Z"),
-    },
-  ]);
-
   // Faz 7 demo ULDs — codes follow the IATA convention (3-letter type code
   // + serial + 2-letter owner code) so the naming-convention validator has
   // real examples to check against. Types (PMC/PAG/PZA/PGA/FLA) come from
   // uld-types.json (a330-243p2f/ed1-rev0).
-  const t5692 = await prisma.flight.findFirstOrThrow({ where: { flightNo: "T5 692" } });
-  const t5700 = await prisma.flight.findFirstOrThrow({ where: { flightNo: "T5 700" } });
+  const t5692 = await prisma.flight.findFirstOrThrow({ where: { flightNo: "T5 3431" } });
+  const t5700 = await prisma.flight.findFirstOrThrow({ where: { flightNo: "T5 619" } });
   const admin = await prisma.user.findUniqueOrThrow({ where: { email: "admin@gmail.com" } });
 
   const ulds: {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import type { CgLimits } from "@tua/wnb-core";
 import type { LiveWnbResult } from "@/lib/load-plan-calc";
 import { formatIndex, formatWeight } from "@/lib/format-number";
@@ -102,7 +102,13 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
   const { wnb, envelope } = result;
   if (!wnb || !envelope) return null;
 
+  // A violation is something wrong with *this* load — a limit exceeded, a
+  // CG outside the envelope. A check we cannot run because the approved
+  // source has not been transcribed yet is not that: printing it in red
+  // alongside real violations taught the controllers to ignore the list,
+  // which is the opposite of what it is for. Those go to `notes`.
   const violations: string[] = [];
+  const notes: string[] = [];
   for (const overload of result.positionOverloads) {
     violations.push(tViolations("positionOverload", { position: overload.position, actual: overload.actual, max: overload.max }));
   }
@@ -118,10 +124,16 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
       }
     }
   } else {
-    violations.push(tViolations("combinedLoadUnavailable", { reason: result.combinedLoad.reason }));
+    notes.push(tViolations("combinedLoadUnavailable", { reason: result.combinedLoad.reason }));
   }
   if (result.lateralImbalance.status === "NOT_AVAILABLE") {
-    violations.push(tViolations("lateralImbalanceUnavailable"));
+    // Only worth saying when there is something it would have checked. A
+    // freighter loaded on centreline positions alone has no side-by-side
+    // payload, so the missing fuel half changes nothing about this flight and
+    // the line is noise on every single plan.
+    if ((result.lateralImbalance.payloadRows?.length ?? 0) > 0) {
+      notes.push(tViolations("lateralImbalanceUnavailable"));
+    }
   } else if (result.lateralImbalance.status === "EXCEEDED") {
     violations.push(result.lateralImbalance.detail);
   }
@@ -227,6 +239,21 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
             ))}
           </ul>
         )}
+        {notes.length > 0 ? (
+          <div className="flex flex-col gap-1.5 border-t border-border pt-2">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wide text-fg-subtle">
+              {tViolations("notesTitle")}
+            </h4>
+            <ul className="flex flex-col gap-1.5">
+              {notes.map((note, i) => (
+                <li key={i} className="flex items-start gap-1.5 text-xs text-fg-muted">
+                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  {note}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </div>
   );

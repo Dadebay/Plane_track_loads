@@ -1,3 +1,4 @@
+import React from "react";
 import { Document, Page, View, Text, StyleSheet, renderToBuffer } from "@react-pdf/renderer";
 import { chrome, Footer, Watermark } from "../shared/chrome";
 import { AirlineLogo } from "../shared/logo";
@@ -136,6 +137,14 @@ const styles = StyleSheet.create({
     borderBottomStyle: "solid",
     borderBottomColor: COLOR.ink,
   },
+  compartmentGap: {
+    width: 26,
+    backgroundColor: COLOR.blocked,
+    borderWidth: RULE.hairline,
+    borderStyle: "solid",
+    borderColor: COLOR.ink,
+    marginRight: -1,
+  },
   compartmentCells: { flexDirection: "row" },
   compartmentCell: {
     flex: 1,
@@ -170,8 +179,13 @@ function CompartmentBand({ compartments }: { compartments: LirCompartmentLimit[]
 
   return (
     <View style={styles.compartmentBand}>
-      {groups.map((group) => (
-        <View key={group[0]!.number} style={[styles.compartmentGroup, { flex: group.length }]}>
+      {groups.map((group, index) => (
+        <React.Fragment key={`group-${group[0]!.number}`}>
+          {/* The wing box between the forward and aft holds, shaded as the
+              plate shades it, so the band lines up with the position rows
+              underneath. */}
+          {index === 1 ? <View style={styles.compartmentGap} /> : null}
+        <View style={[styles.compartmentGroup, { flex: group.length }]}>
           <Text style={styles.compartmentGroupName}>
             {group.length > 1
               ? `${group[0]!.description} MAX ${group[0]!.maxGrossPair} kg`
@@ -186,6 +200,7 @@ function CompartmentBand({ compartments }: { compartments: LirCompartmentLimit[]
             ))}
           </View>
         </View>
+        </React.Fragment>
       ))}
     </View>
   );
@@ -283,7 +298,7 @@ function LirDocument({ input }: { input: LirInput }) {
 
         <Text style={styles.deckTitle}>LOWER DECK</Text>
         <CompartmentBand compartments={input.compartments} />
-        <DeckGrid rows={input.layout.lower} />
+        <DeckGrid rows={input.layout.lower} alignColumns />
 
         <View style={styles.siBox}>
           <Text style={styles.siLabel}>SI :</Text>

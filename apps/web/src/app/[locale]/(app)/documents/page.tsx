@@ -1,4 +1,5 @@
 import { db } from "@tua/db";
+import { documentExists } from "@/lib/document-storage";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { DocumentsView, type LegDocuments } from "./documents-view";
@@ -41,13 +42,30 @@ export default async function DocumentsPage({
   // Faz 12 — the highest edition per (leg, type) is the current one. Earlier
   // editions are never deleted (Document rows are insert-only, CLAUDE.md
   // rule #5); the page links to the current edition of each type.
-  const current: Record<string, LegDocuments> = {};
+  const currentDocuments = new Map<string, (typeof documents)[number]>();
   for (const doc of documents) {
+    const key = `${doc.legId}:${doc.type}`;
+    const held = currentDocuments.get(key);
+    if (!held || doc.edition > held.edition) currentDocuments.set(key, doc);
+  }
+
+  // Whether each current document's PDF is still on disk. The row cannot be
+  // deleted (insert-only, rule #5), but the file behind it can go missing —
+  // and a link that fails on click is worse than one that says so.
+  const availability = await Promise.all(
+    [...currentDocuments.values()].map(async (doc) => [doc.id, await documentExists(doc.pdfPath)] as const),
+  );
+  const availableById = new Map(availability);
+
+  const current: Record<string, LegDocuments> = {};
+  for (const doc of currentDocuments.values()) {
     const forLeg = (current[doc.legId] ??= {});
-    const held = forLeg[doc.type];
-    if (!held || doc.edition > held.edition) {
-      forLeg[doc.type] = { id: doc.id, edition: doc.edition, issuedAt: doc.issuedAt.toISOString() };
-    }
+    forLeg[doc.type] = {
+      id: doc.id,
+      edition: doc.edition,
+      issuedAt: doc.issuedAt.toISOString(),
+      available: availableById.get(doc.id) ?? false,
+    };
   }
 
   const flightNumberPrefixes = [

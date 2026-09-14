@@ -46,7 +46,9 @@
       "preview": "Просмотр {name}",
       "downloadNamed": "Скачать {name}",
       "generateNamed": "Создать {type} для {flightNo}",
-      "newEdition": "Новая редакция {type} для {flightNo}"
+      "newEdition": "Новая редакция {type} для {flightNo}",
+      "fileMissing": "Файл отсутствует",
+      "fileMissingHint": "{name} записан, но файла в хранилище нет — создайте новую редакцию."
     }
   },
   "common": {
@@ -345,7 +347,8 @@
       "combinedLoadExceeded": "Зона {zone}: суммарно {load} кг превышает {max} кг",
       "combinedLoadUnavailable": "Проверка суммарной нагрузки недоступна: {reason}",
       "lateralImbalanceUnavailable": "Данные о боковом дисбалансе недоступны (AHM 560 s.74 не извлекается)",
-      "indexCardMismatch": "Зона {zone}: расчётный индекс {computed} отличается от печатной таблицы ({printed}) сильнее, чем допускает её точность"
+      "indexCardMismatch": "Зона {zone}: расчётный индекс {computed} отличается от печатной таблицы ({printed}) сильнее, чем допускает её точность",
+      "notesTitle": "Примечания — проверки, невозможные в этой редакции AHM"
     },
     "fuel": {
       "title": "Топливо",
@@ -534,7 +537,8 @@
       "landingApproximate": "Для этого ВС таблица посадочной центровки не опубликована; в качестве приближения используется огибающая ZFW.",
       "combinedLoadExceeded": "Суммарная загрузка в зоне {zone}: {actual} кг выше предела {max} кг.",
       "combinedLoadUnavailable": "Не удалось проверить суммарную загрузку: {reason}"
-    }
+    },
+    "saveSessionStale": "Ваш сеанс не соответствует этой базе — выйдите и войдите снова, затем сохраните."
   },
   "auth": {
     "signIn": "Войти",

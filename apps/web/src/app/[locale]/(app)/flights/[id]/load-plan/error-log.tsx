@@ -170,7 +170,11 @@ function collectEntries(
       });
     }
     if (result.envelope.landingIsApproximate) {
-      entries.push({ id: "landingApprox", severity: "warning", message: t("landingApproximate") });
+      // A permanent property of this aircraft's AHM, not something wrong with
+      // this flight: no landing CG table is published, so the ZFW envelope
+      // stands in (GROUND_TRUTH §21 Q3). It is stated on every plan, so it
+      // reads as a note rather than as a warning to act on.
+      entries.push({ id: "landingApprox", severity: "info", message: t("landingApproximate") });
     }
   }
 
@@ -190,15 +194,21 @@ function collectEntries(
   } else {
     entries.push({
       id: "combinedUnavailable",
-      severity: "warning",
+      // Same reason as the lateral entry: a check this AHM revision cannot
+      // run is a note about the data, not a fault in the load.
+      severity: "info",
       message: t("combinedLoadUnavailable", { reason: result.combinedLoad.reason }),
     });
   }
 
   if (result.lateralImbalance.status === "NOT_AVAILABLE") {
     // Not a fault of this flight: the fuel half of AHM 560's lateral table is
-    // still untranscribed (AHM560_ERRATA.md Kayıt 10).
-    entries.push({ id: "lateral", severity: "info", message: tTables("lateralImbalanceUnavailable") });
+    // still untranscribed (AHM560_ERRATA.md Kayıt 10). Stated only when the
+    // flight actually carries side-by-side load, which is what the check
+    // would have looked at.
+    if ((result.lateralImbalance.payloadRows?.length ?? 0) > 0) {
+      entries.push({ id: "lateral", severity: "info", message: tTables("lateralImbalanceUnavailable") });
+    }
   } else if (result.lateralImbalance.status === "EXCEEDED") {
     entries.push({ id: "lateral", severity: "blocking", message: result.lateralImbalance.detail });
   }

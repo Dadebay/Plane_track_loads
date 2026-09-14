@@ -161,39 +161,29 @@ interface DistributionRow {
 }
 
 /**
- * The reference prints one grid per deck: left-side positions, centre
- * positions, right-side positions, fore to aft. Our plate data already
- * carries that — side-by-side configurations name their cells `…L`/`…R`,
- * every other configuration is a centre row — so the grid is derived, not
- * a second hand-maintained layout.
+ * The reference's weight-distribution worksheet: a fixed block of boxes per
+ * deck — three column pairs, thirteen rows — with the loaded positions
+ * written in and the rest left blank for the crew to write on.
+ *
+ * Fixed is the point. The block was previously sized to the plate (one row
+ * per position pair, thirty-odd rows), which ran the boxes straight down over
+ * the weight ladder and the balance block underneath: the figures printed
+ * inside empty boxes that belonged to the grid. The sheet has a fixed
+ * worksheet and a fixed body, so the grid stops where the reference stops.
  */
-function buildDistribution(rows: DocumentDeckRow[]): DistributionRow[] {
-  const paired = new Map<string, { left: DocumentDeckCell | null; right: DocumentDeckCell | null }>();
-  const centre: DocumentDeckCell[] = [];
+function buildDistribution(rows: DocumentDeckRow[], rowCount: number): DistributionRow[] {
+  // Loaded positions only, in plate order — an empty box says "nothing here",
+  // and printing every empty position would fill the sheet with them.
+  const loaded = rows.flatMap((row) => row.cells.filter((cell) => cell.weight !== null));
 
-  for (const row of rows) {
-    for (const cell of row.cells) {
-      const side = cell.code.endsWith("L") ? "left" : cell.code.endsWith("R") ? "right" : null;
-      const base = side ? cell.code.slice(0, -1) : cell.code;
-      if (side && base.length > 0) {
-        const entry = paired.get(base) ?? { left: null, right: null };
-        // A position can appear on more than one mutually exclusive
-        // configuration row; the loaded one wins, so the grid shows the
-        // weight rather than an empty box.
-        if (entry[side] === null || entry[side]?.weight === null) entry[side] = cell;
-        paired.set(base, entry);
-      } else {
-        centre.push(cell);
-      }
-    }
-  }
+  const column = (index: number): DocumentDeckCell[] =>
+    loaded.slice(index * rowCount, index * rowCount + rowCount);
+  const [left, centre, right] = [column(0), column(1), column(2)];
 
-  const pairs = [...paired.values()];
-  const count = Math.max(pairs.length, centre.length);
-  return Array.from({ length: count }, (_, i) => ({
-    left: pairs[i]?.left ?? null,
+  return Array.from({ length: rowCount }, (_, i) => ({
+    left: left[i] ?? null,
     centre: centre[i] ?? null,
-    right: pairs[i]?.right ?? null,
+    right: right[i] ?? null,
   }));
 }
 
@@ -333,9 +323,9 @@ function BalanceRow({
 }
 
 function LoadsheetDocument({ input }: { input: LoadsheetInput }) {
-  const main = buildDistribution(input.layout.main);
-  const lower = buildDistribution(input.layout.lower);
-  const gridRows = Math.max(main.length, lower.length, GRID.minRows);
+  const gridRows = GRID.minRows;
+  const main = buildDistribution(input.layout.main, gridRows);
+  const lower = buildDistribution(input.layout.lower, gridRows);
   const gridBottom = GRID.firstRowY + gridRows * GRID.rowPitch;
 
   const loaded = input.ulds;

@@ -55,6 +55,8 @@ export function SaveBar({
     const first = mutation.data.violations?.[0];
     if (first) return first.message;
     switch (mutation.data.error) {
+      case "sessionStale":
+        return t("saveSessionStale");
       case "unauthorized":
       case "forbidden":
         return tWnb("errors.weightLimitExceeded") === "" ? null : t("saveBlockedRole" as never);

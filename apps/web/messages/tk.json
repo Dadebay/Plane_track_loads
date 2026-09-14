@@ -46,7 +46,9 @@
       "preview": "{name} gözden geçir",
       "downloadNamed": "{name} ýükle",
       "generateNamed": "{flightNo} üçin {type} döret",
-      "newEdition": "{flightNo} üçin täze {type} neşri"
+      "newEdition": "{flightNo} üçin täze {type} neşri",
+      "fileMissing": "Faýl ýok",
+      "fileMissingHint": "{name} ýazgyda bar, emma faýly saklanýan ýerde ýok — täze neşir dörediň."
     }
   },
   "common": {
@@ -345,7 +347,8 @@
       "combinedLoadExceeded": "{zone} zolagy: jemi {load} kg {max} kg-dan geçýär",
       "combinedLoadUnavailable": "Jemi ýük barlagy elýeterli däl: {reason}",
       "lateralImbalanceUnavailable": "Gapdal deňagramlylyk maglumaty ýok (AHM 560 s.74 çykarylyp bilinmedi)",
-      "indexCardMismatch": "{zone} zolagy: hasaplanan indeks {computed}, çap edilen kartadan ({printed}) kartanyň takyklygynyň rugsat berýäninden köp tapawutlanýar"
+      "indexCardMismatch": "{zone} zolagy: hasaplanan indeks {computed}, çap edilen kartadan ({printed}) kartanyň takyklygynyň rugsat berýäninden köp tapawutlanýar",
+      "notesTitle": "Bellikler — bu AHM redaksiýasynda geçirip bolmaýan barlaglar"
     },
     "fuel": {
       "title": "Ýangyç",
@@ -534,7 +537,8 @@
       "landingApproximate": "Bu uçar üçin gonuş CG tablisasy çap edilmedik; takmyn hökmünde ZFW zarfy ulanylýar.",
       "combinedLoadExceeded": "{zone} zolagynda birleşen ýük: {actual} kg, {max} kg çäginden ýokary.",
       "combinedLoadUnavailable": "Birleşen ýük barlanyp bilinmedi: {reason}"
-    }
+    },
+    "saveSessionStale": "Girişiňiz bu maglumat bazasyna gabat gelmeýär — çykyň we täzeden giriň, soň ýatda saklaň."
   },
   "auth": {
     "signIn": "Içeri gir",

@@ -420,7 +420,7 @@
     },
     {
       "id": "CONTAINER",
-      "label": "CONTAINER / PALLET 60.4\" x 61.5\" or 60.4\" x 125\"",
+      "label": "SINGLE ROW 60.4\" x 125\"",
       "deck": "LOWER",
       "longitudinalInches": "60.4",
       "lateralInches": "125",
@@ -484,7 +484,7 @@
     },
     {
       "id": "PALLET_88x125",
-      "label": "PALLET 88\" x 125\" (lower deck)",
+      "label": "PALLET 88\" x 125\"",
       "deck": "LOWER",
       "longitudinalInches": "88",
       "lateralInches": "125",
@@ -526,7 +526,7 @@
     },
     {
       "id": "PALLET_96x125",
-      "label": "PALLET 96\" x 125\" (lower deck)",
+      "label": "PALLET 96\" x 125\"",
       "deck": "LOWER",
       "longitudinalInches": "96",
       "lateralInches": "125",
@@ -632,7 +632,8 @@
     "SIDE BY SIDE 125\" x 88\" carries a tenth pair (PRR/PRL) that SIDE BY SIDE 125\" x 96\" does not.",
     "Both side-by-side rows print identical max loads pair for pair; only the longitudinal pitch differs.",
     "The 16 ft and 20 ft pallet rows also carry printed zone distribution factors; those live in zone-mapping.json.",
-    "The 16 ft and 20 ft pallet rows are not printed on the approved plate's page 2; they come from the operator's laminated card only, and their max loads are corroborated by positions.json rather than by a second printing of the plate."
+    "The 16 ft and 20 ft pallet rows are not printed on the approved plate's page 2; they come from the operator's laminated card only, and their max loads are corroborated by positions.json rather than by a second printing of the plate.",
+    "The plate's lower deck carries a SIDE BY SIDE 60.4\" x 61.5\" row of half containers (11R/11L … 43R/43L) above this one. Those positions are not transcribed yet, so only the full-width SINGLE ROW is published here; the row label was corrected from the merged wording it had before."
   ],
   "source": {
     "documentTitle": "AHM 560 - Airbus A330-243 P2F - Appendix I, LOAD AND TRIM SHEET page 2 (printed p.74), Ed.1 Rev.0, effective 15.03.2023",

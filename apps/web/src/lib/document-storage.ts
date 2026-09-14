@@ -7,7 +7,7 @@
  */
 
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const DOCUMENTS_ROOT = process.env.DOCUMENTS_STORAGE_PATH ?? path.join(process.cwd(), ".data", "documents");
@@ -33,4 +33,22 @@ export async function storeDocument(
 
 export async function readDocument(relativePath: string): Promise<Buffer> {
   return readFile(path.join(DOCUMENTS_ROOT, relativePath));
+}
+
+/**
+ * Whether the bytes behind a `Document` row are still on disk.
+ *
+ * A `Document` row is insert-only, but the file store is not part of the
+ * database: a wiped dev volume, or a restore that missed the document
+ * directory, leaves a row whose PDF is gone. The documents page checks this
+ * so it can say so up front instead of handing the crew a link that fails
+ * when they click it.
+ */
+export async function documentExists(relativePath: string): Promise<boolean> {
+  try {
+    await access(path.join(DOCUMENTS_ROOT, relativePath));
+    return true;
+  } catch {
+    return false;
+  }
 }

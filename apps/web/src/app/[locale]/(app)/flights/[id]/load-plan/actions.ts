@@ -54,6 +54,13 @@ export async function saveLoadPlan(input: SaveLoadPlanInput): Promise<SaveLoadPl
   if (!session?.user) return { ok: false, error: "unauthorized" };
   if (!canEditLoadPlan(session.user.role)) return { ok: false, error: "forbidden" };
 
+  // The session is a signed token, so it outlives the row it names: after the
+  // database is restored or reseeded the id it carries no longer exists, and
+  // every write fails on the load plan's created-by foreign key with nothing
+  // on screen to explain it. Check the author up front and say so instead.
+  const author = await db.user.findUnique({ where: { id: session.user.id }, select: { id: true, active: true } });
+  if (!author || !author.active) return { ok: false, error: "sessionStale" };
+
   const parsed = saveLoadPlanSchema.safeParse(input);
   if (!parsed.success) {
     return {

@@ -2052,3 +2052,128 @@ kullanılıyor, yani loadsheet ve ENV de operatörün amblemini basıyor.
 **LS tasarımı henüz referansa çekilmedi** — referans üstte boş dağıtım
 ızgarası + solda dikey alan listesi kullanıyor, bizimki plaka + tablo.
 İstenirse LIR'de yapıldığı gibi birebir kopyalanabilir.
+
+---
+
+## ✅ "VIOLATIONS" yanlış alarm veriyordu (2026-09-14)
+
+Operatör yük girip PDF üretmeye çalıştığında ekranda kırmızı **VIOLATIONS**
+başlığı altında şu çıkıyordu:
+
+> Lateral imbalance data not available (AHM 560 s.74 not extractable)
+
+ve ERROR LOG'da iki uyarı daha (landing CG tablosu yok; lateral tablonun yakıt
+yarısı transkribe edilmemiş).
+
+**Bunlar bu uçuşun kusuru değil, verinin durumu.** Gerçek ihlallerle (limit
+aşımı, zarf dışı CG) aynı kırmızı listede basılınca liste güvenilirliğini
+kaybediyor — kontrolör hepsini görmezden gelmeye başlıyor.
+
+Yapılan:
+
+1. **Veri eksikliği artık ihlal değil.** `wnb-panel.tsx` listeyi ikiye ayırdı:
+   *VIOLATIONS* (yalnızca yükün kendisiyle ilgili) ve
+   *NOTES — checks this AHM revision cannot run*. Lateral imbalance
+   `NOT_AVAILABLE` ve combined-load `unavailable` notlara taşındı.
+2. **Yan yana yük yoksa lateral notu hiç basılmıyor.** Merkez hattı
+   pozisyonlarına yüklenmiş bir kargo uçuşunda kontrol edilecek bir şey yok;
+   satır her planda görünen gürültüydü. Hem panelde hem ERROR LOG'da
+   `payloadRows` boşsa atlanıyor.
+3. **Landing CG ve combined-load notları `warning` → `info`.** İkisi de bu
+   AHM redaksiyonunun kalıcı özelliği, uçuşa özel bir uyarı değil.
+
+Doğrulandı (T5 619, ASB–SZX, EZ-F429, üç ULD, elle yakıt, tank dağılımı yok):
+plan **finalize oldu**, VIOLATIONS "No violations" diyor, ERROR LOG'da yalnızca
+landing CG notu var, `LS_T5619_10092026_ED01.pdf` üretildi.
+
+### Tank dağılımı finalize'ı bloke etmiyor
+
+Ekran görüntüsündeki *"A finalized plan needs the takeoff fuel distributed
+across the tanks"* satırı bugünkü kodda çıkmıyor: `checkFinalizeReady`
+yalnızca `tankFuelDataUsable` iken tank dağılımı istiyor, `fuel-tank-index.json`
+hâlâ `provisional: true` olduğu için istemiyor. Yukarıdaki testte tank
+kutuları boş bırakılarak finalize edildi.
+
+### Postgres konteyneri
+
+Makine yeniden başlayınca eski `plane_project-postgres-1` (restart policy)
+5432'yi kapmış, projenin kendi konteyneri portsuz kalmıştı — uygulama
+"Can't reach database server" veriyordu. Eski konteynerin restart politikası
+`no` yapıldı, proje konteyneri `docker compose up -d postgres` ile yeniden
+oluşturuldu; veri named volume'da, kayıp yok (52 uçuş yerinde).
+
+### Ölü indirme bağlantıları (2026-09-14)
+
+Operatör iki belgede `{"error":"fileMissing"}` aldı. Sebep: `Document` satırı
+duruyor (INSERT-only, kural #5) ama PDF'i `.data/documents` altında yok —
+dizin bir noktada temizlenmiş. Sayfa bunu bilmeden göz/ok bağlantısını
+gösteriyordu; tıklayınca hata.
+
+`documentExists()` eklendi; Flight Document sayfası listelediği her güncel
+belge için dosyanın yerinde olup olmadığına bakıyor. Dosya yoksa bağlantı
+yerine **File missing** yazıyor ve yanında yeni edisyon üretme düğmesi
+duruyor. Satırı silmiyoruz — edisyon kaydı kalıcı.
+
+Doğrulama (uygulamadan, gerçek veriyle):
+
+| Uçuş | LS | EDP | LIR | ENV |
+|---|---|---|---|---|
+| T5 3431 | 200, 126 771 B | 200, 128 529 B | 200, 131 674 B | 200, 121 955 B |
+| T5 692 | File missing | 200 | File missing | 200 |
+
+Sekiz bağlantının sekizi de (dört tür × göz/ok) doğru `Content-Disposition`
+ile açılıyor; ölü bağlantı kalmadı.
+
+---
+
+## 🔴 Loadsheet: ızgara sayfanın yarısını eziyordu (2026-09-14)
+
+Operatör test ederken gördü: LS'te değerler kutuların dışında, ağırlık
+merdiveni ve denge bloğu boş kutuların içine/üstüne basılıyordu.
+
+**Sebep.** Ağırlık dağılımı ızgarası plakaya göre boyutlanıyordu
+(`Math.max(main.length, lower.length, 13)`) — A330 plakasında bu otuz küstür
+satır demek. Gövde ise sabit konumda (`BODY_TOP = 376`). Izgara gövdenin
+üstünden geçip bütün alt yarıyı kaplıyordu; `SS 2504` ve `TT 2809` gibi
+yüklemeler denge bloğunun ortasında bir kutuda çıkıyordu.
+
+**Düzeltme.** Izgara referansın kendi ölçüsüne sabitlendi: deck başına üç
+sütun çifti, on üç satır. `buildDistribution()` artık yalnızca **yüklü**
+pozisyonları alıp bu bloğa yerleştiriyor, kalan kutular boş kalıyor —
+referansın da yaptığı bu. Izgara gövdeden önce bitiyor, çakışma yok.
+
+Ayrıca LIR'de ULD kodu hücre kenarına değiyordu; yatay iç boşluk eklenip
+punto bir tık küçültüldü.
+
+Doğrulama (T5 697, uygulamadan üretildi): LS ED02 düzgün, LIR ED02 düzgün,
+EDP ED01 ve ENV ED01 zaten sorunsuzdu — dört belge de tek tek göz kontrolünden
+geçti.
+
+### LIR alt güvertesi plakaya hizalandı (2026-09-14)
+
+Operatör referans LIR'le karşılaştırdı: alt güvertede kanat kutusunun gri
+sütunu bizde yoktu, satırlar birbirine hizalı değildi ve satır etiketlerindeki
+ölçüler referanstakinden farklıydı.
+
+- **Ortak sütun düzeni.** Alt güverte satırları artık tek bir sütun sırasına
+  göre diziliyor (`alignColumns`): sütun anahtarı pozisyon numarasının
+  rakam kısmı, yani `12P` doğrudan `12`'nin altına geliyor. Pozisyonu olmayan
+  satır o sütunu boş bırakıyor — plakanın okunma biçimi bu.
+- **Kanat kutusu gri sütun.** Kompartıman 2 ile 3 arasına gri sütun kondu,
+  hem pozisyon satırlarında hem limit bandında. Sütun kodlardan türetiliyor
+  (alt güverte kodunun ilk rakamı kompartımanı), elle konmuş bir indeks değil.
+  Kanat kutusunun iki yanında da hücresi olmayan satırda (MAX BULK) gri
+  basılmıyor — olmayan bir kesinti uydurulmuyor.
+- **Satır etiketleri düzeltildi** (`position-configurations.json`, ed1-rev0 ve
+  ed1-rev2): `CONTAINER / PALLET 60.4" x 61.5" or 60.4" x 125"` →
+  `SINGLE ROW 60.4" x 125"`, pallet satırlarından `(lower deck)` eki kalktı.
+  Eski etiket plakanın **iki** satırını tek satırda birleştiriyordu; bizde
+  yalnızca tam genişlikteki sıra transkribe edilmiş durumda. JSON'a bunu
+  açıklayan bir not eklendi.
+
+**Hâlâ eksik:** `11R/11L … 43R/43L` yarım konteyner sırası. Referansta
+`SIDE BY SIDE 60.4"x61.5"` başlığıyla duruyor; `positions.json` bu kodları
+taşımadığı için basılamıyor. Plakadan transkripsiyon gerekiyor.
+
+Doğrulama: `LIR_T5697_10092026_ED05.pdf` (uygulamadan). Testler: ahm-data 104,
+wnb-core 168, documents 33, web 117.
