@@ -53,3 +53,35 @@ docker exec plane_track_loads-postgres-1 pg_dump -U tua -d tua_load_control \
   --exclude-table-data=audit_logs --exclude-table-data=uld_movements \
   > ~/Downloads/tua-clean-bench.sql
 ```
+
+## Paketi macOS'ta elle üretmek (Docker'sız, hızlı yol)
+
+Emülasyonlu Docker derlemesi 20+ dakika sürüyor. Aynı paketi yerel derlemeden
+de çıkarmak mümkün — sunucuya ait ikili dosyalar zaten `node_modules`'ta
+duruyor (Prisma'nın `binaryTargets`'ı Linux motorlarını da üretiyor, `argon2`
+npm paketi bütün platformların prebuild'lerini taşıyor). Sırası:
+
+1. `pnpm build`
+2. `apps/web/.next/standalone` + `.next/static` + `public` → paket kökü
+3. `@prisma/client` ve `.prisma/client`'ı kopyala. Prisma motoru **üç** yere
+   birden konmalı, aradığı yollar bunlar:
+   - `node_modules/.pnpm/@prisma+client@<sürüm>/node_modules/.prisma/client`
+   - `apps/web/.prisma/client`
+   - `apps/web/.next/server`
+4. **`argon2`'nin izlenen kopyasını düzelt.** Next yalnızca derleme sırasında
+   yüklenen platformun prebuild'ini pakete alıyor; `.pnpm/argon2@<sürüm>/
+   node_modules/argon2/prebuilds/` altına `linux-x64` elle kopyalanmalı.
+5. macOS'a özel `sharp` paketlerini sil (uygulama `next/image` kullanmıyor).
+6. **`COPYFILE_DISABLE=1 tar -czf ...`** ile paketle. Yoksa macOS her dosyanın
+   yanına `._ad` biçiminde AppleDouble dosyası yazıyor; `node-gyp-build`
+   alfabetik sırada önce onu bulup yüklemeye çalışıyor ve
+   `invalid ELF header` ile düşüyor.
+
+Göndermeden önce kapsanan platformları doğrula:
+
+```bash
+find <paket> -name "*.node" | sort
+```
+
+Listede her yerel modül için `linux-x64` / `debian-openssl-3.0.x` karşılığı
+görünmeli; yalnızca `darwin-*` görünen bir modül sunucuda çalışmaz.
