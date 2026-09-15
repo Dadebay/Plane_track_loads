@@ -30,6 +30,13 @@ mkdir -p "$STAGE/apps/web/.next"
 cp -R apps/web/.next/static "$STAGE/apps/web/.next/static"
 cp -R apps/web/public "$STAGE/apps/web/public"
 
+# The process is started through server-guard.mjs, not server.js — it
+# swallows the ECONNRESET Next throws when a client vanishes mid-response,
+# which restarted the pilot server 311 times. Nothing imports it, so Next's
+# tracing does not see it and a standalone build ships without it; pm2 then
+# fails with "Script not found" or "Cannot find module".
+cp apps/web/server-guard.mjs "$STAGE/apps/web/server-guard.mjs"
+
 # --- Prisma -------------------------------------------------------------
 # @prisma/client resolves its query engine relative to its own __dirname at
 # runtime and looks in three different places depending on how the route was
@@ -79,6 +86,10 @@ if ! find "$STAGE" -name "*.node" | grep -q 'linux'; then
   echo "FAIL: no linux native binary in the bundle — the server would 500." >&2
   exit 1
 fi
+
+for required in apps/web/server.js apps/web/server-guard.mjs; do
+  [ -f "$STAGE/$required" ] || { echo "FAIL: $required missing from the bundle." >&2; exit 1; }
+done
 
 echo "==> Packing $OUT"
 COPYFILE_DISABLE=1 tar -czf "$OUT" -C "$STAGE" .

@@ -77,6 +77,13 @@ npm paketi bütün platformların prebuild'lerini taşıyor). Sırası:
    alfabetik sırada önce onu bulup yüklemeye çalışıyor ve
    `invalid ELF header` ile düşüyor.
 
+`tools/deploy/build-bundle.sh` bunların hepsini yapıyor; elle kurmak yerine
+onu çalıştır.
+
+**Pakette olmayan iki dosya sunucuda kalır:** `.env` (sırlar) ve `start.sh`
+(mutlak sunucu yolları taşıyor). Yeni paketi açtıktan sonra ikisini de eski
+kurulumdan kopyala — yoksa pm2 `Script not found` verip sessizce durur.
+
 Göndermeden önce kapsanan platformları doğrula:
 
 ```bash
