@@ -848,11 +848,48 @@ farkı hiçbir yerde iz bırakmamış. Detay: `docs/AHM560_ERRATA.md` Kayıt 6.
 > 0,65'in `positions.json`'ın Rev.2 sayfasında olması bekleniyor. Bu bulgu, o sayfa ve
 > Rev.2 yakıt indeks tablosu gelene kadar **açık** kalıyor.
 
+> **✅ Yakıt ayağı kapandı (2026-09-15) — sebep revizyon değil, Aerometa'nın
+> yakıtı ramp'tan alması.** Operatörün beş gerçek loadsheet'i (T5 450 19/07,
+> T5 478 18/07 · 25/07 · 01/08, T5 692 11/08) yan yana konunca yakıt indeksi
+> farkı her seferinde aynı yöne ve aynı büyüklüğe düşüyor. Loadsheet'in ima
+> ettiği değer, AHM'in kendi tablosundan **TOF + TAXI** (ramp yakıtı) için
+> okunan değere eşit:
+>
+> | Uçuş | TOF | Bizim (TOF) | AHM tablosu (TOF+600) | Loadsheet'in ima ettiği |
+> |---|---|---|---|---|
+> | T5 450 | 29 500 | −10,80 | **−11,32** | −11,33 |
+> | T5 478 18/07 | 33 200 | −13,95 | **−14,45** | −14,47 |
+> | T5 478 25/07 | 32 600 | −13,44 | **−13,95** | −13,96 |
+> | T5 478 01/08 | 31 200 (ρ 0,775) | −12,45 | **−12,95** | −12,96 |
+> | T5 692 | 44 700 | +3,77 | **+3,34** | +3,32 |
+>
+> Beşi de ≤0,02 içinde oturuyor, üstelik farklı yakıt miktarı ve farklı
+> yoğunluk (0,775 / 0,785) boyunca. Yani tablomuz doğru, okuyuşumuz doğru;
+> Aerometa TOW indeksini **kalkışta uçakta olmayan 600 kg taksi yakıtını da
+> sayarak** üretiyor. Bkz. Bulgu #8.
+>
+> Geriye kalan LIZFW farkı (yük indeksi ayağı) **açık**: `positions.json`'ın
+> Rev.2 sayfası hâlâ elimizde yok.
+
 **Bu aslında değer önerimizin kanıtı:** Aerometa hangi AHM revizyonuyla hesapladığını
 göstermiyor; biz elimizdeki (tarihli, versiyonlu) AHM verisiyle bağımsız hesaplayıp tutmayan
 her yeri otomatik buluyoruz. Faz 5 (AHM versiyon diff) ve Faz 14 (karşılaştırma koşum takımı)
 bu tür farkları sistematikleştirecek. **Operasyona geçmeden önce güncel AHM 560 revizyonu
 temin edilmeli** — bkz. §21 soru 6.
+
+### Bulgu #8 — LITOW, kalkışta uçakta olmayan taksi yakıtıyla hesaplanmış 🔴
+Beş gerçek loadsheet'te de aynı: Aerometa'nın TOW **ağırlığı** taksi yakıtını
+dışlıyor (`TOW = DOW + TTL + TOF`, beşinde de bizim değerimizle kilogramına
+kadar aynı), ama TOW **indeksi** taksi yakıtını içeriyor — yakıt indeksini
+`TOF + TAXI` için okuyor. Kanıt tablosu Bulgu #7'nin altında.
+
+Bu kendi içinde tutarsız: aynı uçuş anı için ağırlık bir yakıt miktarını,
+indeks başka bir yakıt miktarını varsayıyor. Sonuç, bu dört uçuşta LITOW'u
+**0,51–0,53 indeks birimi** kaydırıyor (≈0,1–0,2 %MAC, trim'de ≈0,1°).
+
+**Bizim değerimiz kalkış yakıtından hesaplanan değerdir** — değiştirmiyoruz.
+Bu bulgu karşılaştırma koşum takımında (Faz 14) beklenen fark olarak
+işaretlenmeli, yoksa her uçuşta sahte alarm üretir.
 
 ---
 

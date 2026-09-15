@@ -75,10 +75,12 @@ function variantOf(aircraftType: string): string {
   return tokens.length > 1 && /^[A-Z0-9]{2,4}$/.test(last) ? last : aircraftType;
 }
 
-function formatTime(date: Date): string {
-  const hour = String(date.getUTCHours()).padStart(2, "0");
-  const minute = String(date.getUTCMinutes()).padStart(2, "0");
-  return `${hour}:${minute}`;
+/** A loadsheet's FROM/TO band prints the departure station's own wall clock,
+ * the way the operator's own sheets do — a station agent reads it against the
+ * clock on the wall, not against UTC. Everything else on the document stays in
+ * UTC, which is why this is a separate helper from formatDate/formatTime. */
+function formatLocalDateTime(date: Date, timeZone: string): { date: string; time: string } {
+  return formatDateTimePartsInZone(date, timeZone);
 }
 
 /** CLAUDE.md rule #2 — rounding belongs in the presentation layer. checkEnvelope's
@@ -323,11 +325,13 @@ export async function generateLoadsheet(
   const priorEditions = await db.document.count({ where: { legId: data.legId, type: "LS" } });
   const edition = priorEditions + 1;
 
+  const departure = formatLocalDateTime(leg.stdDep, leg.fromStation.timezone);
+
   const pdfBuffer = await renderLoadsheetPdf({
     header: {
       station: leg.fromStation.iata,
       flightNo: leg.flight.flightNo,
-      date: formatDate(leg.stdDep),
+      date: departure.date,
       aircraftType: leg.flight.aircraft.type,
       registration: leg.flight.aircraft.registration,
       editionNo: String(edition).padStart(2, "0"),
@@ -335,8 +339,8 @@ export async function generateLoadsheet(
       checkedBy: checker.name,
     },
     destination: leg.toStation.iata,
-    time: formatTime(leg.stdDep),
-    version: "",
+    time: departure.time,
+    version: variantOf(leg.flight.aircraft.type),
     cockpitCrew: loadPlan.cockpitCrew,
     courierCrew: loadPlan.courierCrew,
 

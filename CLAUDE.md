@@ -56,6 +56,7 @@ Tam girdi ve çıktı: `docs/AHM560_GROUND_TRUTH.md` §19.
 | 2 | Loadsheet DOW/DOI, AHM 560 ile uyuşmuyor, revizyon takibi yok | AHM ed/rev belgede gösterilir |
 | 5 | `LILAW`/`MACLAW` üretilmiyor (AHM zorunlu kılıyor) | Üretiyoruz |
 | 6 | ENV PDF başlığı sayfa kenarından taşıyor | Düzeltildi |
+| 8 | LITOW, kalkışta uçakta olmayan taksi yakıtıyla hesaplanmış | Kalkış yakıtından (0,5 indeks fark) |
 
 Detay: `docs/AHM560_GROUND_TRUTH.md` §20.
 

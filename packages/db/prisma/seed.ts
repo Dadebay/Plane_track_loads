@@ -222,6 +222,163 @@ async function main() {
     },
   ]);
 
+
+  // ---------------------------------------------------------------------
+  // Four flights that actually operated, rebuilt from the operator's own
+  // printed loadsheets (docs/AHM560_GROUND_TRUTH.md §20). Unlike the three
+  // scheduled demo flights above these arrive with their real load already
+  // in place, so the load-plan page can be opened and finalized straight
+  // away and the resulting PDFs put next to the operator's originals.
+  //
+  // Seeded as DRAFT: the numbers are the load as flown, but the calculation
+  // and the documents are ours to produce, not transcribed.
+  // ---------------------------------------------------------------------
+  const mxp = await prisma.station.findUniqueOrThrow({ where: { iata: "MXP" } });
+  const controller = await prisma.user.findUniqueOrThrow({ where: { email: "controller@tua.local" } });
+  const ahmRev2 = await prisma.ahmDocument.findFirstOrThrow({
+    where: { aircraftType: "a330-243p2f", edition: 1, revision: 2 },
+  });
+
+  /** Position codes AHM 560 lists at more than one ULD size. The printed
+   * recap gives only the code, so the pallet variant is pinned the same way
+   * the golden case pins it — 96"x125" throughout. */
+  const PALLET_96_CODES = new Set(["12P", "13P", "21P", "22P", "31P", "32P", "41P", "42P"]);
+  const SIDE_BY_SIDE_CODES = /^[A-Z]{2,3}[LR]$/;
+
+  function seedLoadItem(position: string, weight: string) {
+    const lower = /^\d/.test(position);
+    let uldType: string | null = null;
+    if (PALLET_96_CODES.has(position)) uldType = "PALLET_96x125";
+    else if (SIDE_BY_SIDE_CODES.test(position)) uldType = "SIDE_BY_SIDE_125x96";
+    return { position, weight, uldType, deck: lower ? ("LOWER" as const) : ("MAIN" as const) };
+  }
+
+  async function ensureFlownFlight(opts: {
+    flightNo: string;
+    date: string;
+    from: string;
+    depUtc: string;
+    arrUtc: string;
+    aircraftId: string;
+    cockpitCrew: number;
+    courierCrew: number;
+    fuel: { density: string; takeoffFuel: string; tripFuel: string };
+    load: readonly (readonly [string, string])[];
+  }) {
+    const date = new Date(opts.date);
+    if (await prisma.flight.findFirst({ where: { flightNo: opts.flightNo, date } })) return;
+
+    const flight = await prisma.flight.create({
+      data: {
+        flightNo: opts.flightNo,
+        date,
+        serviceType: "Scheduled intl. non-stop (cargo)",
+        status: "ARRIVED",
+        aircraftId: opts.aircraftId,
+      },
+    });
+    const leg = await prisma.flightLeg.create({
+      data: {
+        flightId: flight.id,
+        seq: 1,
+        fromStationId: opts.from === "MXP" ? mxp.id : fra.id,
+        toStationId: asb.id,
+        stdDep: new Date(opts.depUtc),
+        etdDep: new Date(opts.depUtc),
+        atdDep: new Date(opts.depUtc),
+        staArr: new Date(opts.arrUtc),
+        ataArr: new Date(opts.arrUtc),
+      },
+    });
+    await prisma.fuelRecord.create({
+      data: {
+        legId: leg.id,
+        density: opts.fuel.density,
+        takeoffFuel: opts.fuel.takeoffFuel,
+        tripFuel: opts.fuel.tripFuel,
+        taxiFuel: "600",
+        refuelMode: "MANUAL",
+      },
+    });
+    await prisma.loadPlan.create({
+      data: {
+        legId: leg.id,
+        version: 1,
+        status: "DRAFT",
+        createdById: controller.id,
+        cockpitCrew: opts.cockpitCrew,
+        courierCrew: opts.courierCrew,
+        ahmDocumentId: ahmRev2.id,
+        loadItems: { create: opts.load.map(([p, w]) => seedLoadItem(p, w)) },
+      },
+    });
+  }
+
+  // T5 450 · 19/07/2026 · MXP-ASB · EZ-F430 · crew 2/4 · TTL 10 604
+  await ensureFlownFlight({
+    flightNo: "T5 450",
+    date: "2026-07-19",
+    from: "MXP",
+    depUtc: "2026-07-19T16:50:00Z", // 18:50 local MXP (UTC+2)
+    arrUtc: "2026-07-20T00:10:00Z",
+    aircraftId: ez430.id,
+    cockpitCrew: 2,
+    courierCrew: 4,
+    fuel: { density: "0.785", takeoffFuel: "29500", tripFuel: "22339" },
+    load: [["HH", "2130"], ["JJ", "326"], ["KK", "870"], ["LL", "1007"], ["MM", "1850"],
+           ["PP", "2870"], ["RR", "1025"], ["11", "124"], ["53", "402"]],
+  });
+
+  // T5 478 · 18/07/2026 · FRA-ASB · EZ-F429 · crew 2/5 · TTL 30 280
+  await ensureFlownFlight({
+    flightNo: "T5 478",
+    date: "2026-07-18",
+    from: "FRA",
+    depUtc: "2026-07-18T16:30:00Z", // 18:30 local FRA (UTC+2)
+    arrUtc: "2026-07-18T23:50:00Z",
+    aircraftId: ez429.id,
+    cockpitCrew: 2,
+    courierCrew: 5,
+    fuel: { density: "0.785", takeoffFuel: "33200", tripFuel: "25641" },
+    load: [["CEL", "1590"], ["EFR", "1820"], ["FHL", "1030"], ["FHR", "760"], ["HJ", "3230"],
+           ["JJ", "1010"], ["KK", "1530"], ["LL", "1510"], ["MM", "2930"], ["PP", "3140"],
+           ["RR", "3400"], ["SS", "1590"], ["TT", "1500"],
+           ["12P", "1490"], ["13P", "1580"], ["21P", "1030"], ["22P", "1140"]],
+  });
+
+  // T5 478 · 25/07/2026 · FRA-ASB · EZ-F430 · crew 2/4 · TTL 23 740
+  await ensureFlownFlight({
+    flightNo: "T5 478",
+    date: "2026-07-25",
+    from: "FRA",
+    depUtc: "2026-07-25T16:30:00Z",
+    arrUtc: "2026-07-25T23:50:00Z",
+    aircraftId: ez430.id,
+    cockpitCrew: 2,
+    courierCrew: 4,
+    fuel: { density: "0.785", takeoffFuel: "32600", tripFuel: "25164" },
+    load: [["CC", "1070"], ["DD", "1570"], ["FHL", "750"], ["EE", "1600"], ["HJL", "1020"],
+           ["HJR", "1610"], ["JKL", "2960"], ["JKR", "2740"], ["KML", "570"], ["KMR", "830"],
+           ["MM", "2920"], ["PP", "2950"], ["RR", "1600"], ["SS", "1550"]],
+  });
+
+  // T5 478 · 01/08/2026 · FRA-ASB · EZ-F429 · crew 2/4 · TTL 13 120
+  // The one sheet flown at fuel density 0.775 rather than 0.785.
+  await ensureFlownFlight({
+    flightNo: "T5 478",
+    date: "2026-08-01",
+    from: "FRA",
+    depUtc: "2026-08-01T16:30:00Z",
+    arrUtc: "2026-08-01T23:50:00Z",
+    aircraftId: ez429.id,
+    cockpitCrew: 2,
+    courierCrew: 4,
+    fuel: { density: "0.775", takeoffFuel: "31200", tripFuel: "23867" },
+    load: [["DD", "920"], ["EE", "750"], ["FF", "750"], ["GG", "710"], ["HH", "610"],
+           ["JJ", "1020"], ["KK", "1260"], ["LL", "1390"], ["MM", "1280"], ["PP", "1250"],
+           ["RR", "1520"], ["SS", "710"], ["TT", "950"]],
+  });
+
   // Faz 7 demo ULDs — codes follow the IATA convention (3-letter type code
   // + serial + 2-letter owner code) so the naming-convention validator has
   // real examples to check against. Types (PMC/PAG/PZA/PGA/FLA) come from

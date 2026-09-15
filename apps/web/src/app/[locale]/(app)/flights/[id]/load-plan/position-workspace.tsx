@@ -264,7 +264,10 @@ function RowCells({
         // cells outside the fuselage. The 720px floor on the deck plan keeps
         // the resulting cell comfortably clickable.
         "h-full flex-1 min-w-0 px-0.5 shadow-md"
-      : "min-h-[48px] min-w-[58px]";
+      : // Wide enough for a ten-character ULD code on its own line: the cell
+        // carries position, weight and container, and a code that wraps or
+        // clips is one a loader cannot check against the ramp.
+        "min-h-[64px] min-w-[78px]";
 
   return (
     <div ref={containerRef} className="contents" role="group" aria-label={row.label}>
@@ -309,8 +312,16 @@ function RowCells({
               </span>
             </span>
             {variant === "row" ? (
-              <span className="flex min-h-7 max-w-full items-center truncate px-1.5 font-mono text-[10px] font-medium leading-none tabular-nums">
-                {cell.weight ? formatWeight(cell.weight) : "\u00b7"}
+              <span className="flex w-full flex-1 flex-col items-center justify-center gap-0.5 px-1.5 py-1.5 leading-tight">
+                {/* The container first, then what is in it. A loader reads the
+                    plate to find a ULD, so the code is what they scan for;
+                    the weight is the confirmation underneath it. */}
+                {cell.uldCode ? (
+                  <span className="max-w-full truncate text-[10px] font-semibold">{cell.uldCode}</span>
+                ) : null}
+                <span className="max-w-full truncate text-[11px] font-medium tabular-nums">
+                  {cell.weight ? formatWeight(cell.weight) : "\u00b7"}
+                </span>
               </span>
             ) : null}
           </button>

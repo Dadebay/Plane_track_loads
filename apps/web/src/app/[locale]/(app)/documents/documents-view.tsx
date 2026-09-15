@@ -25,9 +25,14 @@ import { generateEdp, generateEnv, generateLir, generateLoadsheet } from "./acti
  * searches by, so it is produced by one shared helper, not by the browser.
  */
 
-/** Printed in the order the crew works: plan, instruct, report, check. */
-const DOCUMENT_TYPES = ["LS", "EDP", "LIR", "ENV"] as const;
-type DocumentType = (typeof DOCUMENT_TYPES)[number];
+/** Every document this page can produce. EDP — the ramp's working form — is
+ * generated the same way as the rest and kept wired up here, but it is not
+ * offered in the table: the office does not export it. */
+const GENERATABLE_TYPES = ["LS", "EDP", "LIR", "ENV"] as const;
+type DocumentType = (typeof GENERATABLE_TYPES)[number];
+
+/** The ones the table shows, in the order the crew works: plan, report, check. */
+const DOCUMENT_TYPES: readonly DocumentType[] = ["LS", "LIR", "ENV"];
 
 const GENERATE_ACTIONS: Record<DocumentType, (input: { legId: string; checkedById: string; specialInformation?: string }) => Promise<{ ok: boolean; error?: string }>> = {
   LS: generateLoadsheet,
