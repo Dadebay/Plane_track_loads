@@ -9,6 +9,7 @@ import {
 import { PageHeader } from "@/components/page-header";
 import { Link } from "@/i18n/navigation";
 import type { LoadPlanAhmData, DraftLoadItem } from "@/lib/load-plan-calc";
+import type { WorkspaceCell } from "@/lib/position-workspace";
 import { LoadPlanQueryProvider } from "./query-provider";
 import { useLoadDraftStore, type LoadDraftInit } from "./load-draft-store";
 import { useLiveWnb } from "./use-live-wnb";
@@ -16,7 +17,7 @@ import { PositionList } from "./position-list";
 import { AircraftDiagram } from "./aircraft-diagram";
 import { PositionWorkspace } from "./position-workspace";
 import { PositionAssignmentModal } from "./position-assignment-modal";
-import { groupByCode } from "./position-groups";
+import { groupByCode, pickVariant } from "./position-groups";
 import { FuelCrewForm } from "./fuel-crew-form";
 import { FuelDistributionModal } from "./fuel-distribution-modal";
 import { DowDoiModal } from "./dow-doi-modal";
@@ -53,7 +54,12 @@ function LoadPlanContent({
 }) {
   const t = useTranslations("loadPlan");
   const [tab, setTab] = useState<"positions" | "fuelCrew">("positions");
-  const [openCode, setOpenCode] = useState<string | null>(null);
+  // Which cell was opened, not just which code: a code published on two
+  // mutually exclusive configuration rows would otherwise open on the
+  // wrong row (see pickVariant).
+  const [open, setOpen] = useState<{ code: string; uldType: string | null } | null>(null);
+  const [blocked, setBlocked] = useState<WorkspaceCell | null>(null);
+  const openCell = (code: string, uldType?: string) => setOpen({ code, uldType: uldType ?? null });
   const [fuelOpen, setFuelOpen] = useState(false);
   const [dowOpen, setDowOpen] = useState(false);
 
@@ -75,7 +81,7 @@ function LoadPlanContent({
   const isFinalized = planStatus === "FINALIZED";
 
   const groups = groupByCode(ahmData.positions);
-  const openGroup = groups.find((g) => g.code === openCode) ?? null;
+  const openGroup = groups.find((g) => g.code === open?.code) ?? null;
   const itemByPosition = new Map(items.map((i) => [i.position, i]));
 
   if (!hasHydrated) {
@@ -168,7 +174,7 @@ function LoadPlanContent({
             {tab === "positions" ? (
               <>
                 <div className="sticky top-0 z-10 -mx-4 bg-bg px-4 pb-2 sm:hidden">
-                  <AircraftDiagram positions={ahmData.positions} overloaded={overloadedPositions} onSelect={setOpenCode} compact />
+                  <AircraftDiagram positions={ahmData.positions} overloaded={overloadedPositions} onSelect={(code) => openCell(code)} compact />
                 </div>
                 {/* Desktop gets the full configuration-row workspace; the
                     phone keeps the compact mini-map above plus the position
@@ -178,7 +184,8 @@ function LoadPlanContent({
                     ahmData={ahmData}
                     overloaded={overloadedPositions}
                     readOnly={isFinalized}
-                    onSelect={setOpenCode}
+                    onSelect={openCell}
+                    onBlocked={setBlocked}
                   />
                 </div>
                 <div className="sm:hidden">
@@ -186,7 +193,7 @@ function LoadPlanContent({
                     positions={ahmData.positions}
                     overloaded={overloadedPositions}
                     indexRows={result.positionIndexes.rows}
-                    onSelect={setOpenCode}
+                    onSelect={(code) => openCell(code)}
                   />
                 </div>
               </>
@@ -210,9 +217,14 @@ function LoadPlanContent({
         code={openGroup?.code ?? null}
         variants={openGroup?.variants ?? []}
         existing={openGroup ? (itemByPosition.get(openGroup.code) ?? null) : null}
+        initialUldType={
+          openGroup
+            ? pickVariant(openGroup.variants, open?.uldType ?? null, itemByPosition.get(openGroup.code)?.uldType)
+            : ""
+        }
         readOnly={isFinalized}
         uldTares={ahmData.uldTares}
-        onClose={() => setOpenCode(null)}
+        onClose={() => setOpen(null)}
       />
 
       <DowDoiModal open={dowOpen} onClose={() => setDowOpen(false)} breakdown={ahmData.dowDoiBreakdown} />
@@ -224,7 +236,54 @@ function LoadPlanContent({
         readOnly={isFinalized}
       />
 
+      <BlockedCellDialog cell={blocked} onClose={() => setBlocked(null)} />
+
       <SaveBar legId={legId} ahmData={ahmData} registration={registration} result={result} />
+    </div>
+  );
+}
+
+/**
+ * Why a position cannot be used.
+ *
+ * AHM 560 prints mutually exclusive configuration rows, so loading one
+ * position takes its neighbours on the other rows out of play. Clicking
+ * such a cell used to do nothing at all — the controller was left to work
+ * out the rule from a greyed-out box. This says which position took it and
+ * why, in their own language.
+ */
+function BlockedCellDialog({ cell, onClose }: { cell: WorkspaceCell | null; onClose: () => void }) {
+  const t = useTranslations("loadPlan.workspace");
+  if (!cell) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("blockedTitle", { position: cell.code })}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
+      onClick={onClose}
+    >
+      <div
+        className="flex w-full max-w-md flex-col gap-3 rounded-lg border border-border bg-bg p-4 shadow-lg"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <h2 className="text-sm font-semibold text-fg">{t("blockedTitle", { position: cell.code })}</h2>
+        <p className="text-sm text-fg-muted">
+          {t("blockedBody", {
+            position: cell.code,
+            positions: cell.blockedBy.map((b) => `${b.code} — ${b.rowLabel}`).join(", "),
+          })}
+        </p>
+        <button
+          type="button"
+          onClick={onClose}
+          autoFocus
+          className="h-11 self-end rounded-md border border-border px-4 text-sm font-medium text-fg hover:bg-bg-muted sm:h-9"
+        >
+          {t("close")}
+        </button>
+      </div>
     </div>
   );
 }

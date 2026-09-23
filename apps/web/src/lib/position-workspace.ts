@@ -28,6 +28,12 @@ import type { DraftLoadItem, LoadPlanAhmData } from "./load-plan-calc";
  */
 export type CellState = "EMPTY" | "LOADED" | "OVERLOADED" | "BLOCKED" | "READ_ONLY";
 
+export interface BlockingPosition {
+  code: string;
+  /** The configuration row the blocking position sits on, as printed. */
+  rowLabel: string;
+}
+
 export interface WorkspaceCell {
   /** `uldType/code`, unique across the whole workspace. */
   key: string;
@@ -38,8 +44,10 @@ export interface WorkspaceCell {
   weight: string | null;
   uldCode: string | null;
   maxGross: string;
-  /** Position codes that block this one, when `state` is BLOCKED. */
-  blockedBy: string[];
+  /** What blocks this cell, when `state` is BLOCKED. The row matters as
+   * much as the code: a code like `ABR` is published on two mutually
+   * exclusive rows, so "blocked by ABR" alone reads as nonsense. */
+  blockedBy: BlockingPosition[];
 }
 
 export interface WorkspaceRow {
@@ -72,14 +80,16 @@ function resolveUldType(item: DraftLoadItem, ahmData: LoadPlanAhmData): string |
 function blockedByMap(
   loadedKeys: string[],
   footprints: PositionFootprint[],
-): Map<string, string[]> {
+  rowLabels: Map<string, string>,
+): Map<string, BlockingPosition[]> {
   const allKeys = footprints.map((f) => f.key);
-  const blockedBy = new Map<string, string[]>();
+  const blockedBy = new Map<string, BlockingPosition[]>();
 
   for (const loaded of loadedKeys) {
+    const [uldType, code] = loaded.split("/");
     for (const blocked of conflictingPositionsFor(loaded, allKeys, footprints)) {
       const list = blockedBy.get(blocked) ?? [];
-      list.push(loaded.split("/")[1] ?? loaded);
+      list.push({ code: code ?? loaded, rowLabel: rowLabels.get(uldType ?? "") ?? uldType ?? "" });
       blockedBy.set(blocked, list);
     }
   }
@@ -99,9 +109,12 @@ export function buildWorkspace(
     if (uldType) loadedByKey.set(positionKey(uldType, item.position), item);
   }
 
-  const blockedBy = blockedByMap([...loadedByKey.keys()], footprints);
-
   const layout = buildDeckLayout(ahmData.positions, ahmData.positionConfigurations);
+  const rowLabels = new Map(
+    [...layout.main, ...layout.lower].map((row) => [row.id, row.label] as const),
+  );
+
+  const blockedBy = blockedByMap([...loadedByKey.keys()], footprints, rowLabels);
 
   const decorate = (row: (typeof layout.main)[number]): WorkspaceRow => ({
     id: row.id,

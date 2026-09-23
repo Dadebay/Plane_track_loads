@@ -380,7 +380,15 @@
         "OVERLOADED": "Iň ýokary agramdan ýokary",
         "BLOCKED": "Başga pozisiýa tarapyndan petiklendi",
         "READ_ONLY": "Tamamlanan, diňe okamak üçin"
-      }
+      },
+      "uldCodeFor": "{row} hatarynda {position} pozisiýasy üçin ULD kody",
+      "weightFor": "{row} hatarynda {position} pozisiýasy üçin umumy agram",
+      "uldCodePlaceholder": "ULD",
+      "weightPlaceholder": "kg",
+      "blockedShort": "Bagly",
+      "blockedTitle": "{position} pozisiýasy elýeterli däl",
+      "blockedBody": "{position} bilen {positions} bir meýdany paýlaşýar we ol ýüklenen. AHM 560 bulary alternatiw konfigurasiýalar hökmünde çap edýär: bir wagtda diňe biri ULD göterip bilýär. Ol pozisiýany boşadyň ýa-da şol hatardaky başga pozisiýany ulanyň.",
+      "close": "Ýap"
     },
     "tables": {
       "pass": "Bolýar",

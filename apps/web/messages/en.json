@@ -380,7 +380,15 @@
         "OVERLOADED": "Over max gross",
         "BLOCKED": "Blocked by another position",
         "READ_ONLY": "Finalized, read only"
-      }
+      },
+      "uldCodeFor": "ULD code for position {position} on {row}",
+      "weightFor": "Gross weight for position {position} on {row}",
+      "uldCodePlaceholder": "ULD",
+      "weightPlaceholder": "kg",
+      "blockedShort": "Blocked",
+      "blockedTitle": "Position {position} is not available",
+      "blockedBody": "{position} shares floor space with {positions}, which is loaded. AHM 560 publishes these as alternative configurations: only one of them can hold a ULD at a time. Offload that position first, or use one on the same row.",
+      "close": "Close"
     },
     "tables": {
       "pass": "OK",

@@ -1,11 +1,17 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { buildPositionFootprints } from "@tua/wnb-core";
 import { formatWeight } from "@/lib/format-number";
 import type { LoadPlanAhmData } from "@/lib/load-plan-calc";
-import { buildWorkspace, nextCellIndex, type CellState, type WorkspaceRow } from "@/lib/position-workspace";
+import {
+  buildWorkspace,
+  nextCellIndex,
+  type CellState,
+  type WorkspaceCell,
+  type WorkspaceRow,
+} from "@/lib/position-workspace";
 import { useLoadDraftStore } from "./load-draft-store";
 import { AircraftSilhouette, CARGO_BAY } from "./aircraft-silhouette";
 
@@ -54,11 +60,13 @@ export function PositionWorkspace({
   overloaded,
   readOnly,
   onSelect,
+  onBlocked,
 }: {
   ahmData: LoadPlanAhmData;
   overloaded: Set<string>;
   readOnly: boolean;
-  onSelect: (code: string) => void;
+  onSelect: (code: string, uldType: string) => void;
+  onBlocked: (cell: WorkspaceCell) => void;
 }) {
   const t = useTranslations("loadPlan.workspace");
   const tPositions = useTranslations("loadPlan.positions");
@@ -115,7 +123,7 @@ export function PositionWorkspace({
         <div className="p-3 sm:p-4">
           <div className="flex flex-col divide-y divide-border border-y border-border">
             {mainRows.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} />
             ))}
           </div>
         </div>
@@ -127,7 +135,7 @@ export function PositionWorkspace({
           are what is underneath it. The loading zones A..U are drawn inside
           the fuselage because they are the aircraft, not a legend beside it. */}
       {zoneRow ? (
-        <DeckPlan row={zoneRow} onSelect={onSelect} />
+        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border bg-bg">
           <div className="min-w-[720px] px-1">
@@ -146,7 +154,7 @@ export function PositionWorkspace({
           </div>
           <div className="flex flex-col divide-y divide-border px-3 py-2 sm:px-4">
             {workspace.lower.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} />
             ))}
           </div>
         </section>
@@ -164,7 +172,15 @@ export function PositionWorkspace({
  * the frame around them differs, so nothing about accessibility is traded
  * away for the picture.
  */
-function DeckPlan({ row, onSelect }: { row: WorkspaceRow; onSelect: (code: string) => void }) {
+function DeckPlan({
+  row,
+  onSelect,
+  onBlocked,
+}: {
+  row: WorkspaceRow;
+  onSelect: (code: string, uldType: string) => void;
+  onBlocked: (cell: WorkspaceCell) => void;
+}) {
   return (
     // The drawing scrolls inside its own box rather than shrinking past the
     // point where a position code is readable. The page body never scrolls
@@ -188,14 +204,22 @@ function DeckPlan({ row, onSelect }: { row: WorkspaceRow; onSelect: (code: strin
             height: CARGO_BAY.height,
           }}
         >
-          <RowCells row={row} onSelect={onSelect} variant="deck" />
+          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} variant="deck" />
         </div>
       </div>
     </div>
   );
 }
 
-function Row({ row, onSelect }: { row: WorkspaceRow; onSelect: (code: string) => void }) {
+function Row({
+  row,
+  onSelect,
+  onBlocked,
+}: {
+  row: WorkspaceRow;
+  onSelect: (code: string, uldType: string) => void;
+  onBlocked: (cell: WorkspaceCell) => void;
+}) {
   const isSideBySide = row.cells.length > 0 && row.cells.every((cell) => /[LR]$/.test(cell.code));
   const tracks = isSideBySide
     ? [
@@ -214,7 +238,7 @@ function Row({ row, onSelect }: { row: WorkspaceRow; onSelect: (code: string) =>
         <div className="flex min-w-max flex-col gap-1.5">
           {tracks.map((track) => (
             <div key={track.id} className="flex gap-1">
-              <RowCells row={track} onSelect={onSelect} variant="row" />
+              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} variant="row" />
             </div>
           ))}
         </div>
@@ -234,10 +258,12 @@ function Row({ row, onSelect }: { row: WorkspaceRow; onSelect: (code: string) =>
 function RowCells({
   row,
   onSelect,
+  onBlocked,
   variant,
 }: {
   row: WorkspaceRow;
-  onSelect: (code: string) => void;
+  onSelect: (code: string, uldType: string) => void;
+  onBlocked: (cell: WorkspaceCell) => void;
   variant: "row" | "deck";
 }) {
   const t = useTranslations("loadPlan.workspace");
@@ -278,56 +304,171 @@ function RowCells({
           t(`state.${cell.state}` as never),
           cell.weight ? formatWeight(cell.weight) : null,
           cell.uldCode,
-          cell.blockedBy.length > 0 ? t("blockedByList", { positions: cell.blockedBy.join(", ") }) : null,
+          cell.blockedBy.length > 0
+            ? t("blockedByList", {
+                positions: cell.blockedBy.map((b) => `${b.code} (${b.rowLabel})`).join(", "),
+              })
+            : null,
         ]
           .filter(Boolean)
           .join(", ");
 
         return (
-          <button
+          <div
             key={cell.key}
-            data-cell
-            type="button"
-            // One tab stop per row; arrows move within it.
-            tabIndex={index === 0 ? 0 : -1}
-            onKeyDown={(event) => handleKeyDown(event, index)}
-            onClick={() => !disabled && onSelect(cell.code)}
-            aria-disabled={disabled}
-            aria-label={label}
-            title={label}
-            className={`flex flex-col items-center overflow-hidden rounded-md border transition ${sizing} ${
+            className={`flex flex-col overflow-hidden rounded-md border transition ${sizing} ${
               variant === "deck" ? DECK_STATE_CLASS[cell.state] : STATE_CLASS[cell.state]
-            } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+            }`}
           >
-            <span
+            <button
+              data-cell
+              type="button"
+              // One tab stop per row; arrows move within it.
+              tabIndex={index === 0 ? 0 : -1}
+              onKeyDown={(event) => handleKeyDown(event, index)}
+              // The header opens the rest of the assignment — AWB, content
+              // code, the tare/net breakdown. A blocked cell explains
+              // itself rather than swallowing the tap: the controller
+              // clicked a real position and deserves to be told which
+              // loaded position took it out of play.
+              onClick={() =>
+                cell.state === "BLOCKED"
+                  ? onBlocked(cell)
+                  : !disabled && onSelect(cell.code, cell.uldType)
+              }
+              aria-disabled={disabled}
+              aria-label={label}
+              title={label}
               className={`flex items-center justify-center gap-0.5 font-mono font-bold leading-none ${
                 variant === "deck"
                   ? "h-full text-xs sm:text-sm"
                   : "h-5 w-full bg-slate-900 px-1 text-[10px] text-slate-50"
-              }`}
+              } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
             >
               {cell.code}
               <span aria-hidden="true" className="text-[10px] leading-none">
                 {STATE_SYMBOL[cell.state]}
               </span>
-            </span>
+            </button>
             {variant === "row" ? (
-              <span className="flex w-full flex-1 flex-col items-center justify-center gap-0.5 px-1.5 py-1.5 leading-tight">
-                {/* The container first, then what is in it. A loader reads the
-                    plate to find a ULD, so the code is what they scan for;
-                    the weight is the confirmation underneath it. */}
-                {cell.uldCode ? (
-                  <span className="max-w-full truncate text-[10px] font-semibold">{cell.uldCode}</span>
-                ) : null}
-                <span className="max-w-full truncate text-[11px] font-medium tabular-nums">
-                  {cell.weight ? formatWeight(cell.weight) : "\u00b7"}
+              cell.state === "BLOCKED" ? (
+                <span className="flex w-full flex-1 items-center justify-center px-1 text-[10px] leading-tight text-fg-subtle">
+                  {t("blockedShort")}
                 </span>
-              </span>
+              ) : (
+                <CellFields cell={cell} rowLabel={row.label} readOnly={cell.state === "READ_ONLY"} />
+              )
             ) : null}
-          </button>
+          </div>
         );
       })}
     </div>
+  );
+}
+
+
+/**
+ * ULD and weight, typed straight into the cell.
+ *
+ * The plate is the working surface: a controller reads the row, finds the
+ * position and writes what is on it. Sending them through a dialog for two
+ * fields put a modal between them and the aircraft, and — because a dialog
+ * only knows the position *code* — a code published on two mutually
+ * exclusive rows could land the load on the wrong one. Typing in the cell
+ * cannot: the cell is the row.
+ *
+ * Committed on blur and on Enter rather than on every keystroke, so a
+ * half-typed weight never reaches the live W&B calculation. Escape puts
+ * the cell back the way it was.
+ */
+function CellFields({
+  cell,
+  rowLabel,
+  readOnly,
+}: {
+  cell: WorkspaceCell;
+  rowLabel: string;
+  readOnly: boolean;
+}) {
+  const t = useTranslations("loadPlan.workspace");
+  const items = useLoadDraftStore((s) => s.items);
+  const upsertItem = useLoadDraftStore((s) => s.upsertItem);
+  const removeItem = useLoadDraftStore((s) => s.removeItem);
+
+  const stored = items.find((item) => item.position === cell.code) ?? null;
+  const [uldCode, setUldCode] = useState(cell.uldCode ?? "");
+  const [weight, setWeight] = useState(cell.weight ?? "");
+
+  // The plan can change underneath a cell — auto trim, a save coming back,
+  // another tab — so the fields follow the draft while they are not being
+  // edited.
+  useEffect(() => {
+    setUldCode(cell.uldCode ?? "");
+    setWeight(cell.weight ?? "");
+  }, [cell.uldCode, cell.weight]);
+
+  const commit = (nextUldCode: string, nextWeight: string) => {
+    const trimmedWeight = nextWeight.trim();
+    const trimmedUld = nextUldCode.trim();
+
+    if (trimmedWeight === "") {
+      if (stored) removeItem(cell.code);
+      return;
+    }
+
+    upsertItem({
+      ...(stored ?? {}),
+      position: cell.code,
+      uldType: cell.uldType,
+      weight: trimmedWeight,
+      uldCode: trimmedUld === "" ? undefined : trimmedUld,
+    });
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // Arrow keys belong to the cell's own text while a field has focus —
+    // they must not walk the row and steal what is being typed.
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      commit(uldCode, weight);
+      event.currentTarget.blur();
+    }
+    if (event.key === "Escape") {
+      setUldCode(cell.uldCode ?? "");
+      setWeight(cell.weight ?? "");
+      event.currentTarget.blur();
+    }
+  };
+
+  const field =
+    "w-full min-w-0 rounded-sm border border-transparent bg-transparent px-1 text-center leading-tight " +
+    "hover:border-border focus:border-brand-500 focus:bg-bg focus:outline-none disabled:cursor-not-allowed";
+
+  return (
+    <span className="flex w-full flex-1 flex-col justify-center gap-0.5 px-1 py-1">
+      <input
+        value={uldCode}
+        onChange={(event) => setUldCode(event.target.value)}
+        onBlur={() => commit(uldCode, weight)}
+        onKeyDown={onKeyDown}
+        disabled={readOnly}
+        aria-label={t("uldCodeFor", { position: cell.code, row: rowLabel })}
+        placeholder={t("uldCodePlaceholder")}
+        className={`${field} text-[10px] font-semibold placeholder:text-fg-subtle/60`}
+      />
+      <input
+        value={weight}
+        onChange={(event) => setWeight(event.target.value)}
+        onBlur={() => commit(uldCode, weight)}
+        onKeyDown={onKeyDown}
+        disabled={readOnly}
+        inputMode="decimal"
+        aria-label={t("weightFor", { position: cell.code, row: rowLabel })}
+        placeholder={t("weightPlaceholder")}
+        className={`${field} text-[11px] font-medium tabular-nums placeholder:text-fg-subtle/60`}
+      />
+    </span>
   );
 }
 

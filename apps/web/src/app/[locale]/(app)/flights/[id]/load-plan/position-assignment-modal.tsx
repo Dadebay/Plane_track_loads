@@ -17,6 +17,7 @@ const labelClass = "flex flex-col gap-1 text-xs font-medium text-fg-muted";
 export function PositionAssignmentModal({
   code,
   variants,
+  initialUldType,
   existing,
   readOnly = false,
   uldTares = {},
@@ -24,6 +25,8 @@ export function PositionAssignmentModal({
 }: {
   code: string | null;
   variants: Position[];
+  /** The variant the clicked cell belongs to — see pickVariant. */
+  initialUldType: string;
   existing: DraftLoadItem | null;
   /** A finalized plan cannot be edited (CLAUDE.md rule #5) — the modal
    * still opens, so the controller can read what is loaded. */
@@ -47,7 +50,7 @@ export function PositionAssignmentModal({
   const [netWeight, setNetWeight] = useState(existing?.netWeight ?? "");
   const [weight, setWeight] = useState(existing?.weight ?? "");
   const [contentCode, setContentCode] = useState(existing?.contentCode ?? "");
-  const [uldType, setUldType] = useState(existing?.uldType ?? variants[0]?.uldType ?? "");
+  const [uldType, setUldType] = useState(initialUldType || existing?.uldType || variants[0]?.uldType || "");
 
   if (!code) return null;
 

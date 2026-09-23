@@ -109,7 +109,10 @@ describe("buildWorkspace", () => {
 
   it("names which positions blocked a cell, so the UI can say why", () => {
     const workspace = build([{ position: "AB", weight: "3000" }]);
-    expect(cell(workspace, "SINGLE_ROW_88x125", "A").blockedBy).toContain("AB");
+    expect(cell(workspace, "SINGLE_ROW_88x125", "A").blockedBy.map((b) => b.code)).toContain("AB");
+    // The row matters: two configuration rows publish the same codes, so a
+    // blocked cell has to say which row took it.
+    expect(cell(workspace, "SINGLE_ROW_88x125", "A").blockedBy[0]?.rowLabel).toBeTruthy();
   });
 
   it("keeps a loaded cell loaded even when it is in a conflict", () => {
