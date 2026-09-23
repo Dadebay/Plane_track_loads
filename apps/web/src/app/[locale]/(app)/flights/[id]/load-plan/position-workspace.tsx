@@ -290,11 +290,13 @@ function RowCells({
         // cells outside the fuselage. The 720px floor on the deck plan keeps
         // the resulting cell comfortably clickable.
         "h-full flex-1 min-w-0 px-0.5 shadow-md"
-      : // Wide enough for a ten-character ULD code on its own line and tall
-        // enough to read across a ramp desk: the cell carries position,
-        // weight and container, and a code that wraps or clips is one a
-        // loader cannot check against the aircraft.
-        "min-h-[86px] min-w-[96px]";
+      : // Every cell the same size, never sized by what is in it: a row
+        // whose loaded positions are wider than its empty ones stops the
+        // columns lining up between rows, and lining them up is how a
+        // controller follows one position down the aircraft. Wide enough
+        // for a ten-character ULD code on its own line, tall enough to
+        // read across a ramp desk.
+        "min-h-[86px] w-[96px] shrink-0 grow-0";
 
   return (
     <div ref={containerRef} className="contents" role="group" aria-label={row.label}>
