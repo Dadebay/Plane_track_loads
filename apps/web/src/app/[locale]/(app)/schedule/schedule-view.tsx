@@ -242,17 +242,26 @@ export function ScheduleView({
         </div>
       </div>
 
-      <FlightFormModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSaved={() => {
-          setModalOpen(false);
-          router.refresh();
-        }}
-        stations={stations as unknown as StationOption[]}
-        aircraft={aircraft}
-        editing={editing}
-      />
+      {/* Mounted only while open, and keyed by what it is editing.
+          The form seeds every field from `editing` in useState initialisers,
+          and React runs those once per mount — so a permanently mounted
+          modal kept whatever was in it the first time it appeared. Pressing
+          Edit opened a blank form holding the last thing typed, with none of
+          the flight's own values in it. */}
+      {modalOpen ? (
+        <FlightFormModal
+          key={editing?.id ?? "new"}
+          open
+          onClose={() => setModalOpen(false)}
+          onSaved={() => {
+            setModalOpen(false);
+            router.refresh();
+          }}
+          stations={stations as unknown as StationOption[]}
+          aircraft={aircraft}
+          editing={editing}
+        />
+      ) : null}
     </div>
   );
 }
