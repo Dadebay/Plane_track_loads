@@ -6,6 +6,7 @@ import { Decimal } from "decimal.js";
 import { useTranslations } from "next-intl";
 import { buildPositionFootprints, positionIndex } from "@tua/wnb-core";
 import { formatIndex, formatIndexPerKg, formatWeight } from "@/lib/format-number";
+import { shortUldCode } from "@/lib/uld-code";
 import type { LoadPlanAhmData } from "@/lib/load-plan-calc";
 import {
   buildWorkspace,
@@ -628,6 +629,11 @@ function CellFields({
   const stored = items.find((item) => item.position === cell.code) ?? null;
   const [uldCode, setUldCode] = useState(cell.uldCode ?? "");
   const [weight, setWeight] = useState(cell.weight ?? "");
+  // At rest the cell shows the code without its type prefix — the row
+  // already says PALLET or SIDE BY SIDE, so "PMC" in every cell spends the
+  // width that tells two units apart. Focusing gives the full code back,
+  // because that is what is being edited and what the documents print.
+  const [uldFocused, setUldFocused] = useState(false);
 
   // The plan can change underneath a cell — auto trim, a save coming back,
   // another tab — so the fields follow the draft while they are not being
@@ -679,12 +685,18 @@ function CellFields({
   return (
     <span className="flex w-full flex-1 flex-col justify-center gap-1 px-1 py-1.5">
       <input
-        value={uldCode}
+        value={uldFocused ? uldCode : shortUldCode(uldCode)}
         onChange={(event) => setUldCode(event.target.value)}
-        onBlur={() => commit(uldCode, weight)}
+        onFocus={() => setUldFocused(true)}
+        onBlur={() => {
+          setUldFocused(false);
+          commit(uldCode, weight);
+        }}
         onKeyDown={onKeyDown}
         disabled={readOnly}
-        aria-label={t("uldCodeFor", { position: cell.code, row: rowLabel })}
+        // The accessible name carries the full code: a screen reader has no
+        // row heading in view to supply the prefix the display drops.
+        aria-label={`${t("uldCodeFor", { position: cell.code, row: rowLabel })}${uldCode ? ` — ${uldCode}` : ""}`}
         placeholder={t("uldCodePlaceholder")}
         className={`${field} text-xs font-semibold placeholder:text-fg-subtle/60`}
       />
