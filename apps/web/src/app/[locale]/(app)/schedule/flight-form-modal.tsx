@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { X, Plus, Trash2 } from "lucide-react";
 import { DatePicker } from "@tua/ui";
-import { SERVICE_TYPES } from "@/lib/service-types";
 import { createFlight, updateFlight, type FlightFormInput } from "./actions";
 
 export interface StationOption {
@@ -62,6 +61,7 @@ export function FlightFormModal({
   onSaved,
   stations,
   aircraft,
+  serviceTypes,
   editing,
 }: {
   open: boolean;
@@ -69,6 +69,11 @@ export function FlightFormModal({
   onSaved: () => void;
   stations: StationOption[];
   aircraft: AircraftOption[];
+  /** The catalogue plus whatever the schedule already stores — the same
+   * list the filter panel offers. The form used the fixed catalogue alone,
+   * so a value the operator actually uses ("CARGO") was filterable but not
+   * enterable without retyping it exactly. */
+  serviceTypes: string[];
   editing: EditingFlight | null;
 }) {
   const t = useTranslations("flights.form");
@@ -209,7 +214,7 @@ export function FlightFormModal({
                 className={inputClass}
               />
               <datalist id="flight-service-types">
-                {SERVICE_TYPES.map((type) => (
+                {serviceTypes.map((type) => (
                   <option key={type} value={type} />
                 ))}
               </datalist>

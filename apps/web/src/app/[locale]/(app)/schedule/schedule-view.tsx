@@ -259,6 +259,7 @@ export function ScheduleView({
           }}
           stations={stations as unknown as StationOption[]}
           aircraft={aircraft}
+          serviceTypes={serviceTypes}
           editing={editing}
         />
       ) : null}
