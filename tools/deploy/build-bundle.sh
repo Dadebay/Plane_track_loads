@@ -92,5 +92,8 @@ for required in apps/web/server.js apps/web/server-guard.mjs; do
 done
 
 echo "==> Packing $OUT"
-COPYFILE_DISABLE=1 tar -czf "$OUT" -C "$STAGE" .
+# --no-xattrs as well as COPYFILE_DISABLE: without it macOS writes each
+# file's extended attributes into the archive and GNU tar on the server
+# prints a warning per file while unpacking, burying anything real.
+COPYFILE_DISABLE=1 tar --no-xattrs -czf "$OUT" -C "$STAGE" .
 ls -lh "$OUT"
