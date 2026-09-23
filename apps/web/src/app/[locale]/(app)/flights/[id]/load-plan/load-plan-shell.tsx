@@ -186,6 +186,11 @@ function LoadPlanContent({
                     readOnly={isFinalized}
                     onSelect={openCell}
                     onBlocked={setBlocked}
+                    highlight={
+                      blocked
+                        ? { blockedKey: blocked.key, blockerKeys: blocked.blockedBy.map((b) => b.key) }
+                        : null
+                    }
                   />
                 </div>
                 <div className="sm:hidden">
@@ -261,25 +266,54 @@ function BlockedCellDialog({ cell, onClose }: { cell: WorkspaceCell | null; onCl
       role="dialog"
       aria-modal="true"
       aria-label={t("blockedTitle", { position: cell.code })}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
       onClick={onClose}
+      onKeyDown={(event) => event.key === "Escape" && onClose()}
     >
       <div
-        className="flex w-full max-w-md flex-col gap-3 rounded-lg border border-border bg-bg p-4 shadow-lg"
+        className="flex w-full max-w-lg flex-col gap-4 rounded-xl border border-border bg-bg p-5 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <h2 className="text-sm font-semibold text-fg">{t("blockedTitle", { position: cell.code })}</h2>
-        <p className="text-sm text-fg-muted">
-          {t("blockedBody", {
-            position: cell.code,
-            positions: cell.blockedBy.map((b) => `${b.code} — ${b.rowLabel}`).join(", "),
-          })}
-        </p>
+        <h2 className="text-base font-semibold text-fg">{t("blockedTitle", { position: cell.code })}</h2>
+
+        {/* The same two colours the plate is ringing behind this dialog:
+            danger for the position that cannot be used, accent for the
+            loaded one holding its floor. Colour is never the only signal —
+            each card is labelled in words as well. */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3 rounded-lg border-2 border-danger bg-danger-bg px-3 py-2">
+            <span className="font-mono text-base font-bold text-danger">{cell.code}</span>
+            <span className="flex flex-col">
+              <span className="text-xs font-semibold uppercase tracking-wide text-danger">
+                {t("blockedCardTitle")}
+              </span>
+              <span className="text-xs text-fg-muted">{cell.rowLabel}</span>
+            </span>
+          </div>
+
+          {cell.blockedBy.map((blocker) => (
+            <div
+              key={blocker.key}
+              className="flex items-center gap-3 rounded-lg border-2 border-info bg-info-bg px-3 py-2"
+            >
+              <span className="font-mono text-base font-bold text-info">{blocker.code}</span>
+              <span className="flex flex-col">
+                <span className="text-xs font-semibold uppercase tracking-wide text-info">
+                  {t("blockerCardTitle")}
+                </span>
+                <span className="text-xs text-fg-muted">{blocker.rowLabel}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-sm leading-relaxed text-fg-muted">{t("blockedExplanation")}</p>
+
         <button
           type="button"
           onClick={onClose}
           autoFocus
-          className="h-11 self-end rounded-md border border-border px-4 text-sm font-medium text-fg hover:bg-bg-muted sm:h-9"
+          className="h-11 self-end rounded-md bg-brand-500 px-5 text-sm font-semibold text-white hover:bg-brand-600 sm:h-9"
         >
           {t("close")}
         </button>

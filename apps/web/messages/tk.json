@@ -321,7 +321,8 @@
       "netWeight": "Netto (kg)",
       "grossWeight": "Brutto (kg)",
       "grossDerived": "Tara + netto-dan alnan",
-      "readOnly": "Bu meýilnama tamamlandy we üýtgedip bolmaýar."
+      "readOnly": "Bu meýilnama tamamlandy we üýtgedip bolmaýar.",
+      "selectVariant": "ULD ölçegi"
     },
     "panel": {
       "title": "Agram we deňagramlylyk",
@@ -387,8 +388,10 @@
       "weightPlaceholder": "kg",
       "blockedShort": "Bagly",
       "blockedTitle": "{position} pozisiýasy elýeterli däl",
-      "blockedBody": "{position} bilen {positions} bir meýdany paýlaşýar we ol ýüklenen. AHM 560 bulary alternatiw konfigurasiýalar hökmünde çap edýär: bir wagtda diňe biri ULD göterip bilýär. Ol pozisiýany boşadyň ýa-da şol hatardaky başga pozisiýany ulanyň.",
-      "close": "Ýap"
+      "close": "Ýap",
+      "blockedCardTitle": "Ulanyp bolmaýar",
+      "blockerCardTitle": "Ýüklenen — meýdany eýeleýär",
+      "blockedExplanation": "Bu iki pozisiýa bir meýdany paýlaşýar. AHM 560 olary alternatiw konfigurasiýalar hökmünde çap edýär, şonuň üçin bir wagtda diňe biri ULD göterip bilýär. Ýüklenen pozisiýany boşadyň ýa-da şol hatardaky boş pozisiýany ulanyň."
     },
     "tables": {
       "pass": "Bolýar",
@@ -546,7 +549,8 @@
       "combinedLoadExceeded": "{zone} zolagynda birleşen ýük: {actual} kg, {max} kg çäginden ýokary.",
       "combinedLoadUnavailable": "Birleşen ýük barlanyp bilinmedi: {reason}"
     },
-    "saveSessionStale": "Girişiňiz bu maglumat bazasyna gabat gelmeýär — çykyň we täzeden giriň, soň ýatda saklaň."
+    "saveSessionStale": "Girişiňiz bu maglumat bazasyna gabat gelmeýär — çykyň we täzeden giriň, soň ýatda saklaň.",
+    "saveBlockedRole": "Ýatda saklap bolmady — bu hasap bu ýük meýilnamasyny üýtgedip bilmeýär. Gaýtadan giriň ýa-da ýük gözegçisine ýüz tutuň."
   },
   "auth": {
     "signIn": "Içeri gir",

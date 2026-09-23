@@ -321,7 +321,8 @@
       "netWeight": "Net (kg)",
       "grossWeight": "Gross (kg)",
       "grossDerived": "Derived from tare + net",
-      "readOnly": "This plan is finalized and cannot be edited."
+      "readOnly": "This plan is finalized and cannot be edited.",
+      "selectVariant": "ULD size"
     },
     "panel": {
       "title": "Weight & balance",
@@ -387,8 +388,10 @@
       "weightPlaceholder": "kg",
       "blockedShort": "Blocked",
       "blockedTitle": "Position {position} is not available",
-      "blockedBody": "{position} shares floor space with {positions}, which is loaded. AHM 560 publishes these as alternative configurations: only one of them can hold a ULD at a time. Offload that position first, or use one on the same row.",
-      "close": "Close"
+      "close": "Close",
+      "blockedCardTitle": "Cannot be used",
+      "blockerCardTitle": "Loaded — holds the floor",
+      "blockedExplanation": "These two positions share the same floor space. AHM 560 publishes them as alternative configurations, so only one of them can hold a ULD at a time. Offload the loaded position, or use a free position on the same row."
     },
     "tables": {
       "pass": "OK",
@@ -546,7 +549,8 @@
       "combinedLoadExceeded": "Combined load at zone {zone}: {actual} kg above the {max} kg limit.",
       "combinedLoadUnavailable": "Combined load could not be checked: {reason}"
     },
-    "saveSessionStale": "Your sign-in no longer matches this database — sign out and sign in again, then save."
+    "saveSessionStale": "Your sign-in no longer matches this database — sign out and sign in again, then save.",
+    "saveBlockedRole": "Can't save — your account is not allowed to change this load plan. Sign in again, or ask a load controller."
   },
   "auth": {
     "signIn": "Sign in",

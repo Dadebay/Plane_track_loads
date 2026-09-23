@@ -29,6 +29,8 @@ import type { DraftLoadItem, LoadPlanAhmData } from "./load-plan-calc";
 export type CellState = "EMPTY" | "LOADED" | "OVERLOADED" | "BLOCKED" | "READ_ONLY";
 
 export interface BlockingPosition {
+  /** `uldType/code` — lets the UI point at the blocking cell itself. */
+  key: string;
   code: string;
   /** The configuration row the blocking position sits on, as printed. */
   rowLabel: string;
@@ -39,6 +41,9 @@ export interface WorkspaceCell {
   key: string;
   code: string;
   uldType: string;
+  /** The configuration row this cell is printed on, as the plate labels
+   * it — the piece that tells two identically-coded cells apart. */
+  rowLabel: string;
   state: CellState;
   /** Gross weight on this position, when loaded. */
   weight: string | null;
@@ -89,7 +94,11 @@ function blockedByMap(
     const [uldType, code] = loaded.split("/");
     for (const blocked of conflictingPositionsFor(loaded, allKeys, footprints)) {
       const list = blockedBy.get(blocked) ?? [];
-      list.push({ code: code ?? loaded, rowLabel: rowLabels.get(uldType ?? "") ?? uldType ?? "" });
+      list.push({
+        key: loaded,
+        code: code ?? loaded,
+        rowLabel: rowLabels.get(uldType ?? "") ?? uldType ?? "",
+      });
       blockedBy.set(blocked, list);
     }
   }
@@ -135,6 +144,7 @@ export function buildWorkspace(
         key: cell.key,
         code: cell.code,
         uldType: cell.uldType,
+        rowLabel: row.label,
         state,
         weight: item?.weight ?? null,
         uldCode: item?.uldCode ?? null,

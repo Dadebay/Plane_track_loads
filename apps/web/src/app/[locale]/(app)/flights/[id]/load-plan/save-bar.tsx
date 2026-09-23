@@ -59,7 +59,7 @@ export function SaveBar({
         return t("saveSessionStale");
       case "unauthorized":
       case "forbidden":
-        return tWnb("errors.weightLimitExceeded") === "" ? null : t("saveBlockedRole" as never);
+        return t("saveBlockedRole");
       default:
         return mutation.data.error ?? null;
     }

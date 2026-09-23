@@ -55,18 +55,29 @@ const DECK_STATE_CLASS: Record<CellState, string> = {
   READ_ONLY: "border-border bg-bg-subtle/95 text-fg-muted",
 };
 
+export interface Highlight {
+  /** Key of the cell the controller tried to use. */
+  blockedKey: string;
+  /** Keys of the loaded cells standing in its way. */
+  blockerKeys: string[];
+}
+
 export function PositionWorkspace({
   ahmData,
   overloaded,
   readOnly,
   onSelect,
   onBlocked,
+  highlight,
 }: {
   ahmData: LoadPlanAhmData;
   overloaded: Set<string>;
   readOnly: boolean;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
+  /** Cells to call out while the blocked-cell explanation is open: the one
+   * that cannot be used, and the loaded one holding its floor. */
+  highlight: Highlight | null;
 }) {
   const t = useTranslations("loadPlan.workspace");
   const tPositions = useTranslations("loadPlan.positions");
@@ -123,7 +134,7 @@ export function PositionWorkspace({
         <div className="p-3 sm:p-4">
           <div className="flex flex-col divide-y divide-border border-y border-border">
             {mainRows.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} />
             ))}
           </div>
         </div>
@@ -135,7 +146,7 @@ export function PositionWorkspace({
           are what is underneath it. The loading zones A..U are drawn inside
           the fuselage because they are the aircraft, not a legend beside it. */}
       {zoneRow ? (
-        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} />
+        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border bg-bg">
           <div className="min-w-[720px] px-1">
@@ -154,7 +165,7 @@ export function PositionWorkspace({
           </div>
           <div className="flex flex-col divide-y divide-border px-3 py-2 sm:px-4">
             {workspace.lower.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} />
             ))}
           </div>
         </section>
@@ -176,10 +187,12 @@ function DeckPlan({
   row,
   onSelect,
   onBlocked,
+  highlight,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
+  highlight: Highlight | null;
 }) {
   return (
     // The drawing scrolls inside its own box rather than shrinking past the
@@ -204,7 +217,7 @@ function DeckPlan({
             height: CARGO_BAY.height,
           }}
         >
-          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} variant="deck" />
+          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} variant="deck" />
         </div>
       </div>
     </div>
@@ -215,10 +228,12 @@ function Row({
   row,
   onSelect,
   onBlocked,
+  highlight,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
+  highlight: Highlight | null;
 }) {
   const isSideBySide = row.cells.length > 0 && row.cells.every((cell) => /[LR]$/.test(cell.code));
   const tracks = isSideBySide
@@ -238,7 +253,7 @@ function Row({
         <div className="flex min-w-max flex-col gap-1.5">
           {tracks.map((track) => (
             <div key={track.id} className="flex gap-1">
-              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} variant="row" />
+              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} variant="row" />
             </div>
           ))}
         </div>
@@ -259,11 +274,13 @@ function RowCells({
   row,
   onSelect,
   onBlocked,
+  highlight,
   variant,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
+  highlight: Highlight | null;
   variant: "row" | "deck";
 }) {
   const t = useTranslations("loadPlan.workspace");
@@ -316,10 +333,23 @@ function RowCells({
           .filter(Boolean)
           .join(", ");
 
+        // While the explanation is open, the two cells it names are ringed
+        // — the position that cannot be used in the danger colour, the
+        // loaded one holding its floor in the accent colour. Reading a
+        // sentence about two codes is far harder than seeing them.
+        const called =
+          highlight === null
+            ? ""
+            : highlight.blockedKey === cell.key
+              ? "ring-2 ring-danger ring-offset-1 ring-offset-bg"
+              : highlight.blockerKeys.includes(cell.key)
+                ? "ring-2 ring-info ring-offset-1 ring-offset-bg"
+                : "opacity-40";
+
         return (
           <div
             key={cell.key}
-            className={`flex flex-col overflow-hidden rounded-md border transition ${sizing} ${
+            className={`flex flex-col overflow-hidden rounded-md border transition ${sizing} ${called} ${
               variant === "deck" ? DECK_STATE_CLASS[cell.state] : STATE_CLASS[cell.state]
             }`}
           >
