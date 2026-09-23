@@ -166,7 +166,8 @@
       "conflictError": "Это воздушное судно уже назначено на рейс {flightNo} в это время",
       "atLeastOneLeg": "Нужен хотя бы один участок",
       "createSuccess": "Рейс создан",
-      "updateSuccess": "Рейс обновлён"
+      "updateSuccess": "Рейс обновлён",
+      "aircraftUnknown": "Нет подходящего ВС. Выберите из списка."
     },
     "status": {
       "reserved": "Зарезервирован",

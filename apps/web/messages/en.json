@@ -166,7 +166,8 @@
       "conflictError": "This aircraft is already assigned to {flightNo} during this time",
       "atLeastOneLeg": "At least one leg is required",
       "createSuccess": "Flight created",
-      "updateSuccess": "Flight updated"
+      "updateSuccess": "Flight updated",
+      "aircraftUnknown": "No aircraft matches that. Pick one from the list."
     },
     "status": {
       "reserved": "Reserved",

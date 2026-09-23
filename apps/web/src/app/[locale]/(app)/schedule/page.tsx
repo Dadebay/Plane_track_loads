@@ -74,7 +74,7 @@ export default async function SchedulePage({
       filters={filters}
       editableByFlightId={editableByFlightId}
       stations={stations}
-      aircraft={fleet.map((a) => ({ id: a.id, registration: a.registration }))}
+      aircraft={fleet.map((a) => ({ id: a.id, registration: a.registration, type: a.type, iataTypeCode: a.iataTypeCode }))}
       serviceTypes={serviceTypeOptions(flightsForServiceTypes.map((f) => f.serviceType))}
       flightNumberPrefixes={flightNumberPrefixes}
       registrations={fleet.map((a) => a.registration)}

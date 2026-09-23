@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { X, Plus, Trash2 } from "lucide-react";
 import { DatePicker } from "@tua/ui";
+import { SERVICE_TYPES } from "@/lib/service-types";
 import { createFlight, updateFlight, type FlightFormInput } from "./actions";
 
 export interface StationOption {
@@ -15,6 +16,20 @@ export interface StationOption {
 export interface AircraftOption {
   id: string;
   registration: string;
+  type: string;
+  iataTypeCode: string | null;
+}
+
+/**
+ * How an aircraft reads in the picker: registration, type name, and the
+ * IATA code the operator's own schedule prints.
+ *
+ * All three are in one string so the browser's datalist matching covers
+ * all three — a controller who knows the flight is a 332 can type that and
+ * find the airframe without knowing which tail is flying it.
+ */
+export function aircraftLabel(a: AircraftOption): string {
+  return a.iataTypeCode ? `${a.registration} · ${a.type} (${a.iataTypeCode})` : `${a.registration} · ${a.type}`;
 }
 
 export interface EditingFlight {
@@ -66,6 +81,20 @@ export function FlightFormModal({
   const [date, setDate] = useState(editing?.date ?? "");
   const [serviceType, setServiceType] = useState(editing?.serviceType ?? "");
   const [aircraftId, setAircraftId] = useState(editing?.aircraftId ?? aircraft[0]?.id ?? "");
+  // The picker's text and the id it resolves to are separate: a half-typed
+  // registration must not silently leave the previous aircraft selected.
+  const [aircraftQuery, setAircraftQuery] = useState(() => {
+    const initial = aircraft.find((a) => a.id === (editing?.aircraftId ?? aircraft[0]?.id));
+    return initial ? aircraftLabel(initial) : "";
+  });
+
+  function onAircraftQueryChange(value: string) {
+    setAircraftQuery(value);
+    const match = aircraft.find(
+      (a) => aircraftLabel(a) === value || a.registration.toUpperCase() === value.trim().toUpperCase(),
+    );
+    setAircraftId(match?.id ?? "");
+  }
   const [status, setStatus] = useState(editing?.status ?? "RESERVED");
   const [legs, setLegs] = useState<LegDraft[]>(
     editing?.legs.length ? editing.legs.map((l) => ({ ...l })) : [{ ...emptyLeg }],
@@ -89,6 +118,16 @@ export function FlightFormModal({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    // `required` only proves the aircraft field is not empty. Text that
+    // matches no airframe leaves the id unresolved, and submitting that
+    // reaches the server as a missing foreign key — a validation error
+    // about a field the controller can still see and fix here.
+    if (aircraftId === "") {
+      setError({ message: "aircraftUnknown" });
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
@@ -155,22 +194,44 @@ export function FlightFormModal({
             </label>
             <label className={labelClass}>
               {t("serviceType")}
+              {/* A list, not a select: `serviceTypeOptions` already has to
+                  carry values the schedule stores but the catalogue does
+                  not, and a select would make those unenterable. */}
               <input
                 required
+                list="flight-service-types"
                 value={serviceType}
                 onChange={(e) => setServiceType(e.target.value)}
                 className={inputClass}
               />
+              <datalist id="flight-service-types">
+                {SERVICE_TYPES.map((type) => (
+                  <option key={type} value={type} />
+                ))}
+              </datalist>
             </label>
             <label className={labelClass}>
               {t("aircraft")}
-              <select required value={aircraftId} onChange={(e) => setAircraftId(e.target.value)} className={inputClass}>
+              {/* Typed rather than picked, so "332" or "A330" finds the
+                  airframe. The select it replaces showed the registration
+                  alone, which meant knowing which tail was flying before
+                  you could schedule it. */}
+              <input
+                required
+                list="flight-aircraft"
+                value={aircraftQuery}
+                onChange={(e) => onAircraftQueryChange(e.target.value)}
+                className={inputClass}
+                aria-invalid={aircraftQuery !== "" && aircraftId === ""}
+              />
+              <datalist id="flight-aircraft">
                 {aircraft.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.registration}
-                  </option>
+                  <option key={a.id} value={aircraftLabel(a)} />
                 ))}
-              </select>
+              </datalist>
+              {aircraftQuery !== "" && aircraftId === "" ? (
+                <span className="text-xs text-danger">{t("aircraftUnknown")}</span>
+              ) : null}
             </label>
             {editing ? (
               <label className={labelClass}>

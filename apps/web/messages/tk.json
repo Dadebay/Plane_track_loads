@@ -158,7 +158,8 @@
       "conflictError": "Bu uçar eýýäm {flightNo} gatnawyna şu wagt aralygynda bellenen",
       "atLeastOneLeg": "Iň azyndan bir bölek gerek",
       "createSuccess": "Gatnaw döredildi",
-      "updateSuccess": "Gatnaw üýtgedildi"
+      "updateSuccess": "Gatnaw üýtgedildi",
+      "aircraftUnknown": "Oňa laýyk uçar ýok. Sanawdan saýlaň."
     },
     "schedule": {
       "title": "Gatnaw tertibi",
