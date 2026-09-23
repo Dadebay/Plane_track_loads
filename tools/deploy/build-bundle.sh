@@ -72,6 +72,14 @@ fi
 find "$STAGE" -type d -name "*sharp*darwin*" -prune -exec rm -rf {} + 2>/dev/null || true
 find "$STAGE" -type d -name "*img-squoosh*" -prune -exec rm -rf {} + 2>/dev/null || true
 
+# --- runtime state ------------------------------------------------------
+# apps/web/.data is where generated documents are stored at runtime, and
+# Next's standalone output sweeps it up along with the build. Shipping it
+# copies this machine's own test PDFs into the operator's document store,
+# where they sit under real leg ids carrying whatever the logo looked like
+# when they were made. Build output only.
+rm -rf "$STAGE/apps/web/.data"
+
 # --- AppleDouble --------------------------------------------------------
 # macOS writes a "._name" sidecar next to every file when tarring with
 # extended attributes. node-gyp-build scans the prebuilds directory in
@@ -87,9 +95,14 @@ if ! find "$STAGE" -name "*.node" | grep -q 'linux'; then
   exit 1
 fi
 
-for required in apps/web/server.js apps/web/server-guard.mjs; do
+for required in apps/web/server.js apps/web/server-guard.mjs packages/documents/assets/airline-logo.png; do
   [ -f "$STAGE/$required" ] || { echo "FAIL: $required missing from the bundle." >&2; exit 1; }
 done
+
+if [ -e "$STAGE/apps/web/.data" ]; then
+  echo "FAIL: apps/web/.data is runtime state and must not ship." >&2
+  exit 1
+fi
 
 echo "==> Packing $OUT"
 # --no-xattrs as well as COPYFILE_DISABLE: without it macOS writes each
