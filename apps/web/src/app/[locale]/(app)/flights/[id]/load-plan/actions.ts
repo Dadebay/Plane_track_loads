@@ -137,6 +137,16 @@ export async function saveLoadPlan(input: SaveLoadPlanInput): Promise<SaveLoadPl
   const version = (previous?.version ?? 0) + 1;
 
   const loadPlan = await db.$transaction(async (tx) => {
+    // A leg has exactly one plan in force. Recording a new one retires the
+    // finalized plan it corrects — without this a corrected leg carried two
+    // FINALIZED plans and nothing said which one the aircraft was loaded
+    // to. The retired row stays: it is what the already-issued documents
+    // were computed from (CLAUDE.md rule #5).
+    await tx.loadPlan.updateMany({
+      where: { legId: data.legId, status: "FINALIZED" },
+      data: { status: "SUPERSEDED" },
+    });
+
     const plan = await tx.loadPlan.create({
       data: {
         legId: data.legId,

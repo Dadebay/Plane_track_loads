@@ -179,7 +179,7 @@ export function PositionWorkspace({
         <div className="p-3 sm:p-4">
           <div className="flex flex-col divide-y divide-border border-y border-border">
             {mainRows.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} readOnly={readOnly} />
             ))}
           </div>
         </div>
@@ -191,7 +191,7 @@ export function PositionWorkspace({
           are what is underneath it. The loading zones A..U are drawn inside
           the fuselage because they are the aircraft, not a legend beside it. */}
       {zoneRow ? (
-        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} />
+        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} readOnly={readOnly} />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border bg-bg">
           <div className="min-w-[720px] px-1">
@@ -210,7 +210,7 @@ export function PositionWorkspace({
           </div>
           <div className="flex flex-col divide-y divide-border px-3 py-2 sm:px-4">
             {workspace.lower.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} readOnly={readOnly} />
             ))}
           </div>
         </section>
@@ -234,12 +234,14 @@ function DeckPlan({
   onBlocked,
   highlight,
   details,
+  readOnly,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
   highlight: Highlight | null;
   details: Map<string, CellDetail>;
+  readOnly: boolean;
 }) {
   return (
     // The drawing scrolls inside its own box rather than shrinking past the
@@ -264,7 +266,7 @@ function DeckPlan({
             height: CARGO_BAY.height,
           }}
         >
-          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} variant="deck" />
+          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} readOnly={readOnly} variant="deck" />
         </div>
       </div>
     </div>
@@ -277,12 +279,14 @@ function Row({
   onBlocked,
   highlight,
   details,
+  readOnly,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
   highlight: Highlight | null;
   details: Map<string, CellDetail>;
+  readOnly: boolean;
 }) {
   const isSideBySide = row.cells.length > 0 && row.cells.every((cell) => /[LR]$/.test(cell.code));
   const tracks = isSideBySide
@@ -302,7 +306,7 @@ function Row({
         <div className="flex min-w-max flex-col gap-1.5">
           {tracks.map((track) => (
             <div key={track.id} className="flex gap-1">
-              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} variant="row" />
+              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} readOnly={readOnly} variant="row" />
             </div>
           ))}
         </div>
@@ -325,6 +329,7 @@ function RowCells({
   onBlocked,
   highlight,
   details,
+  readOnly,
   variant,
 }: {
   row: WorkspaceRow;
@@ -332,6 +337,7 @@ function RowCells({
   onBlocked: (cell: WorkspaceCell) => void;
   highlight: Highlight | null;
   details: Map<string, CellDetail>;
+  readOnly: boolean;
   variant: "row" | "deck";
 }) {
   const t = useTranslations("loadPlan.workspace");
@@ -443,7 +449,7 @@ function RowCells({
                   {t("blockedShort")}
                 </span>
               ) : (
-                <CellFields cell={cell} rowLabel={row.label} readOnly={cell.state === "READ_ONLY"} />
+                <CellFields cell={cell} rowLabel={row.label} readOnly={readOnly} />
               )
             ) : null}
           </CellBox>

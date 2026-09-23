@@ -561,7 +561,11 @@
       "combinedLoadUnavailable": "Combined load could not be checked: {reason}"
     },
     "saveSessionStale": "Your sign-in no longer matches this database — sign out and sign in again, then save.",
-    "saveBlockedRole": "Can't save — your account is not allowed to change this load plan. Sign in again, or ask a load controller."
+    "saveBlockedRole": "Can't save — your account is not allowed to change this load plan. Sign in again, or ask a load controller.",
+    "finalizedExplanation": "Version {version} is finalized and cannot be changed. To correct it, record a new version — this one is kept as the plan the issued documents were computed from.",
+    "amend": "Correct — start version {version}",
+    "amendingNotice": "Composing version {next}. Saving it retires version {previous}; any document already issued stays valid until you generate a new edition.",
+    "amendCancel": "Cancel"
   },
   "auth": {
     "signIn": "Sign in",

@@ -135,10 +135,17 @@ describe("buildWorkspace", () => {
     expect(cell(workspace, "PALLET_96x125", "12P").state).toBe("BLOCKED");
   });
 
-  it("turns the whole workspace read-only for a finalized plan", () => {
+  it("marks only the loaded positions read-only on a finalized plan", () => {
+    // This used to assert that *every* cell went READ_ONLY, which is what
+    // made a finalized plate read as though the whole aircraft was loaded.
+    // Read-only describes a loaded position that can no longer be edited;
+    // it is not a mode the empty positions are in.
     const workspace = build([{ position: "A", weight: "2000" }], ["A"], true);
-    const cells = [...workspace.main, ...workspace.lower].flatMap((r) => r.cells);
-    expect(cells.every((c) => c.state === "READ_ONLY")).toBe(true);
+    const cells = [...workspace.main, ...workspace.lower].flatMap((c) => c.cells);
+    const readOnly = cells.filter((c) => c.state === "READ_ONLY");
+
+    expect(readOnly.map((c) => c.code)).toEqual(["A"]);
+    expect(cells.some((c) => c.state === "EMPTY")).toBe(true);
   });
 
   it("returns empty decks when this AHM revision has no position plate", () => {
@@ -166,6 +173,30 @@ describe("nextCellIndex", () => {
     expect(nextCellIndex(5, 10, "a")).toBeNull();
     expect(nextCellIndex(5, 10, "Enter")).toBeNull();
     expect(nextCellIndex(5, 10, "Tab")).toBeNull();
+  });
+});
+
+describe("a finalized plan", () => {
+  const loaded: DraftLoadItem[] = [{ position: "HH", weight: "2130", uldType: "SINGLE_ROW_96x125" }];
+
+  it("keeps a loaded position readable but no longer editable", () => {
+    const workspace = build(loaded, [], true);
+    expect(cell(workspace, "SINGLE_ROW_96x125", "HH").state).toBe("READ_ONLY");
+    expect(cell(workspace, "SINGLE_ROW_96x125", "HH").weight).toBe("2130");
+  });
+
+  it("leaves an untouched position empty rather than marking it loaded", () => {
+    // Marking every cell READ_ONLY made a finalized plate read as though
+    // every position on the aircraft carried a ULD.
+    const workspace = build(loaded, [], true);
+    const empty = cell(workspace, "SINGLE_ROW_96x125", "KK");
+    expect(empty.state).toBe("EMPTY");
+    expect(empty.weight).toBeNull();
+  });
+
+  it("still shows which positions the load blocks", () => {
+    const workspace = build(loaded, [], true);
+    expect(cell(workspace, "SINGLE_ROW_125x96", "HJ").state).toBe("BLOCKED");
   });
 });
 

@@ -25,6 +25,7 @@ import { ErrorLog } from "./error-log";
 import { WnbPanel } from "./wnb-panel";
 import { LoadPlanSidebar } from "./load-plan-sidebar";
 import { SaveBar } from "./save-bar";
+import { AmendingNotice, FinalizedBar } from "./finalized-bar";
 import { TrimButton } from "./trim-button";
 
 function LoadPlanContent({
@@ -78,7 +79,14 @@ function LoadPlanContent({
   const overloadedPositions = new Set(result.positionOverloads.map((o) => o.position));
   // A finalized plan is immutable (CLAUDE.md rule #5) — the workspace shows
   // it, greyed, rather than hiding it or letting a tap look like it worked.
-  const isFinalized = planStatus === "FINALIZED";
+  //
+  // Correcting one is not an exception to that rule but an application of
+  // it: `amending` unlocks the plate to compose the *next* version, and
+  // saving records that version while the finalized one is kept and marked
+  // superseded. Local state, because nothing is decided until it is saved —
+  // pressing the button must not itself write anything.
+  const [amending, setAmending] = useState(false);
+  const isFinalized = planStatus === "FINALIZED" && !amending;
 
   const groups = groupByCode(ahmData.positions);
   const openGroup = groups.find((g) => g.code === open?.code) ?? null;
@@ -114,14 +122,19 @@ function LoadPlanContent({
       <div className="flex flex-col gap-4 p-4 sm:p-6">
         <div className="flex flex-wrap items-center gap-2 text-sm text-fg-subtle">
           <span>
-            {fromIata}–{toIata} · {registration} · {t("version", { version: planVersion })}
+            {fromIata}–{toIata} · {registration} ·{" "}
+            {/* While a correction is being composed the header names the
+                version being written, not the one it replaces. */}
+            {t("version", { version: amending ? planVersion + 1 : planVersion })}
           </span>
           {planStatus ? (
-            <StatusBadge tone={planStatus === "FINALIZED" ? "success" : "neutral"}>
-              {t(`status.${planStatus.toLowerCase()}` as never)}
+            <StatusBadge tone={isFinalized ? "success" : "neutral"}>
+              {t(`status.${(amending ? "DRAFT" : planStatus).toLowerCase()}` as never)}
             </StatusBadge>
           ) : null}
         </div>
+
+        {amending ? <AmendingNotice version={planVersion} onCancel={() => setAmending(false)} /> : null}
 
         {/* Figures on the left, the aircraft on the right — the shape a
             load controller reads: the numbers stay in one place while the
@@ -243,7 +256,11 @@ function LoadPlanContent({
 
       <BlockedCellDialog cell={blocked} onClose={() => setBlocked(null)} />
 
-      <SaveBar legId={legId} ahmData={ahmData} registration={registration} result={result} />
+      {planStatus === "FINALIZED" && !amending ? (
+        <FinalizedBar version={planVersion} onAmend={() => setAmending(true)} />
+      ) : (
+        <SaveBar legId={legId} ahmData={ahmData} registration={registration} result={result} />
+      )}
     </div>
   );
 }

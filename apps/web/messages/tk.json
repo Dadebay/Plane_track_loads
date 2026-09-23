@@ -561,7 +561,11 @@
       "combinedLoadUnavailable": "Birleşen ýük barlanyp bilinmedi: {reason}"
     },
     "saveSessionStale": "Girişiňiz bu maglumat bazasyna gabat gelmeýär — çykyň we täzeden giriň, soň ýatda saklaň.",
-    "saveBlockedRole": "Ýatda saklap bolmady — bu hasap bu ýük meýilnamasyny üýtgedip bilmeýär. Gaýtadan giriň ýa-da ýük gözegçisine ýüz tutuň."
+    "saveBlockedRole": "Ýatda saklap bolmady — bu hasap bu ýük meýilnamasyny üýtgedip bilmeýär. Gaýtadan giriň ýa-da ýük gözegçisine ýüz tutuň.",
+    "finalizedExplanation": "{version}-nji wersiýa tamamlandy we üýtgedilip bilinmeýär. Düzetmek üçin täze wersiýa ýazyň — bu wersiýa çykarylan resminamalaryň hasaplanan plany hökmünde saklanýar.",
+    "amend": "Düzet — {version}-nji wersiýany başla",
+    "amendingNotice": "{next}-nji wersiýa düzülýär. Ony ýatda saklamak {previous}-nji wersiýany hyzmatdan aýyrýar; eýýäm çykarylan resminamalar täze neşir döredilýänçä güýjünde galýar.",
+    "amendCancel": "Ýatyr"
   },
   "auth": {
     "signIn": "Içeri gir",

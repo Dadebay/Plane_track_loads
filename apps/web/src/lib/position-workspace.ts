@@ -133,8 +133,14 @@ export function buildWorkspace(
       const item = loadedByKey.get(cell.key);
       const blockers = blockedBy.get(cell.key) ?? [];
 
+      // READ_ONLY describes a *loaded* position that can no longer be
+      // edited, so it replaces LOADED and nothing else. Letting it stand for
+      // every cell made a finalized plate read as though every position on
+      // the aircraft carried a ULD; letting it stand for blocked cells too
+      // would show a position as free when the load on another row has it —
+      // a loading error, not a cosmetic one.
       let state: CellState;
-      if (readOnly) state = "READ_ONLY";
+      if (item && readOnly) state = "READ_ONLY";
       else if (item && overloaded.has(cell.code)) state = "OVERLOADED";
       else if (item) state = "LOADED";
       else if (blockers.length > 0) state = "BLOCKED";
