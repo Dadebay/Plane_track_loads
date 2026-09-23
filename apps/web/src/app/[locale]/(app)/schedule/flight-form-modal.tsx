@@ -80,11 +80,15 @@ export function FlightFormModal({
   const [flightNo, setFlightNo] = useState(editing?.flightNo ?? "");
   const [date, setDate] = useState(editing?.date ?? "");
   const [serviceType, setServiceType] = useState(editing?.serviceType ?? "");
-  const [aircraftId, setAircraftId] = useState(editing?.aircraftId ?? aircraft[0]?.id ?? "");
+  // A new flight starts with no aircraft. It used to default to whichever
+  // airframe sorted first, which on this fleet is one whose type was never
+  // supplied — so the form opened already claiming a tail nobody chose, and
+  // a hurried save would schedule the flight onto it.
+  const [aircraftId, setAircraftId] = useState(editing?.aircraftId ?? "");
   // The picker's text and the id it resolves to are separate: a half-typed
   // registration must not silently leave the previous aircraft selected.
   const [aircraftQuery, setAircraftQuery] = useState(() => {
-    const initial = aircraft.find((a) => a.id === (editing?.aircraftId ?? aircraft[0]?.id));
+    const initial = aircraft.find((a) => a.id === editing?.aircraftId);
     return initial ? aircraftLabel(initial) : "";
   });
 
@@ -221,6 +225,7 @@ export function FlightFormModal({
                 list="flight-aircraft"
                 value={aircraftQuery}
                 onChange={(e) => onAircraftQueryChange(e.target.value)}
+                placeholder={t("aircraftPlaceholder")}
                 className={inputClass}
                 aria-invalid={aircraftQuery !== "" && aircraftId === ""}
               />

@@ -167,7 +167,8 @@
       "atLeastOneLeg": "Нужен хотя бы один участок",
       "createSuccess": "Рейс создан",
       "updateSuccess": "Рейс обновлён",
-      "aircraftUnknown": "Нет подходящего ВС. Выберите из списка."
+      "aircraftUnknown": "Нет подходящего ВС. Выберите из списка.",
+      "aircraftPlaceholder": "Регистрация, тип или код IATA"
     },
     "status": {
       "reserved": "Зарезервирован",

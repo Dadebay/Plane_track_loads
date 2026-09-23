@@ -159,7 +159,8 @@
       "atLeastOneLeg": "Iň azyndan bir bölek gerek",
       "createSuccess": "Gatnaw döredildi",
       "updateSuccess": "Gatnaw üýtgedildi",
-      "aircraftUnknown": "Oňa laýyk uçar ýok. Sanawdan saýlaň."
+      "aircraftUnknown": "Oňa laýyk uçar ýok. Sanawdan saýlaň.",
+      "aircraftPlaceholder": "Bellige alyş, tip ýa-da IATA kody"
     },
     "schedule": {
       "title": "Gatnaw tertibi",
