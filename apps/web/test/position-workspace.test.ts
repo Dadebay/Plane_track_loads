@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { loadAhmData } from "@tua/ahm-data";
 import { buildPositionFootprints } from "@tua/wnb-core";
-import { buildWorkspace, nextCellIndex } from "../src/lib/position-workspace";
+import { buildWorkspace, detailPanelPosition, nextCellIndex } from "../src/lib/position-workspace";
 import type { DraftLoadItem, LoadPlanAhmData } from "../src/lib/load-plan-calc";
 
 /**
@@ -166,5 +166,42 @@ describe("nextCellIndex", () => {
     expect(nextCellIndex(5, 10, "a")).toBeNull();
     expect(nextCellIndex(5, 10, "Enter")).toBeNull();
     expect(nextCellIndex(5, 10, "Tab")).toBeNull();
+  });
+});
+
+describe("detailPanelPosition", () => {
+  const viewport = { width: 1440, height: 900 };
+  const panel = { width: 260, maxHeight: 260, gap: 8 };
+
+  it("sits to the right of a cell with room beside it", () => {
+    const { left } = detailPanelPosition({ top: 400, left: 300, right: 380 }, viewport, panel);
+    expect(left).toBe(388);
+  });
+
+  it("flips to the left rather than covering the last cell in a row", () => {
+    // A cell hard against the right edge: clamping would put the panel on
+    // top of it, which swallowed the click meant for that cell and sent the
+    // weight to the same code on the other configuration row.
+    const anchor = { top: 400, left: 1300, right: 1384 };
+    const { left } = detailPanelPosition(anchor, viewport, panel);
+
+    expect(left).toBe(1300 - 8 - 260);
+    expect(left + panel.width).toBeLessThanOrEqual(anchor.left);
+  });
+
+  it("never leaves the viewport on either side", () => {
+    const narrow = { width: 420, height: 900 };
+    const { left } = detailPanelPosition({ top: 400, left: 40, right: 380 }, narrow, panel);
+    expect(left).toBeGreaterThanOrEqual(panel.gap);
+  });
+
+  it("lifts a panel anchored near the bottom so it stays on screen", () => {
+    const { top } = detailPanelPosition({ top: 880, left: 300, right: 380 }, viewport, panel);
+    expect(top).toBe(900 - 260 - 8);
+  });
+
+  it("keeps a panel anchored above the top edge on screen", () => {
+    const { top } = detailPanelPosition({ top: -40, left: 300, right: 380 }, viewport, panel);
+    expect(top).toBe(8);
   });
 });

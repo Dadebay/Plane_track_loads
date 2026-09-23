@@ -9,6 +9,7 @@ import { formatIndex, formatIndexPerKg, formatWeight } from "@/lib/format-number
 import type { LoadPlanAhmData } from "@/lib/load-plan-calc";
 import {
   buildWorkspace,
+  detailPanelPosition,
   nextCellIndex,
   type CellState,
   type WorkspaceCell,
@@ -549,15 +550,26 @@ function CellDetails({
       : []),
   ];
 
-  // Anchored beside the cell, flipped to stay on screen.
+  // Anchored beside the cell: to its right where there is room, flipped to
+  // its left where there is not. Clamping to the screen edge instead would
+  // drop the panel on top of the cell it describes — which is what happened
+  // to the last position in a row, and the panel then swallowed the click
+  // meant for that cell, so the weight landed on whichever cell still had
+  // focus: the same code on the other configuration row.
+  // The panel's own height is not known until it is laid out; maxHeight is
+  // the tallest it gets with every row present.
   const width = 260;
-  const left = Math.min(anchor.right + 8, window.innerWidth - width - 8);
-  const top = Math.min(anchor.top, window.innerHeight - 240);
+  const { left, top } = detailPanelPosition(
+    anchor,
+    { width: window.innerWidth, height: window.innerHeight },
+    { width, maxHeight: 260, gap: 8 },
+  );
 
   return createPortal(
     <div
       role="tooltip"
-      style={{ position: "fixed", left, top, width }}
+      // Read-only: it must never take a click away from the cell under it.
+      style={{ position: "fixed", left, top, width, pointerEvents: "none" }}
       className="z-40 flex flex-col gap-1 rounded-lg border border-border bg-bg p-3 text-xs shadow-xl"
     >
       <span className="font-semibold text-fg">{t("detailsTitle", { position: cell.code })}</span>

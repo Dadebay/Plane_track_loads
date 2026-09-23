@@ -181,3 +181,27 @@ export function nextCellIndex(current: number, count: number, key: string): numb
       return null;
   }
 }
+
+/**
+ * Where the position-details panel goes, given the cell it describes.
+ *
+ * Preferring the right of the cell and *clamping* to the viewport edge is
+ * the obvious version and it is wrong: for the last cell in a row the clamp
+ * drops the panel on top of the cell it describes. Covering an input a
+ * controller is about to click is bad on its own; it also meant the click
+ * went to the panel while focus stayed on the previously edited cell, so
+ * the weight was typed into the same position code on the *other*
+ * configuration row. Flip to the other side instead.
+ */
+export function detailPanelPosition(
+  anchor: { top: number; left: number; right: number },
+  viewport: { width: number; height: number },
+  panel: { width: number; maxHeight: number; gap: number },
+): { left: number; top: number } {
+  const { width, maxHeight, gap } = panel;
+  const fitsRight = anchor.right + gap + width <= viewport.width - gap;
+  return {
+    left: fitsRight ? anchor.right + gap : Math.max(gap, anchor.left - gap - width),
+    top: Math.max(gap, Math.min(anchor.top, viewport.height - maxHeight - gap)),
+  };
+}
