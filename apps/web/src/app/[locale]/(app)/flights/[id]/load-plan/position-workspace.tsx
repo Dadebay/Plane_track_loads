@@ -290,10 +290,11 @@ function RowCells({
         // cells outside the fuselage. The 720px floor on the deck plan keeps
         // the resulting cell comfortably clickable.
         "h-full flex-1 min-w-0 px-0.5 shadow-md"
-      : // Wide enough for a ten-character ULD code on its own line: the cell
-        // carries position, weight and container, and a code that wraps or
-        // clips is one a loader cannot check against the ramp.
-        "min-h-[64px] min-w-[78px]";
+      : // Wide enough for a ten-character ULD code on its own line and tall
+        // enough to read across a ramp desk: the cell carries position,
+        // weight and container, and a code that wraps or clips is one a
+        // loader cannot check against the aircraft.
+        "min-h-[86px] min-w-[96px]";
 
   return (
     <div ref={containerRef} className="contents" role="group" aria-label={row.label}>
@@ -342,7 +343,7 @@ function RowCells({
               className={`flex items-center justify-center gap-0.5 font-mono font-bold leading-none ${
                 variant === "deck"
                   ? "h-full text-xs sm:text-sm"
-                  : "h-5 w-full bg-slate-900 px-1 text-[10px] text-slate-50"
+                  : "h-6 w-full bg-slate-900 px-1 text-xs text-slate-50"
               } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
             >
               {cell.code}
@@ -352,7 +353,7 @@ function RowCells({
             </button>
             {variant === "row" ? (
               cell.state === "BLOCKED" ? (
-                <span className="flex w-full flex-1 items-center justify-center px-1 text-[10px] leading-tight text-fg-subtle">
+                <span className="flex w-full flex-1 items-center justify-center px-1 text-xs leading-tight text-fg-subtle">
                   {t("blockedShort")}
                 </span>
               ) : (
@@ -442,11 +443,11 @@ function CellFields({
   };
 
   const field =
-    "w-full min-w-0 rounded-sm border border-transparent bg-transparent px-1 text-center leading-tight " +
+    "w-full min-w-0 rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-center leading-tight " +
     "hover:border-border focus:border-brand-500 focus:bg-bg focus:outline-none disabled:cursor-not-allowed";
 
   return (
-    <span className="flex w-full flex-1 flex-col justify-center gap-0.5 px-1 py-1">
+    <span className="flex w-full flex-1 flex-col justify-center gap-1 px-1 py-1.5">
       <input
         value={uldCode}
         onChange={(event) => setUldCode(event.target.value)}
@@ -455,7 +456,7 @@ function CellFields({
         disabled={readOnly}
         aria-label={t("uldCodeFor", { position: cell.code, row: rowLabel })}
         placeholder={t("uldCodePlaceholder")}
-        className={`${field} text-[10px] font-semibold placeholder:text-fg-subtle/60`}
+        className={`${field} text-xs font-semibold placeholder:text-fg-subtle/60`}
       />
       <input
         value={weight}
@@ -466,7 +467,7 @@ function CellFields({
         inputMode="decimal"
         aria-label={t("weightFor", { position: cell.code, row: rowLabel })}
         placeholder={t("weightPlaceholder")}
-        className={`${field} text-[11px] font-medium tabular-nums placeholder:text-fg-subtle/60`}
+        className={`${field} text-sm font-semibold tabular-nums placeholder:text-fg-subtle/60`}
       />
     </span>
   );
