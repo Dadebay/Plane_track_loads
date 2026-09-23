@@ -62,6 +62,25 @@ export interface Highlight {
   blockerKeys: string[];
 }
 
+/**
+ * Brings the cells an explanation is talking about into view.
+ *
+ * Each configuration row scrolls on its own axis and the plate is taller
+ * than the viewport, so the two cells the dialog names are often off
+ * screen — ringing them then proves nothing. `nearest` keeps the page
+ * still where it already shows the cell; `center` moves the row's own
+ * horizontal scroller.
+ */
+function useScrollHighlightIntoView(highlight: Highlight | null) {
+  useEffect(() => {
+    if (!highlight) return;
+    for (const key of [highlight.blockedKey, ...highlight.blockerKeys]) {
+      const cell = document.querySelector(`[data-cell-key="${CSS.escape(key)}"]`);
+      cell?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [highlight]);
+}
+
 export function PositionWorkspace({
   ahmData,
   overloaded,
@@ -81,6 +100,7 @@ export function PositionWorkspace({
 }) {
   const t = useTranslations("loadPlan.workspace");
   const tPositions = useTranslations("loadPlan.positions");
+  useScrollHighlightIntoView(highlight);
   const items = useLoadDraftStore((s) => s.items);
 
   // Footprint geometry depends only on the AHM data, so it is derived once
@@ -341,14 +361,15 @@ function RowCells({
           highlight === null
             ? ""
             : highlight.blockedKey === cell.key
-              ? "ring-2 ring-danger ring-offset-1 ring-offset-bg"
+              ? "ring-2 ring-inset ring-danger"
               : highlight.blockerKeys.includes(cell.key)
-                ? "ring-2 ring-info ring-offset-1 ring-offset-bg"
-                : "opacity-40";
+                ? "ring-2 ring-inset ring-info"
+                : "opacity-30";
 
         return (
           <div
             key={cell.key}
+            data-cell-key={cell.key}
             className={`flex flex-col overflow-hidden rounded-md border transition ${sizing} ${called} ${
               variant === "deck" ? DECK_STATE_CLASS[cell.state] : STATE_CLASS[cell.state]
             }`}
@@ -476,7 +497,8 @@ function CellFields({
 
   const field =
     "w-full min-w-0 rounded-sm border border-transparent bg-transparent px-1 py-0.5 text-center leading-tight " +
-    "hover:border-border focus:border-brand-500 focus:bg-bg focus:outline-none disabled:cursor-not-allowed";
+    "hover:border-border focus:bg-bg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-500 " +
+    "disabled:cursor-not-allowed";
 
   return (
     <span className="flex w-full flex-1 flex-col justify-center gap-1 px-1 py-1.5">

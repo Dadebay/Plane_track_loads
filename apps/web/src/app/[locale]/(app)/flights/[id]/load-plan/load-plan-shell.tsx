@@ -266,12 +266,16 @@ function BlockedCellDialog({ cell, onClose }: { cell: WorkspaceCell | null; onCl
       role="dialog"
       aria-modal="true"
       aria-label={t("blockedTitle", { position: cell.code })}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+      // Bottom-left, never centred: centring put the card on top of the
+      // very cells it is ringing, and the left is where the figures panel
+      // sits rather than the plate. The backdrop stays light for the same
+      // reason — the plate behind it is half the explanation.
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/20 p-4 sm:justify-start"
       onClick={onClose}
       onKeyDown={(event) => event.key === "Escape" && onClose()}
     >
       <div
-        className="flex w-full max-w-lg flex-col gap-4 rounded-xl border border-border bg-bg p-5 shadow-xl"
+        className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-border bg-bg p-5 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         <h2 className="text-base font-semibold text-fg">{t("blockedTitle", { position: cell.code })}</h2>
