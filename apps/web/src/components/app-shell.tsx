@@ -58,11 +58,17 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-dvh flex-col sm:flex-row">
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar — pinned to the viewport rather than stretched to
+          the page. As a plain flex item it took the height of the content
+          beside it, so on a long page (a load plan is ~4 000px) the nav
+          scrolled off the top and there was no way back to another section
+          without scrolling all the way up. `self-start` keeps the flex row
+          from stretching it back out. */}
       <aside
         id="app-sidebar"
         className={cn(
-          "hidden shrink-0 flex-col border-r border-border bg-bg-subtle transition-[width] duration-200 sm:flex",
+          "hidden shrink-0 flex-col border-r border-border bg-bg-subtle transition-[width] duration-200",
+          "sm:sticky sm:top-0 sm:flex sm:h-dvh sm:self-start",
           collapsed ? "w-16" : "w-60",
         )}
       >
@@ -100,7 +106,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-0.5 p-2">
+        <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-2">
           {navItems.map(({ key, href, Icon }) => {
             const active = pathname === href || pathname.startsWith(`${href}/`);
             return (
