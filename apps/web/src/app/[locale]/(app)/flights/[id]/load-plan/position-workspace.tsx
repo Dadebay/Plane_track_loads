@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Decimal } from "decimal.js";
 import { useTranslations } from "next-intl";
-import { buildPositionFootprints } from "@tua/wnb-core";
-import { formatWeight } from "@/lib/format-number";
+import { buildPositionFootprints, positionIndex } from "@tua/wnb-core";
+import { formatIndex, formatIndexPerKg, formatWeight } from "@/lib/format-number";
 import type { LoadPlanAhmData } from "@/lib/load-plan-calc";
 import {
   buildWorkspace,
@@ -101,6 +103,28 @@ export function PositionWorkspace({
   const t = useTranslations("loadPlan.workspace");
   const tPositions = useTranslations("loadPlan.positions");
   useScrollHighlightIntoView(highlight);
+
+  // Everything the plate publishes about a position, keyed the same way the
+  // cells are. Derived once: the AHM data does not change while a plan is
+  // open.
+  const details = useMemo(() => {
+    const configuration = new Map(
+      (ahmData.positionConfigurations ?? []).map((row) => [row.id, row] as const),
+    );
+    return new Map(
+      ahmData.positions.map((position) => {
+        const row = configuration.get(position.uldType);
+        return [
+          `${position.uldType}/${position.code}`,
+          {
+            indexPerKg: position.indexPerKg,
+            longitudinalInches: row?.longitudinalInches ?? null,
+            lateralInches: row?.lateralInches ?? null,
+          },
+        ] as const;
+      }),
+    );
+  }, [ahmData]);
   const items = useLoadDraftStore((s) => s.items);
 
   // Footprint geometry depends only on the AHM data, so it is derived once
@@ -154,7 +178,7 @@ export function PositionWorkspace({
         <div className="p-3 sm:p-4">
           <div className="flex flex-col divide-y divide-border border-y border-border">
             {mainRows.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} />
             ))}
           </div>
         </div>
@@ -166,7 +190,7 @@ export function PositionWorkspace({
           are what is underneath it. The loading zones A..U are drawn inside
           the fuselage because they are the aircraft, not a legend beside it. */}
       {zoneRow ? (
-        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} />
+        <DeckPlan row={zoneRow} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} />
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border bg-bg">
           <div className="min-w-[720px] px-1">
@@ -185,7 +209,7 @@ export function PositionWorkspace({
           </div>
           <div className="flex flex-col divide-y divide-border px-3 py-2 sm:px-4">
             {workspace.lower.map((row) => (
-              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} />
+              <Row key={row.id} row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} />
             ))}
           </div>
         </section>
@@ -208,11 +232,13 @@ function DeckPlan({
   onSelect,
   onBlocked,
   highlight,
+  details,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
   highlight: Highlight | null;
+  details: Map<string, CellDetail>;
 }) {
   return (
     // The drawing scrolls inside its own box rather than shrinking past the
@@ -237,7 +263,7 @@ function DeckPlan({
             height: CARGO_BAY.height,
           }}
         >
-          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} variant="deck" />
+          <RowCells row={row} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} variant="deck" />
         </div>
       </div>
     </div>
@@ -249,11 +275,13 @@ function Row({
   onSelect,
   onBlocked,
   highlight,
+  details,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
   highlight: Highlight | null;
+  details: Map<string, CellDetail>;
 }) {
   const isSideBySide = row.cells.length > 0 && row.cells.every((cell) => /[LR]$/.test(cell.code));
   const tracks = isSideBySide
@@ -273,7 +301,7 @@ function Row({
         <div className="flex min-w-max flex-col gap-1.5">
           {tracks.map((track) => (
             <div key={track.id} className="flex gap-1">
-              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} variant="row" />
+              <RowCells row={track} onSelect={onSelect} onBlocked={onBlocked} highlight={highlight} details={details} variant="row" />
             </div>
           ))}
         </div>
@@ -295,12 +323,14 @@ function RowCells({
   onSelect,
   onBlocked,
   highlight,
+  details,
   variant,
 }: {
   row: WorkspaceRow;
   onSelect: (code: string, uldType: string) => void;
   onBlocked: (cell: WorkspaceCell) => void;
   highlight: Highlight | null;
+  details: Map<string, CellDetail>;
   variant: "row" | "deck";
 }) {
   const t = useTranslations("loadPlan.workspace");
@@ -367,9 +397,11 @@ function RowCells({
                 : "opacity-30";
 
         return (
-          <div
+          <CellBox
             key={cell.key}
-            data-cell-key={cell.key}
+            cell={cell}
+            detail={details.get(cell.key)}
+            showDetails={variant === "row" && cell.state !== "BLOCKED"}
             className={`flex flex-col overflow-hidden rounded-md border transition ${sizing} ${called} ${
               variant === "deck" ? DECK_STATE_CLASS[cell.state] : STATE_CLASS[cell.state]
             }`}
@@ -413,13 +445,139 @@ function RowCells({
                 <CellFields cell={cell} rowLabel={row.label} readOnly={cell.state === "READ_ONLY"} />
               )
             ) : null}
-          </div>
+          </CellBox>
         );
       })}
     </div>
   );
 }
 
+/** What the plate itself publishes about a position — everything here is
+ * read from versioned AHM data, nothing is derived beyond arithmetic on
+ * the controller's own entry. */
+export interface CellDetail {
+  indexPerKg: string;
+  longitudinalInches: string | null;
+  lateralInches: string | null;
+}
+
+/**
+ * The cell's own box. Split out so it can hold the ref and the open state
+ * the details panel needs — a cell in a list cannot own a hook otherwise.
+ */
+function CellBox({
+  cell,
+  detail,
+  showDetails,
+  className,
+  children,
+}: {
+  cell: WorkspaceCell;
+  detail: CellDetail | undefined;
+  showDetails: boolean;
+  className: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+
+  const open = () => {
+    if (showDetails && ref.current) setAnchor(ref.current.getBoundingClientRect());
+  };
+  const close = () => setAnchor(null);
+
+  return (
+    <div
+      ref={ref}
+      data-cell-key={cell.key}
+      className={className}
+      onMouseEnter={open}
+      onMouseLeave={close}
+      onFocusCapture={open}
+      onBlurCapture={close}
+    >
+      {children}
+      {anchor ? <CellDetails cell={cell} detail={detail} anchor={anchor} /> : null}
+    </div>
+  );
+}
+
+/**
+ * The figures behind a position, while it is being filled in.
+ *
+ * Shown on focus and on hover, in a portal: each configuration row is its
+ * own horizontal scroller with hidden overflow, so a panel rendered inside
+ * a cell would be clipped exactly when it matters.
+ *
+ * Area load, running load and contour height are deliberately absent. The
+ * operator's reference system prints them, but AHM 560 Ed.1 publishes no
+ * floor-load table for this airframe — the panel says so instead of
+ * estimating, because an estimated floor limit is a limit nobody checked
+ * (CLAUDE.md rules #3 and #9).
+ */
+function CellDetails({
+  cell,
+  detail,
+  anchor,
+}: {
+  cell: WorkspaceCell;
+  detail: CellDetail | undefined;
+  anchor: DOMRect;
+}) {
+  const t = useTranslations("loadPlan.workspace");
+  const items = useLoadDraftStore((s) => s.items);
+  const item = items.find((i) => i.position === cell.code) ?? null;
+
+  const gross = cell.weight;
+  const index = gross && detail ? positionIndex(gross, detail.indexPerKg) : null;
+  const headroom = gross ? new Decimal(cell.maxGross).minus(new Decimal(gross)).toString() : cell.maxGross;
+
+  const rows: [string, string][] = [
+    [t("detailMaxLoad"), formatWeight(cell.maxGross)],
+    ...(detail?.longitudinalInches && detail.lateralInches
+      ? ([[t("detailFootprint"), `${detail.longitudinalInches} × ${detail.lateralInches}`]] as [string, string][])
+      : []),
+    ...(detail ? ([[t("detailIndexPerKg"), formatIndexPerKg(detail.indexPerKg)]] as [string, string][]) : []),
+    ...(gross
+      ? ([
+          [t("detailGross"), formatWeight(gross)],
+          ...(item?.tareWeight ? ([[t("detailTare"), formatWeight(item.tareWeight)]] as [string, string][]) : []),
+          ...(item?.netWeight ? ([[t("detailNet"), formatWeight(item.netWeight)]] as [string, string][]) : []),
+          ...(index ? ([[t("detailIndexNow"), formatIndex(index)]] as [string, string][]) : []),
+          [t("detailHeadroom"), formatWeight(headroom)],
+        ] as [string, string][])
+      : []),
+  ];
+
+  // Anchored beside the cell, flipped to stay on screen.
+  const width = 260;
+  const left = Math.min(anchor.right + 8, window.innerWidth - width - 8);
+  const top = Math.min(anchor.top, window.innerHeight - 240);
+
+  return createPortal(
+    <div
+      role="tooltip"
+      style={{ position: "fixed", left, top, width }}
+      className="z-40 flex flex-col gap-1 rounded-lg border border-border bg-bg p-3 text-xs shadow-xl"
+    >
+      <span className="font-semibold text-fg">{t("detailsTitle", { position: cell.code })}</span>
+      <span className="text-[11px] text-fg-subtle">{cell.rowLabel}</span>
+      <dl className="mt-1 flex flex-col gap-0.5">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex items-baseline justify-between gap-3">
+            <dt className="text-fg-muted">{label}</dt>
+            <dd className="font-mono tabular-nums text-fg">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      {gross ? null : <span className="text-[11px] text-fg-subtle">{t("detailEmpty")}</span>}
+      <p className="mt-1 border-t border-border pt-1 text-[11px] leading-snug text-fg-subtle">
+        {t("detailUnavailable")}
+      </p>
+    </div>,
+    document.body,
+  );
+}
 
 /**
  * ULD and weight, typed straight into the cell.

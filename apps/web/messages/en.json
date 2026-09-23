@@ -391,7 +391,18 @@
       "close": "Close",
       "blockedCardTitle": "Cannot be used",
       "blockerCardTitle": "Loaded — holds the floor",
-      "blockedExplanation": "These two positions share the same floor space. AHM 560 publishes them as alternative configurations, so only one of them can hold a ULD at a time. Offload the loaded position, or use a free position on the same row."
+      "blockedExplanation": "These two positions share the same floor space. AHM 560 publishes them as alternative configurations, so only one of them can hold a ULD at a time. Offload the loaded position, or use a free position on the same row.",
+      "detailsTitle": "Position {position}",
+      "detailMaxLoad": "Max. position load (kg)",
+      "detailFootprint": "Footprint (in)",
+      "detailIndexPerKg": "Index per kg",
+      "detailIndexNow": "Index at this weight",
+      "detailGross": "ULD gross wt (kg)",
+      "detailTare": "ULD tare wt (kg)",
+      "detailNet": "ULD net wt (kg)",
+      "detailHeadroom": "Remaining to max (kg)",
+      "detailUnavailable": "Area load, running load and contour height are not shown: AHM 560 Ed.1 publishes no floor-load table for this aircraft, and this system does not estimate one.",
+      "detailEmpty": "Nothing loaded yet."
     },
     "tables": {
       "pass": "OK",

@@ -50,3 +50,18 @@ export function formatIndex(value: string): string {
   const negative = rounded.isNegative() && !rounded.isZero();
   return (negative ? "−" : "+") + formatWeight(rounded.abs().toFixed(2));
 }
+
+/**
+ * A position's index-per-kilogram coefficient, exactly as AHM 560 publishes
+ * it. Unlike {@link formatIndex} this must not round: the coefficients run
+ * to five decimals and rounding to two collapses most of them to +0,00.
+ *
+ * Signed and comma-separated the same way, so a panel can stack it above a
+ * computed index without the two looking like they came from different
+ * systems.
+ */
+export function formatIndexPerKg(value: string): string {
+  const decimal = new Decimal(value);
+  const negative = decimal.isNegative() && !decimal.isZero();
+  return (negative ? "−" : "+") + formatWeight(decimal.abs().toString());
+}

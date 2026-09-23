@@ -391,7 +391,18 @@
       "close": "Ýap",
       "blockedCardTitle": "Ulanyp bolmaýar",
       "blockerCardTitle": "Ýüklenen — meýdany eýeleýär",
-      "blockedExplanation": "Bu iki pozisiýa bir meýdany paýlaşýar. AHM 560 olary alternatiw konfigurasiýalar hökmünde çap edýär, şonuň üçin bir wagtda diňe biri ULD göterip bilýär. Ýüklenen pozisiýany boşadyň ýa-da şol hatardaky boş pozisiýany ulanyň."
+      "blockedExplanation": "Bu iki pozisiýa bir meýdany paýlaşýar. AHM 560 olary alternatiw konfigurasiýalar hökmünde çap edýär, şonuň üçin bir wagtda diňe biri ULD göterip bilýär. Ýüklenen pozisiýany boşadyň ýa-da şol hatardaky boş pozisiýany ulanyň.",
+      "detailsTitle": "{position} pozisiýasy",
+      "detailMaxLoad": "Iň köp pozisiýa ýüki (kg)",
+      "detailFootprint": "Aýak yzy (dýuým)",
+      "detailIndexPerKg": "Her kg üçin indeks",
+      "detailIndexNow": "Şu agramdaky indeks",
+      "detailGross": "ULD umumy agramy (kg)",
+      "detailTare": "ULD tara agramy (kg)",
+      "detailNet": "ULD arassa agramy (kg)",
+      "detailHeadroom": "Çäge çenli galan (kg)",
+      "detailUnavailable": "Meýdan ýüki, ylgaw ýüki we kontur beýikligi görkezilmeýär: AHM 560 Ed.1 bu uçar üçin pol ýüki tablisasyny çap etmeýär, bu ulgam bolsa çaklama ýasamaýar.",
+      "detailEmpty": "Heniz ýük ýok."
     },
     "tables": {
       "pass": "Bolýar",
