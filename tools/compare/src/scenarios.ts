@@ -161,6 +161,84 @@ const t5477: TestScenario = {
   report: compareFields("T5 477 — MLW sınırlı yük", t5477FieldSpecs, t5477AerometaValues, t5477OurValues),
 };
 
+/**
+ * T5 697 (ASB -> HAN, 2026-10-01, EZ-F429, crew 2/3) — the third real
+ * production output, and the one that makes Bulgu #1 impossible to argue
+ * with. The aircraft lands 12 228 kg under MLW; the printed sheet claims
+ * 52 507 kg of spare capacity. That is 40 279 kg of payload the sheet says
+ * is available and the aeroplane does not have.
+ *
+ * It is also the lightest load of the three (7 493 kg), which is what makes
+ * its index gap useful: 0,12 here against 0,68 on T5 477 (43 841 kg) and
+ * 1,10 on T5 692 (35 278 kg). The gap tracks load rather than sitting
+ * still, which is the strongest evidence yet that the open question lives
+ * in the position index table and not in the formula.
+ */
+const t5697FieldSpecs: FieldSpec[] = [
+  { field: "ttl", label: "TOTAL TRAFFIC LOAD" },
+  { field: "dow", label: "DOW", tolerance: "0.3" },
+  { field: "doi", label: "DOI", tolerance: "0.02" },
+  { field: "zfw", label: "ZFW", tolerance: "0.3" },
+  { field: "tow", label: "TOW", tolerance: "0.3" },
+  { field: "ldw", label: "LDW", tolerance: "0.3" },
+  { field: "taxiWeight", label: "TAXI WEIGHT", tolerance: "0.3" },
+  { field: "maczfw", label: "MACZFW" },
+  { field: "mactow", label: "MACTOW" },
+  { field: "stab", label: "TRIM SETTING" },
+  { field: "underloadBeforeLmc", label: "UNDERLOAD BEFORE LMC" },
+  {
+    field: "lizfw",
+    label: "LIZFW",
+    investigateNote:
+      "AHM560_ERRATA.md 'Kayıt 6'. Fark 0,12 — T5 477'de 0,68, T5 692'de 1,10 idi. " +
+      "Yük hafifledikçe fark küçülüyor, yani sabit bir kayma değil; soru pozisyon " +
+      "indeks tablosunda. Ed.1 Rev.2'nin yükleme indeksi sayfası gelene kadar açık.",
+  },
+];
+
+// As printed on the operator's sheet for T5 697.
+const t5697AerometaValues: Record<string, string | null> = {
+  ttl: "7493",
+  dow: "111293.70",
+  doi: "76.31",
+  zfw: "118786.7",
+  tow: "206186.7",
+  ldw: "169771.7",
+  taxiWeight: "206786.7",
+  maczfw: "29",
+  mactow: "27.6",
+  stab: "3.7",
+  underloadBeforeLmc: "52507", // Bulgu #1 — DOW rounded to 110 000, no MLW/MTOW constraint.
+  lizfw: "113.79",
+};
+
+// @tua/wnb-core calculateWnb() over the same input
+// (packages/wnb-core/test/fixtures/t5697.ts, pinned by t5697-comparison.test.ts).
+const t5697OurValues: Record<string, string | null> = {
+  ttl: "7493",
+  dow: "111294",
+  doi: "76.29",
+  zfw: "118787",
+  tow: "206187",
+  ldw: "169772",
+  taxiWeight: "206787",
+  maczfw: "29",
+  mactow: "27.6",
+  stab: "3.7",
+  underloadBeforeLmc: "12228", // MLW is binding: 182 000 - 169 772.
+  lizfw: "113.67",
+};
+
+const t5697: TestScenario = {
+  id: "t5697-underload-defect",
+  name: "T5 697 — Underload hatası (ASB → HAN)",
+  description:
+    "Üçüncü gerçek üretim çıktısı. MACZFW, MACTOW ve trim birebir tutuyor; " +
+    "basılı underload ise uçakta olmayan 40 279 kg kapasite gösteriyor (Bulgu #1).",
+  status: "REFERENCE_AVAILABLE",
+  report: compareFields("T5 697 — Underload hatası", t5697FieldSpecs, t5697AerometaValues, t5697OurValues),
+};
+
 function pending(id: string, name: string, description: string): TestScenario {
   return { id, name, description, status: "PENDING_REFERENCE" };
 }
@@ -175,6 +253,7 @@ function pending(id: string, name: string, description: string): TestScenario {
 export const scenarios: TestScenario[] = [
   t5692,
   t5477,
+  t5697,
   pending("light-load", "Hafif yük", "MZFW'nin belirgin altında bir yük — düşük ZFW/TOW ucu."),
   pending("heavy-load-mzfw", "Ağır yük (MZFW sınırı)", "ZFW, MZFW sınırına yakın veya eşit."),
   pending("forward-cg", "İleri CG", "Zarfın ileri (forward) sınırına yakın bir yükleme dağılımı."),

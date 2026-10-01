@@ -55,6 +55,7 @@ bunu kanıtlıyor.
 |---|---|---|
 | 1 | T5 692 — Normal yük | ✅ referans mevcut |
 | 1b | **T5 477 — MLW sınırlı yük** | ✅ **referans mevcut** (planda yoktu, sonradan geldi) |
+| 1c | **T5 697 — Underload hatası** | ✅ **referans mevcut** (planda yoktu, 01.10.2026'da geldi) |
 | 2 | Hafif yük | ⏳ bekliyor |
 | 3 | Ağır yük (MZFW sınırı) | ⏳ bekliyor |
 | 4 | İleri CG | ⏳ bekliyor |
@@ -67,7 +68,7 @@ bunu kanıtlıyor.
 | 11 | Ferry (kargosuz) | ⏳ bekliyor |
 | 12 | Farklı yakıt yoğunlukları | ⏳ bekliyor |
 
-**Kapsam:** 2/13 — `tools/compare/src/scenarios.ts`'deki `scenarioCoverage()`.
+**Kapsam:** 3/14 — `tools/compare/src/scenarios.ts`'deki `scenarioCoverage()`.
 T5 477, `IMPLEMENTATION_PLAN.md` Faz 14'ün 12 senaryosunda yoktu; ikinci bir
 gerçek Aerometa üretim çıktısı olarak sonradan eklendi ve planın kapsamını
 daraltmıyor, genişletiyor.
@@ -185,6 +186,63 @@ burada MLW bağlayıcı olduğu için hata büyüyor. Bu, hatanın uçuştan uç
 | #4 — CG limit interpolasyonu | FWD ZFW 85,6 / AFT 158 / FWD TOW 72,2 / AFT TOW 171,2 | 84,74 / 158,30 / 71,46 / 172,93 — testlerde ölçülüp sabitlendi |
 | #5 — LILAW/MACLAW | Basmıyor | 95,07 / 24,1 üretiyoruz |
 | #6 — ENV başlık taşması | `ED NO / 178` hücresi sayfa kenarından kırpılmış — T5 692'den yedi ay sonra hâlâ aynı | Düzeltildi |
+
+## 3d. T5 697 — Underload Hatası (ASB → HAN, 2026-10-01)
+
+Üçüncü gerçek üretim çıktısı; operatörün kâğıt LIR ve loadsheet'inden
+alındı (EZ-F429, ekip 2/3, ED 06). Yük küçük ve eksiksiz: beş ana güverte
+pozisyonu (LL 1177 · MM 726 · PP 1492 · RR 1440 · SS 1200) ve iki alt
+güverte konteyneri (42 810 · 43 648) — toplam 7 493 kg.
+
+Tablo `pnpm --filter @tua/compare report` ile üretildi; test
+`packages/wnb-core/test/t5697-comparison.test.ts` her farkı ölçülen
+büyüklüğünde sabitliyor.
+
+**Pilota giden üç sayı birebir tutuyor:** MACZFW 29 · MACTOW 27,6 · TRIM 3,7.
+TTL de tam (7 493).
+
+### 🔴 Bulgu #1 bu uçuşta 40 ton
+
+| | Basılı sheet | Bizim | Fark |
+|---|---|---|---|
+| UNDERLOAD BEFORE LMC | 52 507 | **12 228** | **−40 279 kg** |
+
+Basılı değerin nereden geldiği aritmetikle gösterilebiliyor:
+`170 000 − (110 000 + 7 493) = 52 507`. Yani DOW 110 000'e yuvarlanmış **ve**
+MLW/MTOW kısıtları hiç uygulanmamış. Bizimki MLW'ye bağlı:
+`182 000 − 169 772 = 12 228`.
+
+Bu, aynı defektin üç uçuştaki büyüklüğünü tamamlıyor: T5 692'de 1 044 kg,
+T5 477'de 13 722 kg, T5 697'de **40 279 kg**. Yükleme ekibi bu sayıya
+bakarak uçakta olmayan 40 tonluk kapasiteyi planlayabilirdi.
+
+### 🟡 İndeks farkı yükle ölçekleniyor
+
+| Uçuş | Trafik yükü | LIZFW farkı |
+|---|---|---|
+| T5 692 | 35 278 kg | 1,10 |
+| T5 477 | 43 841 kg | 0,68 |
+| **T5 697** | **7 493 kg** | **0,12** |
+
+Fark sabit bir kayma değil, yükle birlikte küçülüyor. Bu, `AHM560_ERRATA.md`
+"Kayıt 6"daki açık sorunun **formülde değil pozisyon indeks tablosunda**
+olduğunun şimdiye kadarki en güçlü kanıtı. Ed.1 Rev.2'nin yükleme indeksi
+sayfası temin edilene kadar açık kalıyor.
+
+### Bu uçuşun ortaya çıkardığı iki kusur (düzeltildi)
+
+1. **İniş zarfı kontrolü uçuşu reddediyordu.** AHM 560 iniş CG tablosu
+   yayımlamıyor; sistem yerine ZFW eğrisini kullanıyordu ve o eğri MZFW'de
+   (170 t) bitiyor. Bu uçuş MZFW'nin 228 kg altına iniyor — yani sınırın
+   tam ucunda; biraz daha yakıtla aynı rota reddediliyordu ve hata **tüm
+   hesabı** düşürdüğü için ZFW/TOW kontrolleri de yapılamıyordu. Artık iniş
+   zarfı kontrol edilmiyor ve edilmediği her planda yazıyor — operatörün
+   kendi sertifikalı loadsheet'inde de LDW limit satırı ve MACLAW yok.
+2. **Loadsheet ağırlık dağılımı ızgarası boş basıyordu.** Sol/sağ ayrımı
+   kodun son harfine bakıyordu; `LL` ve `RR` tek sıra pozisyonları yan yana
+   yarısı sanılıyordu. Bu uçuşun yükünün tamamı o pozisyonlarda.
+
+Her ikisi de testle sabitlendi.
 
 ## 3c. Belge görsel doğrulaması (Aşama 7 / Aşama 8)
 

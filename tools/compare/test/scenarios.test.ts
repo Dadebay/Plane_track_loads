@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { scenarioCoverage, scenarios } from "../src/scenarios";
 
 describe("scenarios", () => {
-  it("lists the 12 scenarios IMPLEMENTATION_PLAN.md's Faz 14 requires, plus T5 477", () => {
-    expect(scenarios).toHaveLength(13);
+  it("lists the 12 scenarios IMPLEMENTATION_PLAN.md's Faz 14 requires, plus T5 477 and T5 697", () => {
+    expect(scenarios).toHaveLength(14);
     expect(scenarios.map((s) => s.id)).toContain("t5477-mlw-limited");
   });
 
@@ -12,9 +12,9 @@ describe("scenarios", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("has two scenarios with a reference report today (T5 692 and T5 477)", () => {
+  it("has three scenarios with a reference report today (T5 692, T5 477 and T5 697)", () => {
     const withReference = scenarios.filter((s) => s.status === "REFERENCE_AVAILABLE");
-    expect(withReference.map((s) => s.id)).toEqual(["t5692-normal-load", "t5477-mlw-limited"]);
+    expect(withReference.map((s) => s.id)).toEqual(["t5692-normal-load", "t5477-mlw-limited", "t5697-underload-defect"]);
     for (const s of withReference) expect(s.report).toBeDefined();
   });
 
@@ -51,7 +51,7 @@ describe("scenarios", () => {
 });
 
 describe("scenarioCoverage", () => {
-  it("reports 2 of 13 scenarios with a reference today", () => {
-    expect(scenarioCoverage()).toEqual({ total: 13, withReference: 2, pending: 11 });
+  it("reports 3 of 14 scenarios with a reference today", () => {
+    expect(scenarioCoverage()).toEqual({ total: 14, withReference: 3, pending: 11 });
   });
 });
