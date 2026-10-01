@@ -98,3 +98,26 @@ export class ZfcgOutOfRangeError extends WnbError {
     super(`ZFCG ${zfcg}% MAC is outside the combined-load table range [21, 38) — no band available`);
   }
 }
+
+/**
+ * Thrown when a weight falls outside a CG limit table's published range.
+ *
+ * `side` matters to the caller: "below" means the aircraft simply is not
+ * loaded enough yet for the table to apply (keep loading), while "above"
+ * means the published table stops short of this weight — more load only
+ * makes it worse, and the gap has to be closed in the AHM data.
+ */
+export class CgTableRangeError extends WnbError {
+  constructor(
+    public readonly label: string,
+    public readonly weight: string,
+    public readonly min: string,
+    public readonly max: string,
+    public readonly side: "below" | "above",
+  ) {
+    super(
+      `weight ${weight} is outside the ${label} CG limit table range ` +
+        `[${min}, ${max}] — extrapolation is forbidden`,
+    );
+  }
+}

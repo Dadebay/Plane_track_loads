@@ -26,6 +26,7 @@ import {
   getDowDoi,
   ZfcgOutOfRangeError,
   WnbError,
+  CgTableRangeError,
   type CgLimits,
   type CombinedLoadCheck,
   type CargoIndexTable,
@@ -181,9 +182,20 @@ export interface LiveWnbResult {
   envelope: {
     zfw: EnvelopeCheck;
     tow: EnvelopeCheck;
-    ldw: EnvelopeCheck;
-    /** True when no landing CG table is published (AHM 560 gap — GROUND_TRUTH.md §21 Q3) and the ZFW curve was used as a stand-in for LDW. */
-    landingIsApproximate: boolean;
+    /** Null when no landing CG table is published — see `landingNotChecked`. */
+    ldw: EnvelopeCheck | null;
+    /**
+     * True when AHM 560 publishes no landing CG table (GROUND_TRUTH.md §21 Q3),
+     * so the landing envelope is not checked at all.
+     *
+     * The operator's own certified loadsheet carries FWD/AFT limits for ZFW and
+     * TOW only — there is no LDW limit line and no MACLAW on it — because the
+     * landing envelope is not a published check for this aircraft. Standing in
+     * with the ZFW curve was worse than not checking: that curve ends at MZFW,
+     * so it rejected every flight landing above MZFW (MLW is 12 t higher) on a
+     * limit that was never the landing limit to begin with.
+     */
+    landingNotChecked: boolean;
   } | null;
   positionOverloads: PositionOverload[];
   /** Per-position index units, live as the loadmaster types. Computed
@@ -378,25 +390,30 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
     };
   }
 
-  const landingCurve = ahmData.cgLimits.landing.forward.length > 0 ? ahmData.cgLimits.landing : ahmData.cgLimits.zfw;
+  const landingPublished = ahmData.cgLimits.landing.forward.length > 0;
   let envelope: LiveWnbResult["envelope"];
   try {
     envelope = {
       zfw: checkEnvelope(wnb.zfw, wnb.lizfw, "ZFW", ahmData.cgLimits.zfw),
       tow: checkEnvelope(wnb.tow, wnb.litow, "TOW", ahmData.cgLimits.takeoff),
-      ldw: checkEnvelope(wnb.ldw, wnb.lilaw, "LDW", landingCurve),
-      landingIsApproximate: ahmData.cgLimits.landing.forward.length === 0,
+      ldw: landingPublished ? checkEnvelope(wnb.ldw, wnb.lilaw, "LDW", ahmData.cgLimits.landing) : null,
+      landingNotChecked: !landingPublished,
     };
   } catch (err) {
-    // A weight outside the published CG table's range (e.g. ZFW below the
-    // table's minimum before enough load has been entered yet) — not a
-    // violation, just "not enough data to check yet".
+    // A weight outside the published CG table's range. Which end it fell off
+    // decides what the crew should do, so the two are not the same error:
+    //
+    //   below — not loaded enough yet for the table to apply. Keep loading;
+    //           it clears itself. This is the original "not enough load" case.
+    //   above — the published table stops short of this weight. Loading more
+    //           makes it worse; the gap has to be closed in @tua/ahm-data.
+    const aboveTable = err instanceof CgTableRangeError && err.side === "above";
     const message = err instanceof Error ? err.message : "envelope check failed";
     return {
       positions,
       dowDoi,
       wnb,
-      blockingError: { code: "ENVELOPE_RANGE", message },
+      blockingError: { code: aboveTable ? "ENVELOPE_ABOVE_TABLE" : "ENVELOPE_RANGE", message },
       envelope: null,
       positionOverloads,
       positionConflicts,
@@ -437,6 +454,7 @@ export function computeLiveWnb(draft: LoadPlanDraft, ahmData: LoadPlanAhmData, r
     compartments,
     combinedLoad,
     lateralImbalance,
-    allWithinEnvelope: envelope.zfw.withinEnvelope && envelope.tow.withinEnvelope && envelope.ldw.withinEnvelope,
+    allWithinEnvelope:
+      envelope.zfw.withinEnvelope && envelope.tow.withinEnvelope && (envelope.ldw?.withinEnvelope ?? true),
   };
 }

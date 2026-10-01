@@ -148,6 +148,32 @@ describe("computeLiveWnb", () => {
     expect(result.allWithinEnvelope).toBe(false);
   });
 
+  it("does not block a landing weight above MZFW — no landing CG table is published, so LDW is not checked", () => {
+    // Regression for T5 697 ASB-HAN (EZ-F429, 2026-10-01). AHM 560 publishes
+    // no landing CG table, and the operator's own certified loadsheet carries
+    // FWD/AFT limits for ZFW and TOW only — there is no LDW limit line on it.
+    // Standing in with the ZFW curve used to reject this flight outright,
+    // because that curve ends at MZFW while MLW is 12 t higher.
+    const result = computeLiveWnb(
+      { items, fuel: { ...fuel, takeoffFuel: "60000", tripFuel: "35000" }, ...CREW },
+      ahmData,
+      "EZ-F429",
+    );
+
+    expect(Number(result.wnb?.ldw)).toBeGreaterThan(Number(ahm.aircraft.weightLimits.mzfw));
+    expect(Number(result.wnb?.ldw)).toBeLessThanOrEqual(Number(ahm.aircraft.weightLimits.mlw));
+
+    expect(result.blockingError).toBeNull();
+    expect(result.envelope).not.toBeNull();
+    expect(result.envelope?.ldw).toBeNull();
+    expect(result.envelope?.landingNotChecked).toBe(true);
+
+    // ZFW and TOW are still checked as normal, and they alone decide the verdict.
+    expect(result.envelope?.zfw.withinEnvelope).toBe(true);
+    expect(result.envelope?.tow.withinEnvelope).toBe(true);
+    expect(result.allWithinEnvelope).toBe(true);
+  });
+
   it("looks up DOW/DOI from the AHM matrix for the given crew combination", () => {
     const result = computeLiveWnb({ items, fuel, ...CREW }, ahmData, "EZ-F430");
     expect(result.dowDoi).toEqual({ available: true, dow: EXPECTED_DOW, doi: EXPECTED_DOI });

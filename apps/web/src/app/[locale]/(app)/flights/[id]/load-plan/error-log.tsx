@@ -162,19 +162,20 @@ function collectEntries(
   if (result.envelope) {
     for (const phase of ["zfw", "tow", "ldw"] as const) {
       const check = result.envelope[phase];
-      if (check.withinEnvelope) continue;
+      if (check === null || check.withinEnvelope) continue;
       entries.push({
         id: `envelope-${phase}`,
         severity: "blocking",
         message: t("outOfEnvelope", { phase: check.phase }),
       });
     }
-    if (result.envelope.landingIsApproximate) {
+    if (result.envelope.landingNotChecked) {
       // A permanent property of this aircraft's AHM, not something wrong with
-      // this flight: no landing CG table is published, so the ZFW envelope
-      // stands in (GROUND_TRUTH §21 Q3). It is stated on every plan, so it
-      // reads as a note rather than as a warning to act on.
-      entries.push({ id: "landingApprox", severity: "info", message: t("landingApproximate") });
+      // this flight: no landing CG table is published (GROUND_TRUTH §21 Q3),
+      // so the landing envelope is not checked — same as the operator's own
+      // certified loadsheet, which carries no LDW limit line. Stated on every
+      // plan, so it reads as a note rather than a warning to act on.
+      entries.push({ id: "landingNotChecked", severity: "info", message: t("landingNotChecked") });
     }
   }
 

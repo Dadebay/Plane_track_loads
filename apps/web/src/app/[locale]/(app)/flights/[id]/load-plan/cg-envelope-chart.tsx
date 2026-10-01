@@ -35,7 +35,8 @@ export function CgEnvelopeChart({
 }: {
   cgLimits: CgLimits;
   wnb: WnbResult;
-  phases: { zfw: boolean; tow: boolean; ldw: boolean };
+  /** `ldw` is null when no landing CG table is published, so no LDW point is plotted. */
+  phases: { zfw: boolean; tow: boolean; ldw: boolean | null };
 }) {
   const t = useTranslations("loadPlan.envelope");
 
@@ -47,7 +48,9 @@ export function CgEnvelopeChart({
   const points: Series[] = [
     { label: "ZFW", weight: Number(wnb.zfw), index: Number(wnb.lizfw), within: phases.zfw },
     { label: "TOW", weight: Number(wnb.tow), index: Number(wnb.litow), within: phases.tow },
-    { label: "LDW", weight: Number(wnb.ldw), index: Number(wnb.lilaw), within: phases.ldw },
+    ...(phases.ldw === null
+      ? []
+      : [{ label: "LDW", weight: Number(wnb.ldw), index: Number(wnb.lilaw), within: phases.ldw }]),
   ];
 
   // One extent for screen and print (@tua/wnb-core). Rounded outward to

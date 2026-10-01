@@ -364,7 +364,10 @@ function collectComputedViolations(
   if (result.blockingError) {
     violations.push({ code: "calculationFailed", field: "fuel", message: result.blockingError.message });
   } else if (!result.allWithinEnvelope || !result.envelope) {
-    const phase = (["zfw", "tow", "ldw"] as const).find((p) => !result.envelope?.[p].withinEnvelope);
+    const phase = (["zfw", "tow", "ldw"] as const).find((p) => {
+      const check = result.envelope?.[p];
+      return check != null && !check.withinEnvelope;
+    });
     const check = phase ? result.envelope?.[phase] : undefined;
     violations.push({
       code: "cgOutOfEnvelope",

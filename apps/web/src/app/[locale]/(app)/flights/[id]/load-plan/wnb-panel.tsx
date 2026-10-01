@@ -75,9 +75,11 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
         ? tCrew("notSet")
         : result.blockingError.code === "ENVELOPE_RANGE"
           ? t("notEnoughLoad")
-          : result.blockingError.code === "ZFCG_OUT_OF_RANGE"
-            ? t("zfcgOutOfRange")
-            : null;
+          : result.blockingError.code === "ENVELOPE_ABOVE_TABLE"
+            ? t("aboveCgTable")
+            : result.blockingError.code === "ZFCG_OUT_OF_RANGE"
+              ? t("zfcgOutOfRange")
+              : null;
     const detail = translated === null ? null : result.blockingError.message;
 
     return (
@@ -150,7 +152,7 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
   }
   for (const phase of ["zfw", "tow", "ldw"] as const) {
     const check = envelope[phase];
-    if (!check.withinEnvelope) {
+    if (check !== null && !check.withinEnvelope) {
       violations.push(`${phase.toUpperCase()}: ${tWnb("errors.cgOutOfEnvelope")}`);
     }
   }
@@ -169,6 +171,7 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
           <h3 className="text-xs font-semibold uppercase tracking-wide text-fg-subtle">{t("envelope")}</h3>
           {(["zfw", "tow", "ldw"] as const).map((phase) => {
             const check = envelope[phase];
+            if (check === null) return null;
             return (
               <div key={phase} className="flex items-center justify-between text-sm">
                 <span className="font-mono font-medium text-fg">{phase.toUpperCase()}</span>
@@ -179,7 +182,7 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
               </div>
             );
           })}
-          {envelope.landingIsApproximate ? <p className="text-xs text-fg-subtle">{t("landingApproximate")}</p> : null}
+          {envelope.landingNotChecked ? <p className="text-xs text-fg-subtle">{t("landingNotChecked")}</p> : null}
         </div>
 
         <CgEnvelopeChart
@@ -188,7 +191,7 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
           phases={{
             zfw: envelope.zfw.withinEnvelope,
             tow: envelope.tow.withinEnvelope,
-            ldw: envelope.ldw.withinEnvelope,
+            ldw: envelope.ldw?.withinEnvelope ?? null,
           }}
         />
 
@@ -196,6 +199,7 @@ export function WnbPanel({ result, cgLimits }: { result: LiveWnbResult; cgLimits
           <h3 className="text-xs font-semibold uppercase tracking-wide text-fg-subtle">{tSidebar("cgRange")}</h3>
           {(["zfw", "tow", "ldw"] as const).map((phase) => {
             const check = envelope[phase];
+            if (check === null) return null;
             const actual = phase === "zfw" ? wnb.lizfw : phase === "tow" ? wnb.litow : wnb.lilaw;
             return (
               <div key={phase} className="flex flex-col gap-0.5">

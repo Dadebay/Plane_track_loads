@@ -1,5 +1,6 @@
 import type { Decimal } from "decimal.js";
 import { d, lerp } from "./decimal-utils";
+import { CgTableRangeError } from "./errors";
 import type { CgBreakpoint, CgLimitCurve, EnvelopeCheck, WnbPhase } from "./types";
 
 /** Exported for trim-optimizer.ts, which needs the raw forward/aft limit
@@ -16,9 +17,12 @@ export function interpolateCurve(weight: Decimal, curve: CgBreakpoint[], label: 
   const first = points[0]!;
   const last = points[points.length - 1]!;
   if (weight.lt(first.weight) || weight.gt(last.weight)) {
-    throw new Error(
-      `weight ${weight.toString()} is outside the ${label} CG limit table range ` +
-        `[${first.weight.toString()}, ${last.weight.toString()}] — extrapolation is forbidden`,
+    throw new CgTableRangeError(
+      label,
+      weight.toString(),
+      first.weight.toString(),
+      last.weight.toString(),
+      weight.lt(first.weight) ? "below" : "above",
     );
   }
 
