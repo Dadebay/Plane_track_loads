@@ -137,3 +137,47 @@ describe("renderLoadsheetPdf", () => {
     expect(buffer.subarray(0, 5).toString("latin1")).toBe("%PDF-");
   });
 });
+
+describe("weight distribution grid", () => {
+  /**
+   * `LL` and `RR` are whole positions on the single-row configuration; their
+   * names merely end in L and R. Treating every such code as half of a
+   * side-by-side pair put T5 697's load — LL, MM, PP, RR, SS — into a row
+   * that does not exist, and printed an empty grid on a loaded aircraft.
+   */
+  it("keeps single-row positions out of the left/right columns", async () => {
+    const singleRow: LoadsheetInput = {
+      ...sampleInput,
+      layout: {
+        main: [
+          {
+            id: "SINGLE_ROW_96x125",
+            label: 'SINGLE ROW 96" x 125"',
+            cells: [
+              { code: "LL", maxGross: "4400", uldCode: "06324", awb: null, weight: "1177" },
+              { code: "MM", maxGross: "4091", uldCode: "06056", awb: null, weight: "726" },
+              { code: "RR", maxGross: "4048", uldCode: "06347", awb: null, weight: "1440" },
+            ],
+          },
+        ],
+        lower: [],
+      },
+    };
+
+    const withLoad = await renderLoadsheetPdf(singleRow);
+    const empty = await renderLoadsheetPdf({
+      ...singleRow,
+      layout: {
+        main: singleRow.layout.main.map((row) => ({
+          ...row,
+          cells: row.cells.map((cell) => ({ ...cell, uldCode: null, weight: null })),
+        })),
+        lower: [],
+      },
+    });
+
+    // If the three positions still landed in a phantom paired row, the two
+    // documents would be identical — the grid would be blank either way.
+    expect(withLoad.equals(empty)).toBe(false);
+  });
+});
