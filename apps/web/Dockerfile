@@ -15,7 +15,6 @@ COPY apps/web/package.json apps/web/package.json
 COPY packages/wnb-core/package.json packages/wnb-core/package.json
 COPY packages/ahm-data/package.json packages/ahm-data/package.json
 COPY packages/documents/package.json packages/documents/package.json
-COPY packages/messaging/package.json packages/messaging/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/ui/package.json packages/ui/package.json
 RUN pnpm install --frozen-lockfile
