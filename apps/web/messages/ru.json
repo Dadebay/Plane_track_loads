@@ -528,7 +528,8 @@
       "tankIndexLabel": "Индекс: недоступен",
       "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) предварительная — утверждённый скан невозможно надёжно прочитать с печатной точностью. См. AHM560_ERRATA.md Kayit 10.",
       "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE не расшифрована из утверждённого источника.",
-      "automaticUnavailable": "Автоматическое распределение недоступно: утверждённый AHM 560 не публикует схему заправки. Введите массы баков вручную."
+      "automaticUnavailable": "Автоматическое распределение недоступно: утверждённый AHM 560 не публикует схему заправки. Введите массы баков вручную.",
+      "blockFuelDerived": "Блочное (рамповое) топливо: {block} кг — взлётное плюс рулёжное"
     },
     "dowModal": {
       "title": "DOW / DOI",

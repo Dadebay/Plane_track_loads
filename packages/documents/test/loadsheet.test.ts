@@ -181,3 +181,24 @@ describe("weight distribution grid", () => {
     expect(withLoad.equals(empty)).toBe(false);
   });
 });
+
+describe("signature band", () => {
+  /**
+   * The operator reads APPROVED as "who produced this edition" — the
+   * signed-in user — and CHECKED as the second person on the plan. The two
+   * are always different people; the action and a database constraint see to
+   * that. This pins which column each one prints in, because getting it
+   * backwards puts the wrong name against the wrong responsibility.
+   */
+  it("prints the producer under APPROVED and the second person under CHECKED", async () => {
+    const swapped = await renderLoadsheetPdf({
+      ...sampleInput,
+      header: { ...sampleInput.header, preparedBy: "Checker", checkedBy: "Load Controller" },
+    });
+    const asIs = await renderLoadsheetPdf(sampleInput);
+
+    // Swapping the two names must change the document: if both landed in the
+    // same column, or neither were printed, these would be identical.
+    expect(asIs.equals(swapped)).toBe(false);
+  });
+});

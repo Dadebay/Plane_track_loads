@@ -103,6 +103,10 @@ export function FuelDistributionModal({
   // not from the provisional per-tank one. Out-of-range or an unparseable
   // density throws — that is a real input error, shown as "—" rather than a
   // crash, because the controller is still typing.
+  // Ramp/block = take-off + taxi. Derived, never stored: one number, one
+  // place (see FuelRecord in the Prisma schema).
+  const blockFuel = new Decimal(fuel.takeoffFuel || "0").plus(new Decimal(fuel.taxiFuel || "0")).toString();
+
   let totalFuelIndex: string | null = null;
   try {
     if (fuel.takeoffFuel && Number(fuel.takeoffFuel) > 0) {
@@ -182,8 +186,15 @@ export function FuelDistributionModal({
               </div>
             </div>
 
+            {/* Labelled take-off fuel, because that is the figure this
+                field holds and the one the loadsheet prints. It used to say
+                "total fuel", so a controller reading a refuelling slip typed
+                the block figure into it — 600 kg of taxi fuel too much, which
+                carried straight through TOW, landing weight and taxi weight.
+                The block figure is shown underneath instead, derived, so the
+                slip can still be checked against it without being typed in. */}
             <label className="flex flex-col gap-1 text-xs font-medium text-fg-muted">
-              {t("totalFuel")}
+              {tFuel("takeoffFuel")}
               <input
                 type="number"
                 step="1"
@@ -193,6 +204,9 @@ export function FuelDistributionModal({
                 onChange={(e) => setFuel({ ...fuel, takeoffFuel: e.target.value })}
                 className={inputClass}
               />
+              <span className="text-[11px] font-normal text-fg-subtle">
+                {t("blockFuelDerived", { block: formatWeight(blockFuel) })}
+              </span>
             </label>
           </div>
 

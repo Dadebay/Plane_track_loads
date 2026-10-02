@@ -528,7 +528,8 @@
       "tankIndexLabel": "Index: not available",
       "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) is provisional — the approved scan cannot be read reliably at the printed precision. See AHM560_ERRATA.md Kayit 10.",
       "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE is not transcribed from the approved source.",
-      "automaticUnavailable": "Automatic distribution is unavailable: the approved AHM 560 publishes no refuelling schedule. Enter the tank weights manually."
+      "automaticUnavailable": "Automatic distribution is unavailable: the approved AHM 560 publishes no refuelling schedule. Enter the tank weights manually.",
+      "blockFuelDerived": "Block (ramp) fuel: {block} kg — take-off fuel plus taxi fuel"
     },
     "dowModal": {
       "title": "DOW / DOI",

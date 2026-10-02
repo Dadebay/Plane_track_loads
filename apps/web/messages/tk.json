@@ -528,7 +528,8 @@
       "tankIndexLabel": "Indeks: elýeterli däl",
       "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) wagtlaýyn — tassyklanan skaner çap edilen takyklykda ynamly okalyp bilinmeýär. AHM560_ERRATA.md Kayit 10-a serediň.",
       "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE tassyklanan çeşmeden göçürilmedi.",
-      "automaticUnavailable": "Awtomatik paýlanyş elýeterli däl: tassyklanan AHM 560 ýangyç guýuş tertibini çap etmeýär. Bak agramlaryny el bilen giriziň."
+      "automaticUnavailable": "Awtomatik paýlanyş elýeterli däl: tassyklanan AHM 560 ýangyç guýuş tertibini çap etmeýär. Bak agramlaryny el bilen giriziň.",
+      "blockFuelDerived": "Blok (ramp) ýangyjy: {block} kg — uçuş ýangyjy goşmaça taksi ýangyjy"
     },
     "dowModal": {
       "title": "DOW / DOI",
