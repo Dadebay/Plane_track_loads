@@ -10,7 +10,7 @@ export interface DatePickerLabels {
   placeholder: string;
 }
 
-const DEFAULT_LABELS: DatePickerLabels = { clear: "Clear", today: "Today", placeholder: "dd.mm.yyyy" };
+const DEFAULT_LABELS: DatePickerLabels = { clear: "Clear", today: "Today", placeholder: "dd/mm/yyyy" };
 
 function pad2(n: number): string {
   return String(n).padStart(2, "0");
@@ -26,6 +26,16 @@ function fromIso(value: string): Date | null {
   const [, y, mo, d] = m;
   const date = new Date(Number(y), Number(mo) - 1, Number(d));
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+/**
+ * Fixed `DD/MM/YYYY` display (CLAUDE.md — date display is locale-independent,
+ * unlike UI strings). The month grid and its headings still follow `locale`,
+ * but the value printed in the trigger must not: `Intl` against "en" renders
+ * `MM/DD/YYYY`, which turns 2 October into 10 February for the reader.
+ */
+function formatDisplay(date: Date): string {
+  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
 
 function sameDay(a: Date, b: Date): boolean {
@@ -106,7 +116,6 @@ export function DatePicker({
   const grid = buildMonthGrid(viewYear, viewMonth);
   const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
   const monthFmt = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" });
-  const displayFmt = new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" });
 
   return (
     <div ref={containerRef} className="relative">
@@ -124,7 +133,7 @@ export function DatePicker({
           className,
         )}
       >
-        <span className={cn(!selected && "text-fg-subtle")}>{selected ? displayFmt.format(selected) : l.placeholder}</span>
+        <span className={cn(!selected && "text-fg-subtle")}>{selected ? formatDisplay(selected) : l.placeholder}</span>
         <Calendar className="h-4 w-4 shrink-0 text-fg-subtle" aria-hidden="true" />
       </button>
 
