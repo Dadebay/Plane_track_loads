@@ -267,6 +267,21 @@ kapsamına alın (ör. `docker run --rm -v tua_web_data:/data
 -v $(pwd)/backups:/backup alpine tar czf /backup/web_data_$(date
 +%Y%m%dT%H%M%SZ).tar.gz -C /data .`).
 
+### pm2 kurulumunda depo yolu
+
+Docker dışı (pm2) kurulumda `DOCUMENTS_STORAGE_PATH` **mutlaka** verilir.
+Boş bırakılırsa depo `process.cwd()/.data/documents` olur — yani sürümün
+kurulum klasörünün içi. Her dağıtım yeni bir klasöre açıldığı ve pm2 oraya
+taşındığı için, o ana kadar üretilmiş bütün PDF'ler yeni kurulumdan
+görünmez olur: `Document` satırları durur, dosyalar bulunamaz (belgeler
+sayfası bunu "dosya yok" diye gösterir). Kurulumdan bağımsız sabit bir yol
+verin ve yedeklemeye onu alın:
+
+```bash
+mkdir -p /home/ubuntu/tua-documents
+echo 'DOCUMENTS_STORAGE_PATH="/home/ubuntu/tua-documents"' >> <kurulum>/.env
+```
+
 ## İmaj boyutu
 
 `apps/web/Dockerfile` Next.js'in `standalone` çıktısını kullanır — çalışma
