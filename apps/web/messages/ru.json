@@ -163,6 +163,9 @@
       "requiredField": "Обязательное поле",
       "sameStationError": "Пункты отправления и назначения должны отличаться",
       "arrivalBeforeDepartureError": "Прибытие должно быть позже вылета",
+      "arrivalBeforeDepartureDetail": "Участок {leg}: STD и STA — местное время станции. {dep} {depLocal} — это {depUtc} UTC, {arr} {arrLocal} — это {arrUtc} UTC, то есть прибытие на {gapHours} ч {gapMinutes} мин раньше вылета. Проверьте станцию прибытия: станция в другом часовом поясе сдвигает STA, хотя на часах это не видно.",
+      "legTooLongError": "Время в пути слишком велико",
+      "legTooLongDetail": "Участок {leg}: от {dep} {depUtc} UTC до {arr} {arrUtc} UTC — {gapHours} ч {gapMinutes} мин, превышен предел {limitHours} ч. Проверьте даты: STD и STA указываются по местному времени и могут приходиться на разные дни.",
       "conflictError": "Это воздушное судно уже назначено на рейс {flightNo} в это время",
       "atLeastOneLeg": "Нужен хотя бы один участок",
       "createSuccess": "Рейс создан",
@@ -357,7 +360,10 @@
     "fuel": {
       "title": "Топливо",
       "density": "Плотность",
+      "blockFuel": "Блочное (рулёжное) топливо",
       "takeoffFuel": "Взлётное топливо",
+      "takeoffFuelDerived": "Взлётное топливо: {takeoff} кг — блок минус руление",
+      "blockBelowTaxi": "Блочное топливо меньше рулёжного — проверьте значение",
       "tripFuel": "Путевое топливо",
       "taxiFuel": "Топливо на руление"
     },
@@ -528,8 +534,7 @@
       "tankIndexLabel": "Индекс: недоступен",
       "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) предварительная — утверждённый скан невозможно надёжно прочитать с печатной точностью. См. AHM560_ERRATA.md Kayit 10.",
       "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE не расшифрована из утверждённого источника.",
-      "automaticUnavailable": "Автоматическое распределение недоступно: утверждённый AHM 560 не публикует схему заправки. Введите массы баков вручную.",
-      "blockFuelDerived": "Блочное (рамповое) топливо: {block} кг — взлётное плюс рулёжное"
+      "automaticUnavailable": "Автоматическое распределение недоступно: утверждённый AHM 560 не публикует схему заправки. Введите массы баков вручную."
     },
     "dowModal": {
       "title": "DOW / DOI",

@@ -109,7 +109,12 @@ export function FlightFormModal({
     editing?.legs.length ? editing.legs.map((l) => ({ ...l })) : [{ ...emptyLeg }],
   );
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<{ message: string; flightNo?: string } | null>(null);
+  const [error, setError] = useState<{
+    message: string;
+    flightNo?: string;
+    detail?: string;
+    detailParams?: Record<string, string | number>;
+  } | null>(null);
 
   if (!open) return null;
 
@@ -159,7 +164,12 @@ export function FlightFormModal({
     setSaving(false);
 
     if (!result.ok) {
-      setError({ message: result.error ?? "validation", flightNo: result.conflictFlightNo });
+      setError({
+        message: result.error ?? "validation",
+        flightNo: result.conflictFlightNo,
+        detail: result.errorDetail,
+        detailParams: result.errorParams,
+      });
       return;
     }
     onSaved();
@@ -180,9 +190,14 @@ export function FlightFormModal({
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-5">
           {error ? (
-            <p className="rounded-md bg-danger-bg px-3 py-2 text-sm text-danger" role="alert">
-              {t(error.message, error.flightNo ? { flightNo: error.flightNo } : undefined)}
-            </p>
+            <div className="rounded-md bg-danger-bg px-3 py-2 text-danger" role="alert">
+              <p className="text-sm font-medium">
+                {t(error.message, error.flightNo ? { flightNo: error.flightNo } : undefined)}
+              </p>
+              {error.detail ? (
+                <p className="mt-1 text-xs leading-relaxed text-danger/90">{t(error.detail, error.detailParams)}</p>
+              ) : null}
+            </div>
           ) : null}
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

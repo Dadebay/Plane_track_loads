@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db, Prisma } from "@tua/db";
 import { auth } from "@/auth";
 import { findAircraftConflicts } from "@/lib/aircraft-conflict";
+import { formatDateTimeInZone as formatDateTime } from "@/lib/format-date";
 import { zonedTimeToUtc } from "@/lib/timezone";
 
 const FLIGHT_STATUSES = ["RESERVED", "PLANNED", "LOADING", "FINALIZED", "DEPARTED", "ARRIVED", "CANCELLED"] as const;
@@ -36,8 +37,24 @@ export type FlightFormInput = z.infer<typeof flightSchema>;
 export interface FlightActionResult {
   ok: boolean;
   error?: string;
+  /**
+   * Second line under the headline error: the arithmetic the controller
+   * cannot see. "Arrival must be after departure" is baffling in front of
+   * an 09:35 departure and an 11:55 arrival — the two clocks belong to
+   * different stations, and only their UTC instants are comparable. Naming
+   * both conversions points at the real mistake, which is almost always the
+   * wrong arrival station (ICN filed for SVO moves arrival four zones east).
+   */
+  errorDetail?: string;
+  errorParams?: Record<string, string | number>;
   conflictFlightNo?: string;
   flightId?: string;
+}
+
+interface LegTimeError {
+  error: string;
+  detail: string;
+  params: Record<string, string | number>;
 }
 
 interface ResolvedLeg {
@@ -50,6 +67,12 @@ interface ResolvedLeg {
 
 const MAX_LEG_DURATION_MS = 72 * 60 * 60 * 1000;
 
+/** Splits a span into whole hours and minutes so each locale can word it. */
+function withHoursMinutes(ms: number, e: LegTimeError): LegTimeError {
+  const minutes = Math.round(ms / 60_000);
+  return { ...e, params: { ...e.params, gapHours: Math.floor(minutes / 60), gapMinutes: minutes % 60 } };
+}
+
 /**
  * Departure/arrival times are entered as wall-clock time at their
  * respective station (aviation convention — STD/STA are always
@@ -61,10 +84,11 @@ const MAX_LEG_DURATION_MS = 72 * 60 * 60 * 1000;
  */
 async function resolveLegTimes(
   legs: FlightFormInput["legs"],
-): Promise<{ ok: true; legs: ResolvedLeg[] } | { ok: false; error: string }> {
+): Promise<{ ok: true; legs: ResolvedLeg[] } | ({ ok: false } & Partial<LegTimeError> & { error: string })> {
   const stationIds = [...new Set(legs.flatMap((l) => [l.fromStationId, l.toStationId]))];
   const stations = await db.station.findMany({ where: { id: { in: stationIds } } });
   const tzById = new Map(stations.map((s) => [s.id, s.timezone]));
+  const iataById = new Map(stations.map((s) => [s.id, s.iata]));
 
   const resolved: ResolvedLeg[] = [];
   for (const leg of legs) {
@@ -74,9 +98,37 @@ async function resolveLegTimes(
 
     const stdDep = zonedTimeToUtc(leg.stdDep, fromTz);
     const staArr = zonedTimeToUtc(leg.staArr, toTz);
+    const spanMs = staArr.getTime() - stdDep.getTime();
+    const context = {
+      leg: resolved.length + 1,
+      dep: iataById.get(leg.fromStationId) ?? "",
+      depLocal: formatDateTime(stdDep, fromTz),
+      depUtc: formatDateTime(stdDep, "UTC"),
+      arr: iataById.get(leg.toStationId) ?? "",
+      arrLocal: formatDateTime(staArr, toTz),
+      arrUtc: formatDateTime(staArr, "UTC"),
+    };
 
-    if (staArr.getTime() <= stdDep.getTime()) return { ok: false, error: "arrivalBeforeDepartureError" };
-    if (staArr.getTime() - stdDep.getTime() > MAX_LEG_DURATION_MS) return { ok: false, error: "arrivalBeforeDepartureError" };
+    if (spanMs <= 0) {
+      return {
+        ok: false,
+        ...withHoursMinutes(-spanMs, {
+          error: "arrivalBeforeDepartureError",
+          detail: "arrivalBeforeDepartureDetail",
+          params: context,
+        }),
+      };
+    }
+    if (spanMs > MAX_LEG_DURATION_MS) {
+      return {
+        ok: false,
+        ...withHoursMinutes(spanMs, {
+          error: "legTooLongError",
+          detail: "legTooLongDetail",
+          params: { ...context, limitHours: MAX_LEG_DURATION_MS / 3_600_000 },
+        }),
+      };
+    }
 
     resolved.push({ fromStationId: leg.fromStationId, toStationId: leg.toStationId, via: leg.via || null, stdDep, staArr });
   }
@@ -111,7 +163,9 @@ export async function createFlight(input: FlightFormInput): Promise<FlightAction
   const data = parsed.data;
 
   const resolvedLegs = await resolveLegTimes(data.legs);
-  if (!resolvedLegs.ok) return { ok: false, error: resolvedLegs.error };
+  if (!resolvedLegs.ok) {
+    return { ok: false, error: resolvedLegs.error, errorDetail: resolvedLegs.detail, errorParams: resolvedLegs.params };
+  }
 
   const conflicts = await findAircraftConflicts(data.aircraftId, resolvedLegs.legs);
   if (conflicts.length > 0) {
@@ -157,7 +211,9 @@ export async function updateFlight(flightId: string, input: FlightFormInput): Pr
   if (!before) return { ok: false, error: "notFound" };
 
   const resolvedLegs = await resolveLegTimes(data.legs);
-  if (!resolvedLegs.ok) return { ok: false, error: resolvedLegs.error };
+  if (!resolvedLegs.ok) {
+    return { ok: false, error: resolvedLegs.error, errorDetail: resolvedLegs.detail, errorParams: resolvedLegs.params };
+  }
 
   const conflicts = await findAircraftConflicts(data.aircraftId, resolvedLegs.legs, flightId);
   if (conflicts.length > 0) {

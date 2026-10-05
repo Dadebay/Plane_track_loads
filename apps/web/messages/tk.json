@@ -155,6 +155,9 @@
       "requiredField": "Hökmany meýdança",
       "sameStationError": "Nireden we Nirä dürli bolmaly",
       "arrivalBeforeDepartureError": "Gonuş uçuşdan soň bolmaly",
+      "arrivalBeforeDepartureDetail": "{leg}-nji bölek: STD we STA stansiýanyň ýerli wagty. {dep} {depLocal} — {depUtc} UTC, {arr} {arrLocal} — {arrUtc} UTC, ýagny gonuş uçuşdan {gapHours} sag {gapMinutes} min öň düşýär. Gonuş stansiýasyny barlaň: başga wagt guşaklygyndaky stansiýa STA-ny sagat görkezmezden süýşürýär.",
+      "legTooLongError": "Uçuş wagty gaty uzyn",
+      "legTooLongDetail": "{leg}-nji bölek: {dep} {depUtc} UTC — {arr} {arrUtc} UTC aralygy {gapHours} sag {gapMinutes} min, {limitHours} sag çäginden geçýär. Senelere serediň — STD we STA ýerli wagt, dürli günlerde bolup biler.",
       "conflictError": "Bu uçar eýýäm {flightNo} gatnawyna şu wagt aralygynda bellenen",
       "atLeastOneLeg": "Iň azyndan bir bölek gerek",
       "createSuccess": "Gatnaw döredildi",
@@ -357,7 +360,10 @@
     "fuel": {
       "title": "Ýangyç",
       "density": "Ýygylyk",
+      "blockFuel": "Blok (ramp) ýangyjy",
       "takeoffFuel": "Uçuş ýangyjy",
+      "takeoffFuelDerived": "Uçuş ýangyjy: {takeoff} kg — blokdan taksi aýrylan",
+      "blockBelowTaxi": "Blok ýangyjy taksi ýangyjyndan az — sany barlaň",
       "tripFuel": "Ýol ýangyjy",
       "taxiFuel": "Taksiläme ýangyjy"
     },
@@ -528,8 +534,7 @@
       "tankIndexLabel": "Indeks: elýeterli däl",
       "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) wagtlaýyn — tassyklanan skaner çap edilen takyklykda ynamly okalyp bilinmeýär. AHM560_ERRATA.md Kayit 10-a serediň.",
       "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE tassyklanan çeşmeden göçürilmedi.",
-      "automaticUnavailable": "Awtomatik paýlanyş elýeterli däl: tassyklanan AHM 560 ýangyç guýuş tertibini çap etmeýär. Bak agramlaryny el bilen giriziň.",
-      "blockFuelDerived": "Blok (ramp) ýangyjy: {block} kg — uçuş ýangyjy goşmaça taksi ýangyjy"
+      "automaticUnavailable": "Awtomatik paýlanyş elýeterli däl: tassyklanan AHM 560 ýangyç guýuş tertibini çap etmeýär. Bak agramlaryny el bilen giriziň."
     },
     "dowModal": {
       "title": "DOW / DOI",

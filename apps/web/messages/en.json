@@ -163,6 +163,9 @@
       "requiredField": "Required",
       "sameStationError": "From and To must be different",
       "arrivalBeforeDepartureError": "Arrival must be after departure",
+      "arrivalBeforeDepartureDetail": "Leg {leg}: STD and STA are station-local times. {dep} {depLocal} is {depUtc} UTC, {arr} {arrLocal} is {arrUtc} UTC — the arrival lands {gapHours} h {gapMinutes} min before the departure. Check the arrival station: a station in another time zone shifts STA without the clock showing it.",
+      "legTooLongError": "Enroute time is too long",
+      "legTooLongDetail": "Leg {leg}: {dep} {depUtc} UTC to {arr} {arrUtc} UTC is {gapHours} h {gapMinutes} min, over the {limitHours} h limit. Check the dates — STD and STA are station-local and may sit on different days.",
       "conflictError": "This aircraft is already assigned to {flightNo} during this time",
       "atLeastOneLeg": "At least one leg is required",
       "createSuccess": "Flight created",
@@ -357,7 +360,10 @@
     "fuel": {
       "title": "Fuel",
       "density": "Density",
+      "blockFuel": "Block (ramp) fuel",
       "takeoffFuel": "Takeoff fuel",
+      "takeoffFuelDerived": "Take-off fuel: {takeoff} kg — block less taxi",
+      "blockBelowTaxi": "Block fuel is below the taxi fuel — check the figure",
       "tripFuel": "Trip fuel",
       "taxiFuel": "Taxi fuel"
     },
@@ -528,8 +534,7 @@
       "tankIndexLabel": "Index: not available",
       "tankIndexUnavailable": "FUEL INDEX PER TANK TABLE (AHM 560 Appendix I s.75) is provisional — the approved scan cannot be read reliably at the printed precision. See AHM560_ERRATA.md Kayit 10.",
       "lateralMomentUnavailable": "FUEL LATERAL MOMENT PER TANK TABLE is not transcribed from the approved source.",
-      "automaticUnavailable": "Automatic distribution is unavailable: the approved AHM 560 publishes no refuelling schedule. Enter the tank weights manually.",
-      "blockFuelDerived": "Block (ramp) fuel: {block} kg — take-off fuel plus taxi fuel"
+      "automaticUnavailable": "Automatic distribution is unavailable: the approved AHM 560 publishes no refuelling schedule. Enter the tank weights manually."
     },
     "dowModal": {
       "title": "DOW / DOI",
