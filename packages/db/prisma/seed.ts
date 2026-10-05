@@ -43,6 +43,10 @@ async function main() {
     { iata: "BKK", icao: "VTBS", name: "Suvarnabhumi", timezone: "Asia/Bangkok", city: "Bangkok", country: "Thailand" },
     { iata: "SGN", icao: "VVTS", name: "Tan Son Nhat", timezone: "Asia/Ho_Chi_Minh", city: "Ho Chi Minh City", country: "Vietnam" },
     { iata: "HAN", icao: "VVNB", name: "Noi Bai Intl", timezone: "Asia/Ho_Chi_Minh", city: "Hanoi", country: "Vietnam" },
+    // Flown occasionally. The operator named it "MAL"; that code belongs to
+    // Mangole in Indonesia, and Malta is MLA — a station code goes on the
+    // documents, so it is spelled the way ICAO/IATA spell it.
+    { iata: "MLA", icao: "LMML", name: "Malta Intl", timezone: "Europe/Malta", city: "Luqa", country: "Malta" },
 
     // Not in the list above, and kept only because existing rows point at
     // them: T5 3431 flies ASB-URC in the schedule the crew printed, and a
