@@ -33,9 +33,11 @@ async function main() {
     { iata: "SZX", icao: "ZGSZ", name: "Shenzhen Bao'an Intl", timezone: "Asia/Shanghai", city: "Shenzhen", country: "China" },
     { iata: "URC", icao: "ZWWW", name: "Urumqi Diwopu Intl", timezone: "Asia/Urumqi", city: "Urumqi", country: "China" },
     { iata: "HAN", icao: "VVNB", name: "Noi Bai Intl", timezone: "Asia/Ho_Chi_Minh", city: "Hanoi", country: "Vietnam" },
-  // Flown as T5 684 ICN-ASB. Missing from the first station list, so a
-  // controller filed that flight under FRA to get a plan out at all.
-  { iata: "ICN", icao: "RKSI", name: "Incheon Intl", timezone: "Asia/Seoul", city: "Seoul", country: "South Korea" },
+    // Both added after a controller hit them in service: ICN was filed as FRA
+    // and SVO as ICN, because naming a wrong station was the only way to get
+    // a plan out at all.
+    { iata: "ICN", icao: "RKSI", name: "Incheon Intl", timezone: "Asia/Seoul", city: "Seoul", country: "South Korea" },
+    { iata: "SVO", icao: "UUEE", name: "Sheremetyevo Intl", timezone: "Europe/Moscow", city: "Moscow", country: "Russia" },
   ];
 
   for (const station of stations) {
