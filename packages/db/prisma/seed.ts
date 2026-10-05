@@ -48,12 +48,11 @@ async function main() {
     // documents, so it is spelled the way ICAO/IATA spell it.
     { iata: "MLA", icao: "LMML", name: "Malta Intl", timezone: "Europe/Malta", city: "Luqa", country: "Malta" },
 
-    // Not in the list above, and kept only because existing rows point at
-    // them: T5 3431 flies ASB-URC in the schedule the crew printed, and a
-    // seeded ULD sits at DXB. Deleting a station a flight leg references is
-    // a foreign-key error, so these go when the operator says what happens
-    // to those records.
-    { iata: "DXB", icao: "OMDB", name: "Dubai Intl", timezone: "Asia/Dubai", city: "Dubai", country: "United Arab Emirates" },
+    // Not in the list above, and kept only because an existing row points at
+    // it: T5 3431 flies ASB-URC in the schedule the crew printed. A station a
+    // flight leg references cannot be deleted, so this one goes when the
+    // operator says what happens to that flight. (DXB left with the operator's
+    // network list; its one ULD moved to DWC, their Dubai station.)
     { iata: "URC", icao: "ZWWW", name: "Urumqi Diwopu Intl", timezone: "Asia/Urumqi", city: "Urumqi", country: "China" },
   ];
 
@@ -172,7 +171,7 @@ async function main() {
   // filter/sort/paginate against in the browser.
   const sgn = await prisma.station.findUniqueOrThrow({ where: { iata: "SGN" } });
   const fra = await prisma.station.findUniqueOrThrow({ where: { iata: "FRA" } });
-  const dxb = await prisma.station.findUniqueOrThrow({ where: { iata: "DXB" } });
+  const dwc = await prisma.station.findUniqueOrThrow({ where: { iata: "DWC" } });
   const ez429 = await prisma.aircraft.findUniqueOrThrow({ where: { registration: "EZ-F429" } });
   const ez430 = await prisma.aircraft.findUniqueOrThrow({ where: { registration: "EZ-F430" } });
 
@@ -502,8 +501,8 @@ async function main() {
       ownerCode: "DX",
       status: "AVAILABLE",
       condition: "SERVICEABLE",
-      assignedStationId: dxb.id,
-      currentStationId: dxb.id,
+      assignedStationId: dwc.id,
+      currentStationId: dwc.id,
     },
   ];
 
