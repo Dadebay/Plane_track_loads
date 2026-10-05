@@ -18,26 +18,39 @@ const AIRCRAFT_TYPE_UNKNOWN = "Not specified";
 async function main() {
   const passwordHash = await hash(DEV_PASSWORD);
 
-  // City/country feed the station picker's second line. Kept to airports the
-  // schedule actually uses — a worldwide airport list is a data-sourcing
-  // decision, not something to invent here.
+  // The operator's own network, in the order they listed it (05/10/2026).
+  // City/country feed the station picker's second line. A worldwide airport
+  // list is deliberately not here: every station a controller can pick is one
+  // the airline actually serves, so a wrong pick is a typo rather than a
+  // plausible-looking foreign airport. ICN and SVO were both added after a
+  // controller hit them in service and filed the flight under the wrong
+  // station to get a plan out at all.
   const stations = [
-    { iata: "ASB", icao: "UTAA", name: "Ashgabat", timezone: "Asia/Ashgabat", city: "Ashgabat", country: "Turkmenistan" },
-    { iata: "SGN", icao: "VVTS", name: "Tan Son Nhat", timezone: "Asia/Ho_Chi_Minh", city: "Ho Chi Minh City", country: "Vietnam" },
     { iata: "FRA", icao: "EDDF", name: "Frankfurt am Main", timezone: "Europe/Berlin", city: "Frankfurt", country: "Germany" },
-    { iata: "IST", icao: "LTFM", name: "Istanbul", timezone: "Europe/Istanbul", city: "Istanbul", country: "Turkey" },
-    { iata: "DXB", icao: "OMDB", name: "Dubai Intl", timezone: "Asia/Dubai", city: "Dubai", country: "United Arab Emirates" },
-    { iata: "DEL", icao: "VIDP", name: "Indira Gandhi Intl", timezone: "Asia/Kolkata", city: "Delhi", country: "India" },
-    { iata: "PEK", icao: "ZBAA", name: "Beijing Capital Intl", timezone: "Asia/Shanghai", city: "Beijing", country: "China" },
     { iata: "MXP", icao: "LIMC", name: "Milano Malpensa", timezone: "Europe/Rome", city: "Milan", country: "Italy" },
-    { iata: "SZX", icao: "ZGSZ", name: "Shenzhen Bao'an Intl", timezone: "Asia/Shanghai", city: "Shenzhen", country: "China" },
-    { iata: "URC", icao: "ZWWW", name: "Urumqi Diwopu Intl", timezone: "Asia/Urumqi", city: "Urumqi", country: "China" },
-    { iata: "HAN", icao: "VVNB", name: "Noi Bai Intl", timezone: "Asia/Ho_Chi_Minh", city: "Hanoi", country: "Vietnam" },
-    // Both added after a controller hit them in service: ICN was filed as FRA
-    // and SVO as ICN, because naming a wrong station was the only way to get
-    // a plan out at all.
-    { iata: "ICN", icao: "RKSI", name: "Incheon Intl", timezone: "Asia/Seoul", city: "Seoul", country: "South Korea" },
+    { iata: "LGW", icao: "EGKK", name: "London Gatwick", timezone: "Europe/London", city: "London", country: "United Kingdom" },
+    { iata: "IST", icao: "LTFM", name: "Istanbul", timezone: "Europe/Istanbul", city: "Istanbul", country: "Turkey" },
     { iata: "SVO", icao: "UUEE", name: "Sheremetyevo Intl", timezone: "Europe/Moscow", city: "Moscow", country: "Russia" },
+    { iata: "DWC", icao: "OMDW", name: "Al Maktoum Intl", timezone: "Asia/Dubai", city: "Dubai", country: "United Arab Emirates" },
+    { iata: "ASB", icao: "UTAA", name: "Ashgabat", timezone: "Asia/Ashgabat", city: "Ashgabat", country: "Turkmenistan" },
+    { iata: "DEL", icao: "VIDP", name: "Indira Gandhi Intl", timezone: "Asia/Kolkata", city: "Delhi", country: "India" },
+    { iata: "KZN", icao: "UWKD", name: "Kazan Intl", timezone: "Europe/Moscow", city: "Kazan", country: "Russia" },
+    { iata: "JED", icao: "OEJN", name: "King Abdulaziz Intl", timezone: "Asia/Riyadh", city: "Jeddah", country: "Saudi Arabia" },
+    { iata: "PEK", icao: "ZBAA", name: "Beijing Capital Intl", timezone: "Asia/Shanghai", city: "Beijing", country: "China" },
+    { iata: "SZX", icao: "ZGSZ", name: "Shenzhen Bao'an Intl", timezone: "Asia/Shanghai", city: "Shenzhen", country: "China" },
+    { iata: "ICN", icao: "RKSI", name: "Incheon Intl", timezone: "Asia/Seoul", city: "Seoul", country: "South Korea" },
+    { iata: "KUL", icao: "WMKK", name: "Kuala Lumpur Intl", timezone: "Asia/Kuala_Lumpur", city: "Kuala Lumpur", country: "Malaysia" },
+    { iata: "BKK", icao: "VTBS", name: "Suvarnabhumi", timezone: "Asia/Bangkok", city: "Bangkok", country: "Thailand" },
+    { iata: "SGN", icao: "VVTS", name: "Tan Son Nhat", timezone: "Asia/Ho_Chi_Minh", city: "Ho Chi Minh City", country: "Vietnam" },
+    { iata: "HAN", icao: "VVNB", name: "Noi Bai Intl", timezone: "Asia/Ho_Chi_Minh", city: "Hanoi", country: "Vietnam" },
+
+    // Not in the list above, and kept only because existing rows point at
+    // them: T5 3431 flies ASB-URC in the schedule the crew printed, and a
+    // seeded ULD sits at DXB. Deleting a station a flight leg references is
+    // a foreign-key error, so these go when the operator says what happens
+    // to those records.
+    { iata: "DXB", icao: "OMDB", name: "Dubai Intl", timezone: "Asia/Dubai", city: "Dubai", country: "United Arab Emirates" },
+    { iata: "URC", icao: "ZWWW", name: "Urumqi Diwopu Intl", timezone: "Asia/Urumqi", city: "Urumqi", country: "China" },
   ];
 
   for (const station of stations) {
