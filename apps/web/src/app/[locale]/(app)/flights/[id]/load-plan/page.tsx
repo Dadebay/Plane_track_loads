@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { db } from "@tua/db";
 import { getLoadPlanAhmData } from "@/lib/load-plan-ahm";
 import { formatDateTimeInZone } from "@/lib/format-date";
+import { DEFAULT_TAXI_FUEL } from "@/lib/fuel-block";
 import type { LoadDraftInit } from "./load-draft-store";
 import { LoadPlanShell } from "./load-plan-shell";
 
@@ -52,7 +53,7 @@ export default async function LoadPlanPage({ params }: { params: Promise<{ id: s
           tripFuel: leg.fuelRecord.tripFuel.toString(),
           taxiFuel: leg.fuelRecord.taxiFuel.toString(),
         }
-      : { density: "0.785", takeoffFuel: "0", tripFuel: "0", taxiFuel: "0" },
+      : { density: "0.785", takeoffFuel: "0", tripFuel: "0", taxiFuel: DEFAULT_TAXI_FUEL },
     fuelAllocations: (leg.fuelRecord?.allocations ?? []).map((a) => ({
       tank: a.tank,
       side: a.side,

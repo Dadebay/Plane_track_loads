@@ -5,6 +5,7 @@ import { X, Info } from "lucide-react";
 import { Decimal } from "decimal.js";
 import { getFuelIndex, validateTankAllocation, type FuelIndexTable, type TankAllocation } from "@tua/wnb-core";
 import { formatIndex, formatWeight } from "@/lib/format-number";
+import { BlockFuelField } from "./fuel-crew-form";
 import { useLoadDraftStore } from "./load-draft-store";
 
 /**
@@ -88,6 +89,8 @@ export function FuelDistributionModal({
 
   const fuel = useLoadDraftStore((s) => s.fuel);
   const setFuel = useLoadDraftStore((s) => s.setFuel);
+  const setBlockFuel = useLoadDraftStore((s) => s.setBlockFuel);
+  const setTaxiFuel = useLoadDraftStore((s) => s.setTaxiFuel);
   const allocations = useLoadDraftStore((s) => s.fuelAllocations);
   const setFuelAllocation = useLoadDraftStore((s) => s.setFuelAllocation);
   const clearFuelAllocations = useLoadDraftStore((s) => s.clearFuelAllocations);
@@ -103,10 +106,6 @@ export function FuelDistributionModal({
   // not from the provisional per-tank one. Out-of-range or an unparseable
   // density throws — that is a real input error, shown as "—" rather than a
   // crash, because the controller is still typing.
-  // Ramp/block = take-off + taxi. Derived, never stored: one number, one
-  // place (see FuelRecord in the Prisma schema).
-  const blockFuel = new Decimal(fuel.takeoffFuel || "0").plus(new Decimal(fuel.taxiFuel || "0")).toString();
-
   let totalFuelIndex: string | null = null;
   try {
     if (fuel.takeoffFuel && Number(fuel.takeoffFuel) > 0) {
@@ -186,28 +185,23 @@ export function FuelDistributionModal({
               </div>
             </div>
 
-            {/* Labelled take-off fuel, because that is the figure this
-                field holds and the one the loadsheet prints. It used to say
-                "total fuel", so a controller reading a refuelling slip typed
-                the block figure into it — 600 kg of taxi fuel too much, which
-                carried straight through TOW, landing weight and taxi weight.
-                The block figure is shown underneath instead, derived, so the
-                slip can still be checked against it without being typed in. */}
-            <label className="flex flex-col gap-1 text-xs font-medium text-fg-muted">
-              {tFuel("takeoffFuel")}
-              <input
-                type="number"
-                step="1"
-                min="0"
-                value={fuel.takeoffFuel}
-                disabled={readOnly}
-                onChange={(e) => setFuel({ ...fuel, takeoffFuel: e.target.value })}
-                className={inputClass}
-              />
-              <span className="text-[11px] font-normal text-fg-subtle">
-                {t("blockFuelDerived", { block: formatWeight(blockFuel) })}
-              </span>
-            </label>
+            {/* The block figure, as the refuelling slip states it. Taxi fuel
+                comes out of it here, the way the operator's own sheets do it:
+                the field used to mean take-off fuel, so a controller reading
+                the slip typed the block figure in and put 600 kg too much
+                through TOW, landing weight and taxi weight. The take-off fuel
+                the loadsheet will print is shown underneath. */}
+            <BlockFuelField
+              label={tFuel("blockFuel")}
+              derivedLabel={tFuel("takeoffFuelDerived", { takeoff: formatWeight(fuel.takeoffFuel || "0") })}
+              belowTaxiLabel={tFuel("blockBelowTaxi")}
+              takeoffFuel={fuel.takeoffFuel}
+              taxiFuel={fuel.taxiFuel}
+              onChange={setBlockFuel}
+              disabled={readOnly}
+              inputClass={inputClass}
+              labelClass="flex flex-col gap-1 text-xs font-medium text-fg-muted"
+            />
           </div>
 
           <p className="flex items-start gap-1.5 rounded-md border border-border bg-bg-muted/30 px-3 py-2 text-[11px] text-fg-subtle">
@@ -311,7 +305,7 @@ export function FuelDistributionModal({
                 min="0"
                 value={fuel.taxiFuel}
                 disabled={readOnly}
-                onChange={(e) => setFuel({ ...fuel, taxiFuel: e.target.value })}
+                onChange={(e) => setTaxiFuel(e.target.value)}
                 className={inputClass}
               />
             </label>

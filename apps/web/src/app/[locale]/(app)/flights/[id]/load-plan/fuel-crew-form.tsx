@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { validateTankAllocation } from "@tua/wnb-core";
+import { blockFuelOf } from "@/lib/fuel-block";
 import { formatWeight } from "@/lib/format-number";
 import { TANK_SLOTS, useLoadDraftStore } from "./load-draft-store";
 
@@ -14,6 +15,8 @@ export function FuelCrewForm({ cockpitMaxSeats, courierMaxSeats }: { cockpitMaxS
 
   const fuel = useLoadDraftStore((s) => s.fuel);
   const setFuel = useLoadDraftStore((s) => s.setFuel);
+  const setBlockFuel = useLoadDraftStore((s) => s.setBlockFuel);
+  const setTaxiFuel = useLoadDraftStore((s) => s.setTaxiFuel);
   const cockpitCrew = useLoadDraftStore((s) => s.cockpitCrew);
   const courierCrew = useLoadDraftStore((s) => s.courierCrew);
   const setCrew = useLoadDraftStore((s) => s.setCrew);
@@ -33,16 +36,16 @@ export function FuelCrewForm({ cockpitMaxSeats, courierMaxSeats }: { cockpitMaxS
               className={inputClass}
             />
           </label>
-          <label className={labelClass}>
-            {tFuel("takeoffFuel")}
-            <input
-              type="number"
-              step="1"
-              value={fuel.takeoffFuel}
-              onChange={(e) => setFuel({ ...fuel, takeoffFuel: e.target.value })}
-              className={inputClass}
-            />
-          </label>
+          <BlockFuelField
+            label={tFuel("blockFuel")}
+            derivedLabel={tFuel("takeoffFuelDerived", { takeoff: formatWeight(fuel.takeoffFuel || "0") })}
+            belowTaxiLabel={tFuel("blockBelowTaxi")}
+            takeoffFuel={fuel.takeoffFuel}
+            taxiFuel={fuel.taxiFuel}
+            onChange={setBlockFuel}
+            inputClass={inputClass}
+            labelClass={labelClass}
+          />
           <label className={labelClass}>
             {tFuel("tripFuel")}
             <input
@@ -59,7 +62,7 @@ export function FuelCrewForm({ cockpitMaxSeats, courierMaxSeats }: { cockpitMaxS
               type="number"
               step="1"
               value={fuel.taxiFuel}
-              onChange={(e) => setFuel({ ...fuel, taxiFuel: e.target.value })}
+              onChange={(e) => setTaxiFuel(e.target.value)}
               className={inputClass}
             />
           </label>
@@ -182,5 +185,55 @@ function TankDistribution() {
 
       <p className="mt-1 text-[11px] text-fg-subtle">{t("manualOnly")}</p>
     </div>
+  );
+}
+
+/**
+ * The figure off the refuelling slip. Shown with the take-off fuel it
+ * resolves to, so the number the loadsheet will print is on screen before
+ * the sheet is produced rather than only on the paper.
+ */
+export function BlockFuelField({
+  label,
+  derivedLabel,
+  belowTaxiLabel,
+  takeoffFuel,
+  taxiFuel,
+  onChange,
+  disabled,
+  inputClass: inputClassName,
+  labelClass: labelClassName,
+}: {
+  label: string;
+  derivedLabel: string;
+  belowTaxiLabel: string;
+  takeoffFuel: string;
+  taxiFuel: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  inputClass: string;
+  labelClass: string;
+}) {
+  // A block figure under the taxi burn leaves nothing for the take-off roll,
+  // so it is a typo rather than a flight. Saying so here beats a schema
+  // rejection at save time, when the slip may no longer be in hand.
+  const belowTaxi = takeoffFuel !== "" && Number(takeoffFuel) < 0;
+
+  return (
+    <label className={labelClassName}>
+      {label}
+      <input
+        type="number"
+        step="1"
+        min="0"
+        value={blockFuelOf(takeoffFuel, taxiFuel)}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+        className={inputClassName}
+      />
+      <span className={`text-[11px] font-normal ${belowTaxi ? "text-danger" : "text-fg-subtle"}`}>
+        {belowTaxi ? belowTaxiLabel : derivedLabel}
+      </span>
+    </label>
   );
 }

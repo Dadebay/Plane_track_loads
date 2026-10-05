@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { DEFAULT_TAXI_FUEL, blockFuelOf, takeoffFuelOf } from "@/lib/fuel-block";
 import { idbStorage } from "@/lib/idb-storage";
 import type { DraftLoadItem } from "@/lib/load-plan-calc";
 import type { FuelState, TankAllocation } from "@tua/wnb-core";
@@ -39,13 +40,19 @@ interface LoadDraftState extends LoadDraftInit {
   removeItem: (position: string) => void;
   setItems: (items: DraftLoadItem[]) => void;
   setFuel: (fuel: FuelState) => void;
+  /** The controller types the block figure off the refuelling slip; the
+   * stored canonical is take-off fuel, so both of these recompute it. Taxi
+   * fuel comes out of the block, which is why changing it leaves the block
+   * where it was and moves take-off fuel instead. */
+  setBlockFuel: (blockFuel: string) => void;
+  setTaxiFuel: (taxiFuel: string) => void;
   setFuelAllocation: (tank: TankAllocation["tank"], side: TankAllocation["side"], weight: string) => void;
   clearFuelAllocations: () => void;
   setCrew: (cockpitCrew: number | null, courierCrew: number | null) => void;
   setHasHydrated: (value: boolean) => void;
 }
 
-const EMPTY_FUEL: FuelState = { density: "0.785", takeoffFuel: "0", tripFuel: "0", taxiFuel: "0" };
+const EMPTY_FUEL: FuelState = { density: "0.785", takeoffFuel: "0", tripFuel: "0", taxiFuel: DEFAULT_TAXI_FUEL };
 
 export const useLoadDraftStore = create<LoadDraftState>()(
   persist(
@@ -73,6 +80,15 @@ export const useLoadDraftStore = create<LoadDraftState>()(
       setItems: (items) => set({ items }),
 
       setFuel: (fuel) => set({ fuel }),
+
+      setBlockFuel: (blockFuel) =>
+        set((state) => ({ fuel: { ...state.fuel, takeoffFuel: takeoffFuelOf(blockFuel, state.fuel.taxiFuel) } })),
+
+      setTaxiFuel: (taxiFuel) =>
+        set((state) => {
+          const block = blockFuelOf(state.fuel.takeoffFuel, state.fuel.taxiFuel);
+          return { fuel: { ...state.fuel, taxiFuel, takeoffFuel: takeoffFuelOf(block, taxiFuel) } };
+        }),
 
       setFuelAllocation: (tank, side, weight) =>
         set((state) => {
