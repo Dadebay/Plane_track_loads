@@ -183,6 +183,35 @@ sayfaları (Rev.0'daki s.57–67 Sheet 14 §10 karşılığı). Operatörün 06/
 paylaştığı ekran görüntüleri Rev.**0** (başlık: "Revision 0", yürürlük
 15.03.2023) — o sürümün kartı bizde zaten hücre hücre doğrulanmış durumda.
 
+## Kayıt 6c — 06/10/2026: onaylı PDF'e karşı makine doğrulaması
+
+Operatör onaylı AHM 560 PDF'ini verdi (`AHM 560 -AIRBUS_A330_200P2F_APPROVED_FINAL.pdf`,
+79 sayfa, Edition 1 **Revision 0**, yürürlük 15.03.2023). Metin katmanı okunabilir,
+yani transkripsiyon artık göz kararı değil, satır satır karşılaştırılabilir.
+
+| Ne | Sonuç |
+|---|---|
+| Pozisyon indeks tablosu (s.62–67, Sheet 14 §10) | **93/93 pozisyon birebir** — kod, azami brüt ve kg başına indeks |
+| Yakıt indeks tablosu, 0,785 sütunu (s.28, Sheet 4) | Metinden okunabilen **29 satırın 29'u birebir**, T5 692'nin yakıt indeksini belirleyen 49 000 (+0,91) ve 51 500 (−0,31) dahil |
+
+Yani `positions.json` ve `fuel-index.json` onaylı belgenin sadık kopyası; Bulgu #7'nin
+farkı **bizim tarafımızdaki bir okuma hatası değil**.
+
+Bundan çıkan sonuç: T5 692 / 06/10/2026 için onaylı AHM 560'tan hesaplanan değer
+LIZFW **119,87** / LITOW **120,49**'dur. Operatörün sayfasındaki 121,67 / 121,98 bu
+belgeden üretilemiyor — ne kg başına indeksle, ne CARGO LOADING INDEX TABLE kartıyla
+(Kayıt 6b), ne de LMC katsayılarıyla.
+
+**Not:** Rev.2'nin pozisyon indeks sayfası hâlâ elimizde yok, ama kg başına indeks
+geometriden gelir (kol uzunluğu / sabit); uçağın yeniden tartılması DOW ve DOI'yi
+değiştirir, pozisyonun kolunu değiştirmez. Rev.0 → Rev.2 geçişinde DOW 676 kg
+değişmişken pozisyon tablosunun değişmiş olması beklenmez.
+
+**Açık kalan:** s.74–75'teki LOAD & TRIM SHEET levhaları PDF'te **görüntü** olarak
+duruyor (metin katmanı yok), yani pozisyon→bölge haritası (GROUND_TRUTH §21 Q7)
+bu dosyadan otomatik çıkarılamadı. Bölge haritası indeks hesabına girmiyor; yalnızca
+birleşik yük uyarısını etkiliyor.
+
 ## Kayıt 7 — AHM 560 Ed.1 **Rev.2** (10.06.2025) temin edildi: Kayıt 6 / Bulgu #2'nin DOW/DOI ayağı kapandı
 
 **Bulunan:** Operasyondan gelen fotoğrafta AHM 560'ın **Edition 1, Revision 2** damgalı
