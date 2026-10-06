@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { flightNoSearchVariants, formatFlightNo, normalizeFlightNo, splitFlightNo } from "../src/lib/flight-number";
+import {
+  carrierPrefixOf,
+  carrierPrefixes,
+  flightNoSearchVariants,
+  formatFlightNo,
+  normalizeFlightNo,
+  splitFlightNo,
+} from "../src/lib/flight-number";
 
 describe("flight-number", () => {
   it("splits the spellings a controller actually types", () => {
@@ -31,5 +38,30 @@ describe("flight-number", () => {
   it("searches for a bare number as itself", () => {
     expect(flightNoSearchVariants("692")).toEqual(["692"]);
     expect(flightNoSearchVariants("")).toEqual([]);
+  });
+});
+
+describe("carrier prefixes", () => {
+  it("offers only the codes of real flight numbers", () => {
+    // FUEL13ef07, TEST28175dcc and PERSd8ea4e75 are rows left by automated
+    // tests; their first two characters are not a carrier.
+    const prefixes = carrierPrefixes([
+      "T5 692",
+      "T5-767",
+      "FUEL13ef07",
+      "TEST28175dcc",
+      "PERSd8ea4e75",
+    ]);
+    expect(prefixes).toEqual(["T5"]);
+  });
+
+  it("picks up a carrier the operator starts filing, without being told", () => {
+    expect(carrierPrefixes(["T5 692", "FZ 1203"])).toEqual(["FZ", "T5"]);
+  });
+
+  it("reads a code off any spelling of the number", () => {
+    expect(carrierPrefixOf("t5692")).toBe("T5");
+    expect(carrierPrefixOf("T5-767")).toBe("T5");
+    expect(carrierPrefixOf("692")).toBeNull();
   });
 });

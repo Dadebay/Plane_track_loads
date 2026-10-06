@@ -5,6 +5,7 @@ import { canEditSchedule, stationScopeOf } from "@/lib/station-scope";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { utcToZonedTimeString } from "@/lib/timezone";
 import { ScheduleView, type EditableFlight } from "./schedule-view";
+import { carrierPrefixes } from "@/lib/flight-number";
 
 /**
  * Rendered per request, never at build time: this page reads live
@@ -63,13 +64,7 @@ export default async function SchedulePage({
     };
   }
 
-  const flightNumberPrefixes = [
-    ...new Set(
-      flightsForNumbers
-        .map((f) => /^([A-Za-z][A-Za-z0-9])/.exec(f.flightNo.trim())?.[1]?.toUpperCase())
-        .filter((p): p is string => Boolean(p)),
-    ),
-  ].sort();
+  const flightNumberPrefixes = carrierPrefixes(flightsForNumbers.map((f) => f.flightNo));
 
   return (
     <ScheduleView

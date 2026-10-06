@@ -5,6 +5,7 @@ import { serviceTypeOptions } from "@/lib/service-types";
 import { DocumentsView, type LegDocuments } from "./documents-view";
 import { auth } from "@/auth";
 import { stationScopeOf } from "@/lib/station-scope";
+import { carrierPrefixes } from "@/lib/flight-number";
 
 /**
  * Rendered per request, never at build time: this page reads live
@@ -72,13 +73,7 @@ export default async function DocumentsPage({
     };
   }
 
-  const flightNumberPrefixes = [
-    ...new Set(
-      flightsForNumbers
-        .map((f) => /^([A-Za-z][A-Za-z0-9])/.exec(f.flightNo.trim())?.[1]?.toUpperCase())
-        .filter((p): p is string => Boolean(p)),
-    ),
-  ].sort();
+  const flightNumberPrefixes = carrierPrefixes(flightsForNumbers.map((f) => f.flightNo));
 
   return (
     <DocumentsView

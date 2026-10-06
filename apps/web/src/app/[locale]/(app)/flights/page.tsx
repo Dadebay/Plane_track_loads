@@ -5,6 +5,7 @@ import { stationScopeOf } from "@/lib/station-scope";
 import { todayInZone } from "@/lib/timezone";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { FlightsListView } from "./flights-list-view";
+import { carrierPrefixes } from "@/lib/flight-number";
 
 /**
  * Rendered per request, never at build time: this page reads live
@@ -52,13 +53,7 @@ export default async function FlightsPage({
   // Carrier prefixes actually present in the schedule ("T5 692" -> "T5"),
   // so the flight-number filter offers real choices instead of a hardcoded
   // airline list. A flight number with no prefix contributes nothing.
-  const flightNumberPrefixes = [
-    ...new Set(
-      flightsForNumbers
-        .map((f) => /^([A-Za-z][A-Za-z0-9])/.exec(f.flightNo.trim())?.[1]?.toUpperCase())
-        .filter((p): p is string => Boolean(p)),
-    ),
-  ].sort();
+  const flightNumberPrefixes = carrierPrefixes(flightsForNumbers.map((f) => f.flightNo));
 
   return (
     <FlightsListView

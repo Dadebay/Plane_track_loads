@@ -49,3 +49,24 @@ export function flightNoSearchVariants(value: string): string[] {
   if (!prefix || !number) return [canonical];
   return [...new Set([canonical, `${prefix}${number}`, `${prefix}-${number}`])];
 }
+
+/**
+ * The carrier code of a flight number, or null when the text is not shaped
+ * like one.
+ *
+ * The code offered in the pickers is read out of the schedule rather than
+ * hardcoded, so a carrier the operator starts filing appears on its own.
+ * That also let rows left behind by automated tests — `FUEL13ef07`,
+ * `TEST28175dcc`, `PERSd8ea4e75` — contribute FU, TE and PE to the list, as
+ * if the airline flew them. A flight number is a two-character carrier code
+ * followed by digits; anything else carries no carrier.
+ */
+export function carrierPrefixOf(flightNo: string): string | null {
+  const match = /^([A-Za-z][A-Za-z0-9])\s*[-\s]?\s*(\d+)$/.exec(flightNo.trim());
+  return match ? match[1]!.toUpperCase() : null;
+}
+
+/** The codes the pickers offer, in the order they are shown. */
+export function carrierPrefixes(flightNumbers: readonly string[]): string[] {
+  return [...new Set(flightNumbers.map(carrierPrefixOf).filter((p): p is string => p !== null))].sort();
+}
