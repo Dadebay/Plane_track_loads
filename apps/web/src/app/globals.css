@@ -97,3 +97,42 @@ body {
    any character Gilroy lacks, so Turkmen/Cyrillic text still renders
    correctly, just in the fallback font rather than Gilroy for those
    specific glyphs. */
+
+/* Native select arrows sit hard against the border in Chrome: padding moves
+   the text but not the arrow, so the filter row read as a column of boxes
+   with a chevron glued to each right edge. Drawing the chevron ourselves
+   puts it where the rest of the UI puts an icon — 0.75rem in from the edge —
+   and gives every select the same gap. The colour is baked into each data
+   URI because a CSS variable cannot be substituted inside one, so the dark
+   theme repeats the image with its own muted foreground. */
+/* `appearance-none` in a component's own classes means it already draws its
+   chevron (the locale switcher does, with a lucide icon), so those keep
+   theirs and are skipped here — two arrows is worse than none. */
+select:not(.appearance-none) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237a847c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.25rem;
+}
+
+html[data-theme="dark"] select:not(.appearance-none) {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23b3bcb6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+}
+
+html:not([data-theme="light"]) {
+  @media (prefers-color-scheme: dark) {
+    select:not(.appearance-none) {
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23b3bcb6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    }
+  }
+}
+
+/* The two-character carrier box has no room for the full gap; it keeps the
+   arrow but gives the value less padding so it is not clipped. */
+select[aria-label="Carrier code"],
+select[aria-label="Flight number prefix"] {
+  padding-right: 1.75rem;
+}
