@@ -147,6 +147,8 @@
     },
     "form": {
       "flightNo": "Номер рейса",
+      "flightNumberPrefix": "Код перевозчика",
+      "flightNumberPrefixEmpty": "--",
       "date": "Дата",
       "serviceType": "Тип обслуживания",
       "aircraft": "Воздушное судно",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { utcToZonedTimeString, zonedTimeToUtc } from "../src/lib/timezone";
+import { todayInZone, utcToZonedTimeString, zonedTimeToUtc } from "../src/lib/timezone";
 
 describe("zonedTimeToUtc", () => {
   it("converts SGN (Asia/Ho_Chi_Minh, UTC+7, no DST) local time to UTC", () => {
@@ -37,5 +37,16 @@ describe("utcToZonedTimeString", () => {
       const utc = zonedTimeToUtc(local, tz);
       expect(utcToZonedTimeString(utc, tz)).toBe(local);
     }
+  });
+});
+
+describe("todayInZone", () => {
+  it("gives the date on the station's own wall, not the server's", () => {
+    // 02:00 Ashgabat on 7 October is still 21:00 UTC on 6 October: a list
+    // that opened on "today" in UTC would show yesterday's flights for the
+    // first five hours of every morning.
+    const instant = new Date("2026-10-06T21:00:00Z");
+    expect(todayInZone("Asia/Ashgabat", instant)).toBe("2026-10-07");
+    expect(todayInZone("UTC", instant)).toBe("2026-10-06");
   });
 });

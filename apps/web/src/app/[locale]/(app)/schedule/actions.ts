@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db, Prisma } from "@tua/db";
 import { auth } from "@/auth";
 import { findAircraftConflicts } from "@/lib/aircraft-conflict";
+import { normalizeFlightNo } from "@/lib/flight-number";
 import { formatDateTimeInZone as formatDateTime } from "@/lib/format-date";
 import { zonedTimeToUtc } from "@/lib/timezone";
 
@@ -24,7 +25,8 @@ const legSchema = z
   });
 
 const flightSchema = z.object({
-  flightNo: z.string().min(1, "requiredField"),
+  // Stored the way the list searches for it: "T5 692", never "T5-692".
+  flightNo: z.string().min(1, "requiredField").transform(normalizeFlightNo),
   date: z.string().min(1, "requiredField"),
   serviceType: z.string().min(1, "requiredField"),
   aircraftId: z.string().min(1, "requiredField"),

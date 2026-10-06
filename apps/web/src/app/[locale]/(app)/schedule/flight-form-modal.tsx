@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { X, Plus, Trash2 } from "lucide-react";
 import { DatePicker } from "@tua/ui";
 import { createFlight, updateFlight, type FlightFormInput } from "./actions";
+import { formatFlightNo, splitFlightNo } from "@/lib/flight-number";
 
 export interface StationOption {
   id: string;
@@ -52,7 +53,8 @@ interface LegDraft {
 const FLIGHT_STATUSES = ["RESERVED", "PLANNED", "LOADING", "FINALIZED", "DEPARTED", "ARRIVED", "CANCELLED"] as const;
 
 const emptyLeg: LegDraft = { fromStationId: "", toStationId: "", via: "", stdDep: "", staArr: "" };
-const inputClass = "h-11 w-full rounded-md border border-border bg-bg px-3 text-sm text-fg sm:h-9";
+const fieldBase = "h-11 rounded-md border border-border bg-bg px-3 text-sm text-fg sm:h-9";
+const inputClass = `${fieldBase} w-full`;
 const labelClass = "flex flex-col gap-1 text-xs font-medium text-fg-muted";
 
 export function FlightFormModal({
@@ -62,6 +64,7 @@ export function FlightFormModal({
   stations,
   aircraft,
   serviceTypes,
+  flightNumberPrefixes,
   editing,
 }: {
   open: boolean;
@@ -74,6 +77,10 @@ export function FlightFormModal({
    * so a value the operator actually uses ("CARGO") was filterable but not
    * enterable without retyping it exactly. */
   serviceTypes: string[];
+  /** Carrier codes already in the schedule, offered the way the filter
+   * offers them — see `flight-number.ts` for why both sides share one
+   * spelling. */
+  flightNumberPrefixes: string[];
   editing: EditingFlight | null;
 }) {
   const t = useTranslations("flights.form");
@@ -82,7 +89,13 @@ export function FlightFormModal({
   const tCommon = useTranslations("common");
   const locale = useLocale();
 
-  const [flightNo, setFlightNo] = useState(editing?.flightNo ?? "");
+  const initialFlightNo = splitFlightNo(editing?.flightNo ?? "");
+  const [flightNoPrefix, setFlightNoPrefix] = useState(initialFlightNo.prefix);
+  const [flightNoNumber, setFlightNoNumber] = useState(initialFlightNo.number);
+  const flightNo = formatFlightNo(flightNoPrefix, flightNoNumber);
+  // The flight being edited may carry a carrier code nobody else uses yet;
+  // dropping it from the list would silently rewrite the flight on save.
+  const prefixOptions = [...new Set([...flightNumberPrefixes, initialFlightNo.prefix].filter(Boolean))].sort();
   const [date, setDate] = useState(editing?.date ?? "");
   const [serviceType, setServiceType] = useState(editing?.serviceType ?? "");
   // A new flight starts with no aircraft. It used to default to whichever
@@ -203,7 +216,32 @@ export function FlightFormModal({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className={labelClass}>
               {t("flightNo")}
-              <input required value={flightNo} onChange={(e) => setFlightNo(e.target.value)} className={inputClass} />
+              {/* Carrier and number are separate here for the same reason
+                  they are separate in the filter: typed as one box, "T5-692"
+                  was a flight the list could not find. */}
+              <span className="flex w-full gap-2">
+                <select
+                  value={flightNoPrefix}
+                  onChange={(e) => setFlightNoPrefix(e.target.value)}
+                  aria-label={t("flightNumberPrefix")}
+                  className={`${fieldBase} w-24 shrink-0`}
+                >
+                  <option value="">{t("flightNumberPrefixEmpty")}</option>
+                  {prefixOptions.map((prefix) => (
+                    <option key={prefix} value={prefix}>
+                      {prefix}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  required
+                  value={flightNoNumber}
+                  onChange={(e) => setFlightNoNumber(e.target.value)}
+                  aria-label={t("flightNo")}
+                  inputMode="numeric"
+                  className={`${fieldBase} min-w-0 flex-1`}
+                />
+              </span>
             </label>
             <label className={labelClass}>
               {t("date")}

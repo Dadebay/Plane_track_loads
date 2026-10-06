@@ -1,5 +1,7 @@
 import { db } from "@tua/db";
+import { auth } from "@/auth";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
+import { todayInZone } from "@/lib/timezone";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { FlightsListView } from "./flights-list-view";
 
@@ -19,7 +21,15 @@ export default async function FlightsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const filters = parseFlightListFilters(sp);
+
+  // Signing in lands on today, the way the crew's own day starts — "today"
+  // in the controller's station zone, not the server's. Ashgabat is the
+  // operator's base, so it stands in for an account with no station.
+  const session = await auth();
+  const station = session?.user?.stationId
+    ? await db.station.findUnique({ where: { id: session.user.stationId }, select: { timezone: true } })
+    : null;
+  const filters = parseFlightListFilters(sp, todayInZone(station?.timezone ?? "Asia/Ashgabat"));
 
   const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet] = await Promise.all([
     queryFlightLegs(filters),

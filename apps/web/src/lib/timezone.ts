@@ -74,3 +74,14 @@ export function utcToZonedTimeString(date: Date, timeZone: string): string {
   const hour = parts.hour === "24" ? "00" : parts.hour;
   return `${parts.year}-${parts.month}-${parts.day}T${hour}:${parts.minute}`;
 }
+
+/**
+ * Today's date in a station's own zone, as "YYYY-MM-DD".
+ *
+ * The flight list opens on today, and "today" for a ramp crew is the date
+ * on their own wall — reading it off the server's UTC clock would move the
+ * list onto yesterday for the first five hours of every Ashgabat morning.
+ */
+export function todayInZone(timeZone: string, now: Date = new Date()): string {
+  return utcToZonedTimeString(now, timeZone).slice(0, 10);
+}

@@ -139,6 +139,8 @@
     },
     "form": {
       "flightNo": "Gatnaw belgisi",
+      "flightNumberPrefix": "Howa ýolunyň kody",
+      "flightNumberPrefixEmpty": "--",
       "date": "Sene",
       "serviceType": "Hyzmat görnüşi",
       "aircraft": "Uçar",

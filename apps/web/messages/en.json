@@ -147,6 +147,8 @@
     },
     "form": {
       "flightNo": "Flight number",
+      "flightNumberPrefix": "Carrier code",
+      "flightNumberPrefixEmpty": "--",
       "date": "Date",
       "serviceType": "Service type",
       "aircraft": "Aircraft",

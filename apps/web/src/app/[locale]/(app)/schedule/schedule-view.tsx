@@ -250,6 +250,7 @@ export function ScheduleView({
           the flight's own values in it. */}
       {modalOpen ? (
         <FlightFormModal
+          flightNumberPrefixes={flightNumberPrefixes}
           key={editing?.id ?? "new"}
           open
           onClose={() => setModalOpen(false)}
