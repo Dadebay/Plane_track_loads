@@ -3,21 +3,25 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import { CalendarDays, FileText, PanelLeftClose, PanelLeftOpen, Package, Plane, Settings } from "lucide-react";
+import { CalendarDays, FileText, PanelLeftClose, PanelLeftOpen, Package, Plane, Settings, Users } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { UserMenu } from "./user-menu";
 import { cn } from "@tua/ui";
 
-type NavKey = "flightSelection" | "flightSchedule" | "flightDocument" | "uldStock" | "admin";
+type NavKey = "flightSelection" | "flightSchedule" | "flightDocument" | "uldStock" | "admin" | "users";
 
 const NAV_ITEMS: { key: NavKey; href: string; Icon: typeof Plane }[] = [
   { key: "flightSelection", href: "/flights", Icon: Plane },
   { key: "flightSchedule", href: "/schedule", Icon: CalendarDays },
   { key: "flightDocument", href: "/documents", Icon: FileText },
-  { key: "uldStock", href: "/uld", Icon: Package },
 ];
 
+/** ULD stock sits here rather than above because the operator keeps the
+ * containers under central control; `middleware.ts` enforces both prefixes,
+ * since a hidden link is a tidier menu, not a permission. */
 const ADMIN_NAV_ITEMS: { key: NavKey; href: string; Icon: typeof Plane }[] = [
+  { key: "uldStock", href: "/uld", Icon: Package },
+  { key: "users", href: "/admin/users", Icon: Users },
   { key: "admin", href: "/admin/ahm", Icon: Settings },
 ];
 

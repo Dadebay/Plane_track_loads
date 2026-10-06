@@ -13,9 +13,13 @@ const intlMiddleware = createMiddleware(routing);
 const PUBLIC_PATHS = ["/login"];
 
 // Route prefixes that require a specific role beyond "authenticated" —
-// AHM master data admin (Faz 5) is ADMIN-only.
+// AHM master data and user administration are ADMIN-only, and so is the ULD
+// stock: the operator wants the containers managed centrally rather than by
+// whoever is on the ramp. Hiding the nav entry is not enough on its own, so
+// the route itself is checked here.
 const ROLE_PROTECTED_PREFIXES: { prefix: string; role: "ADMIN" }[] = [
   { prefix: "/admin", role: "ADMIN" },
+  { prefix: "/uld", role: "ADMIN" },
 ];
 
 function stripLocale(pathname: string): string {
