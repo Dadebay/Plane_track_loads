@@ -1,5 +1,7 @@
 import { db } from "@tua/db";
+import { auth } from "@/auth";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
+import { canEditSchedule, stationScopeOf } from "@/lib/station-scope";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { utcToZonedTimeString } from "@/lib/timezone";
 import { ScheduleView, type EditableFlight } from "./schedule-view";
@@ -21,11 +23,13 @@ export default async function SchedulePage({
 }) {
   const sp = await searchParams;
   const filters = parseFlightListFilters(sp);
+  const session = await auth();
+  const scope = stationScopeOf(session?.user);
 
   // The schedule lists the same legs as Flight selection, through the same
   // query, so a filter means the same thing on both screens.
   const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet] = await Promise.all([
-    queryFlightLegs(filters),
+    queryFlightLegs(filters, scope.departureStationId),
     db.station.findMany({ orderBy: { iata: "asc" } }),
     db.flight.findMany({ distinct: ["serviceType"], select: { serviceType: true }, orderBy: { serviceType: "asc" } }),
     db.flight.findMany({ distinct: ["flightNo"], select: { flightNo: true }, orderBy: { flightNo: "asc" } }),
@@ -69,6 +73,7 @@ export default async function SchedulePage({
 
   return (
     <ScheduleView
+      canEdit={canEditSchedule(scope)}
       rows={rows}
       total={total}
       filters={filters}

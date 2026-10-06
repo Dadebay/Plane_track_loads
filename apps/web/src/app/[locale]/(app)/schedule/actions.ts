@@ -6,6 +6,7 @@ import { db, Prisma } from "@tua/db";
 import { auth } from "@/auth";
 import { findAircraftConflicts } from "@/lib/aircraft-conflict";
 import { normalizeFlightNo } from "@/lib/flight-number";
+import { canEditSchedule, stationScopeOf } from "@/lib/station-scope";
 import { formatDateTimeInZone as formatDateTime } from "@/lib/format-date";
 import { zonedTimeToUtc } from "@/lib/timezone";
 
@@ -159,6 +160,9 @@ async function writeAudit(
 export async function createFlight(input: FlightFormInput): Promise<FlightActionResult> {
   const session = await auth();
   if (!session?.user) return { ok: false, error: "unauthorized" };
+  // Hiding the button is tidiness; this is the rule. A station account works
+  // the flights it is given and does not file them (`station-scope.ts`).
+  if (!canEditSchedule(stationScopeOf(session.user))) return { ok: false, error: "forbidden" };
 
   const parsed = flightSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "validation" };
@@ -204,6 +208,9 @@ export async function createFlight(input: FlightFormInput): Promise<FlightAction
 export async function updateFlight(flightId: string, input: FlightFormInput): Promise<FlightActionResult> {
   const session = await auth();
   if (!session?.user) return { ok: false, error: "unauthorized" };
+  // Hiding the button is tidiness; this is the rule. A station account works
+  // the flights it is given and does not file them (`station-scope.ts`).
+  if (!canEditSchedule(stationScopeOf(session.user))) return { ok: false, error: "forbidden" };
 
   const parsed = flightSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "validation" };

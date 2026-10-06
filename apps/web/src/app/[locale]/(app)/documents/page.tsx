@@ -3,6 +3,8 @@ import { documentExists } from "@/lib/document-storage";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { DocumentsView, type LegDocuments } from "./documents-view";
+import { auth } from "@/auth";
+import { stationScopeOf } from "@/lib/station-scope";
 
 /**
  * Rendered per request, never at build time: this page reads live
@@ -21,11 +23,13 @@ export default async function DocumentsPage({
 }) {
   const sp = await searchParams;
   const filters = parseFlightListFilters(sp);
+  const session = await auth();
+  const scope = stationScopeOf(session?.user);
 
   // The document page lists the same legs as Flight selection, through the
   // same query, so a filter means the same thing on every screen.
   const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet, users] = await Promise.all([
-    queryFlightLegs(filters),
+    queryFlightLegs(filters, scope.departureStationId),
     db.station.findMany({ orderBy: { iata: "asc" } }),
     db.flight.findMany({ distinct: ["serviceType"], select: { serviceType: true }, orderBy: { serviceType: "asc" } }),
     db.flight.findMany({ distinct: ["flightNo"], select: { flightNo: true }, orderBy: { flightNo: "asc" } }),

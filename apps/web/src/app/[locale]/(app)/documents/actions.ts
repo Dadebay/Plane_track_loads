@@ -30,6 +30,7 @@ import { getLoadPlanAhmData, resolveAhmDocumentForAircraft } from "@/lib/load-pl
 import { resolvePositions, type DraftLoadItem, type LoadPlanAhmData } from "@/lib/load-plan-calc";
 import { storeDocument } from "@/lib/document-storage";
 import { formatDateTimePartsInZone } from "@/lib/format-date";
+import { canWorkDeparture, stationScopeOf } from "@/lib/station-scope";
 
 const generateLirSchema = z.object({
   legId: z.string().min(1),
@@ -178,6 +179,11 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
     },
   });
   if (!leg) return { ok: false, error: "notFound" };
+  // The station that loads the aircraft is the station that signs for it
+  // (`station-scope.ts`).
+  if (!canWorkDeparture(stationScopeOf(session.user), leg.fromStationId)) {
+    return { ok: false, error: "otherStation" };
+  }
 
   const loadPlan = leg.loadPlans[0];
   if (!loadPlan || loadPlan.status !== "FINALIZED") {
@@ -285,6 +291,11 @@ export async function generateLoadsheet(
     },
   });
   if (!leg) return { ok: false, error: "notFound" };
+  // The station that loads the aircraft is the station that signs for it
+  // (`station-scope.ts`).
+  if (!canWorkDeparture(stationScopeOf(session.user), leg.fromStationId)) {
+    return { ok: false, error: "otherStation" };
+  }
 
   const loadPlan = leg.loadPlans[0];
   if (!loadPlan || loadPlan.status !== "FINALIZED") {
@@ -463,6 +474,11 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
     },
   });
   if (!leg) return { ok: false, error: "notFound" };
+  // The station that loads the aircraft is the station that signs for it
+  // (`station-scope.ts`).
+  if (!canWorkDeparture(stationScopeOf(session.user), leg.fromStationId)) {
+    return { ok: false, error: "otherStation" };
+  }
 
   const loadPlan = leg.loadPlans[0];
   if (!loadPlan || loadPlan.status !== "FINALIZED") {
@@ -588,6 +604,11 @@ export async function generateEdp(input: z.infer<typeof generateEdpSchema>): Pro
     },
   });
   if (!leg) return { ok: false, error: "notFound" };
+  // The station that loads the aircraft is the station that signs for it
+  // (`station-scope.ts`).
+  if (!canWorkDeparture(stationScopeOf(session.user), leg.fromStationId)) {
+    return { ok: false, error: "otherStation" };
+  }
 
   const loadPlan = leg.loadPlans[0];
   if (!loadPlan || loadPlan.status !== "FINALIZED") {

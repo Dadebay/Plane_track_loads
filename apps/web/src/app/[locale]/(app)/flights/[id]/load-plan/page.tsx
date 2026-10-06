@@ -5,6 +5,8 @@ import { formatDateTimeInZone } from "@/lib/format-date";
 import { DEFAULT_TAXI_FUEL } from "@/lib/fuel-block";
 import type { LoadDraftInit } from "./load-draft-store";
 import { LoadPlanShell } from "./load-plan-shell";
+import { auth } from "@/auth";
+import { canWorkDeparture, stationScopeOf } from "@/lib/station-scope";
 
 /**
  * Rendered per request, never at build time: this page reads live
@@ -30,6 +32,11 @@ export default async function LoadPlanPage({ params }: { params: Promise<{ id: s
     },
   });
   if (!leg) notFound();
+
+  // A leg another station dispatches is not this account's work, and a page
+  // that renders it would invite a plan the server would then refuse.
+  const session = await auth();
+  if (!canWorkDeparture(stationScopeOf(session?.user), leg.fromStationId)) notFound();
 
   const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef, leg.flight.aircraft.registration);
 

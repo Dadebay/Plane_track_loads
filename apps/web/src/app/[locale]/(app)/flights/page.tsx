@@ -1,6 +1,7 @@
 import { db } from "@tua/db";
 import { auth } from "@/auth";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
+import { stationScopeOf } from "@/lib/station-scope";
 import { todayInZone } from "@/lib/timezone";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { FlightsListView } from "./flights-list-view";
@@ -30,9 +31,10 @@ export default async function FlightsPage({
     ? await db.station.findUnique({ where: { id: session.user.stationId }, select: { timezone: true } })
     : null;
   const filters = parseFlightListFilters(sp, todayInZone(station?.timezone ?? "Asia/Ashgabat"));
+  const scope = stationScopeOf(session?.user);
 
   const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet] = await Promise.all([
-    queryFlightLegs(filters),
+    queryFlightLegs(filters, scope.departureStationId),
     db.station.findMany({ orderBy: { iata: "asc" } }),
     db.flight.findMany({ distinct: ["serviceType"], select: { serviceType: true }, orderBy: { serviceType: "asc" } }),
     db.flight.findMany({ distinct: ["flightNo"], select: { flightNo: true }, orderBy: { flightNo: "asc" } }),

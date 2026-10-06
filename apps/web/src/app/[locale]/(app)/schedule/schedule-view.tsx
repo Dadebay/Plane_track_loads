@@ -24,6 +24,7 @@ function isoWeekday(date: Date, timeZone: string): number {
 }
 
 export function ScheduleView({
+  canEdit,
   rows,
   total,
   filters,
@@ -34,6 +35,9 @@ export function ScheduleView({
   flightNumberPrefixes,
   registrations,
 }: {
+  /** Filing and editing the schedule is the administrator's job; a station
+   * works the flights it is given (see `station-scope.ts`). */
+  canEdit: boolean;
   rows: FlightLegRow[];
   total: number;
   filters: FlightListFilters;
@@ -137,14 +141,14 @@ export function ScheduleView({
           <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             <button
               type="button"
-              disabled={!active}
+              disabled={!active || !canEdit}
               onClick={() => {
-                if (!editable) return;
+                if (!editable || !canEdit) return;
                 setEditing(editable);
                 setModalOpen(true);
               }}
               aria-label={t("editFlight")}
-              title={active ? t("editFlight") : t("selectRowFirst")}
+              title={!canEdit ? t("scheduleReadOnly") : active ? t("editFlight") : t("selectRowFirst")}
               className="inline-flex h-9 w-9 items-center justify-center rounded-md border text-fg-on-brand disabled:cursor-not-allowed disabled:border-border disabled:bg-transparent disabled:text-fg-subtle disabled:opacity-40 border-info bg-info"
             >
               <Pencil className="h-4 w-4" aria-hidden="true" />
@@ -187,17 +191,22 @@ export function ScheduleView({
               <FileDown className="h-4 w-4" aria-hidden="true" />
               {t("exportPdf")}
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                setEditing(null);
-                setModalOpen(true);
-              }}
-              className="inline-flex h-9 items-center gap-1.5 rounded-md bg-brand-500 px-3 text-sm font-medium text-fg-on-brand"
-            >
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              {t("addFlight")}
-            </button>
+            {/* A station works the flights it is given; filing them is the
+                administrator's job, so the button is not offered rather than
+                offered and refused (`station-scope.ts`). */}
+            {canEdit ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditing(null);
+                  setModalOpen(true);
+                }}
+                className="inline-flex h-9 items-center gap-1.5 rounded-md bg-brand-500 px-3 text-sm font-medium text-fg-on-brand"
+              >
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                {t("addFlight")}
+              </button>
+            ) : null}
           </>
         }
       />

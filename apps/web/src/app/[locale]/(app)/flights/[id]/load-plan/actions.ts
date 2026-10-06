@@ -23,6 +23,7 @@ import {
   type UldEligibility,
   type Violation,
 } from "@/lib/load-plan-contract";
+import { canWorkDeparture, stationScopeOf } from "@/lib/station-scope";
 
 export type SaveLoadPlanInput = SaveLoadPlanPayload;
 
@@ -81,6 +82,11 @@ export async function saveLoadPlan(input: SaveLoadPlanInput): Promise<SaveLoadPl
     include: { flight: { include: { aircraft: true } } },
   });
   if (!leg) return { ok: false, error: "notFound" };
+  // A station loads its own departures (`station-scope.ts`). Checked on the
+  // leg itself, not on what the browser sent.
+  if (!canWorkDeparture(stationScopeOf(session.user), leg.fromStationId)) {
+    return { ok: false, error: "otherStation" };
+  }
 
   const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef, leg.flight.aircraft.registration);
 
@@ -275,6 +281,9 @@ export async function offloadLoadItem(input: { loadItemId: string; reason: strin
     include: { loadPlan: { include: { leg: true } } },
   });
   if (!item) return { ok: false, error: "notFound" };
+  if (!canWorkDeparture(stationScopeOf(session.user), item.loadPlan.leg.fromStationId)) {
+    return { ok: false, error: "otherStation" };
+  }
   if (item.offloadedAt !== null) return { ok: false, error: "alreadyOffloaded" };
   if (item.loadPlan.status === "FINALIZED") return { ok: false, error: "planFinalized" };
 

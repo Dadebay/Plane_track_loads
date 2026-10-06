@@ -83,8 +83,18 @@ export type FlightLegRow = Prisma.FlightLegGetPayload<{
   include: { flight: { include: { aircraft: true } }; fromStation: true; toStation: true };
 }>;
 
-export async function queryFlightLegs(filters: FlightListFilters): Promise<{ rows: FlightLegRow[]; total: number }> {
+/**
+ * `departureStationId` is the account's own station, not a filter the user
+ * typed: an outstation sees the flights it dispatches and not the rest of
+ * the network (see `station-scope.ts`). It is applied on top of the filters
+ * rather than through them, so clearing the filters cannot widen it.
+ */
+export async function queryFlightLegs(
+  filters: FlightListFilters,
+  departureStationId?: string | null,
+): Promise<{ rows: FlightLegRow[]; total: number }> {
   const where: Prisma.FlightLegWhereInput = {
+    ...(departureStationId ? { fromStationId: departureStationId } : {}),
     ...(filters.from ? { fromStation: { iata: { equals: filters.from, mode: "insensitive" } } } : {}),
     ...(filters.via ? { via: { contains: filters.via, mode: "insensitive" } } : {}),
     ...(filters.to ? { toStation: { iata: { equals: filters.to, mode: "insensitive" } } } : {}),

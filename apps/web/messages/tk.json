@@ -29,7 +29,9 @@
         "loadPlanNotFinalized": "Bu gatnawyň ýük meýilnamasy entek tamamlanmady",
         "preparedEqualsChecked": "Taýýarlaýan we barlaýan üýtgeşik adamlar bolmaly",
         "notFound": "Tapylmady",
-        "validation": "Meýdançalary barlaň"
+        "validation": "Meýdançalary barlaň",
+        "otherStation": "Bu gatnaw başga stansiýadan uçýar",
+        "unauthorized": "Girilmedi"
       }
     },
     "list": {
@@ -174,7 +176,8 @@
       "editFlight": "Gatnawy üýtget",
       "exportPdf": "PDF",
       "deleteUnavailable": "Ýük meýilnamasy bolan gatnaw pozulyp bilinmeýär — ýatyryň.",
-      "selectRowFirst": "Ilki gatnawy saýlaň"
+      "selectRowFirst": "Ilki gatnawy saýlaň",
+      "scheduleReadOnly": "Gatnawlary diňe administrator girizip bilýär"
     },
     "status": {
       "reserved": "Bellenen",

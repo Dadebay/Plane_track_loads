@@ -29,7 +29,9 @@
         "loadPlanNotFinalized": "This flight's load plan isn't finalized yet",
         "preparedEqualsChecked": "Prepared by and checked by must be different people",
         "notFound": "Not found",
-        "validation": "Check the fields"
+        "validation": "Check the fields",
+        "otherStation": "This flight departs from another station",
+        "unauthorized": "Not signed in"
       }
     },
     "list": {
@@ -143,7 +145,8 @@
       "editFlight": "Edit Flight",
       "exportPdf": "PDF",
       "deleteUnavailable": "A flight with load plans cannot be deleted — cancel it instead.",
-      "selectRowFirst": "Select the flight first"
+      "selectRowFirst": "Select the flight first",
+      "scheduleReadOnly": "Only an administrator can file flights"
     },
     "form": {
       "flightNo": "Flight number",

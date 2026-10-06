@@ -29,7 +29,9 @@
         "loadPlanNotFinalized": "Загрузочный план этого рейса ещё не завершён",
         "preparedEqualsChecked": "Подготовивший и проверивший должны быть разными людьми",
         "notFound": "Не найдено",
-        "validation": "Проверьте поля"
+        "validation": "Проверьте поля",
+        "otherStation": "Этот рейс вылетает с другой станции",
+        "unauthorized": "Вход не выполнен"
       }
     },
     "list": {
@@ -143,7 +145,8 @@
       "editFlight": "Изменить рейс",
       "exportPdf": "PDF",
       "deleteUnavailable": "Рейс с планами загрузки нельзя удалить — отмените его.",
-      "selectRowFirst": "Сначала выберите рейс"
+      "selectRowFirst": "Сначала выберите рейс",
+      "scheduleReadOnly": "Вносить рейсы может только администратор"
     },
     "form": {
       "flightNo": "Номер рейса",
