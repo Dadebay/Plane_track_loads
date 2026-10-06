@@ -153,6 +153,36 @@ madde.
 
 ---
 
+## Kayıt 6b — 06/10/2026: kart yöntemi de operatörün indeksini üretmiyor
+
+**Soru:** Bulgu #7'nin LIZFW farkı, operatörün sisteminin `positions.json`'daki
+kg başına indeks yerine basılı **CARGO LOADING INDEX TABLE** kartını okumasından
+mı geliyor?
+
+**Deneme:** T5 692 / 06/10/2026 (ASB, EZ-F430, ekip 2/4, 33 kalem, TTL 41 829).
+Operatörün sayfası DOI 77,50 ile yük indeksi olarak **+44,17** gerektiriyor;
+motorun kg başına hesabı **+42,37** veriyor (sayfadaki LIZFW 119,87 ile birebir).
+
+| Yöntem | Sonuç |
+|---|---|
+| kg başına indeks (motorun bugünkü yolu) | **42,37** |
+| Kart, bölgeler H-arm'dan türetilerek | 40 |
+| Kart, köprü pozisyonları 50/50 bölünerek | 31 |
+| LMC tablosunun 100 kg katsayıları | 37,55 |
+
+Üç alternatifin üçü de operatörün değerinden **daha uzak**. Yani fark yöntem
+farkı değil: kart okunarak 44,17 çıkmıyor.
+
+**Kalan tek açıklama:** operatörün loadsheet'i `AHM 560 ED 1 REV 2` diyor, bizde
+Rev.2'nin yalnızca **s.6 DOW/DOI sayfası** var (bu yüzden DOW 111 124 ve DOI
+77,50 birebir tutuyor). `positions.json` Rev.0'dan devralındı ve Rev.2'ye karşı
+doğrulanmadı — bkz. `packages/ahm-data/data/a330-243p2f/ed1-rev2/PROVENANCE.md`.
+
+**Gereken belge:** AHM 560 **Edition 1 Revision 2**'nin pozisyon indeks
+sayfaları (Rev.0'daki s.57–67 Sheet 14 §10 karşılığı). Operatörün 06/10/2026'da
+paylaştığı ekran görüntüleri Rev.**0** (başlık: "Revision 0", yürürlük
+15.03.2023) — o sürümün kartı bizde zaten hücre hücre doğrulanmış durumda.
+
 ## Kayıt 7 — AHM 560 Ed.1 **Rev.2** (10.06.2025) temin edildi: Kayıt 6 / Bulgu #2'nin DOW/DOI ayağı kapandı
 
 **Bulunan:** Operasyondan gelen fotoğrafta AHM 560'ın **Edition 1, Revision 2** damgalı
