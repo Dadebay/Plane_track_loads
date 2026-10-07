@@ -27,7 +27,12 @@ faz tablosuna bak ve tamamlanmış kabul kriterlerinden çıkar.
 5. **Üretilen belgeler değişmez.** Değişiklik = yeni edition (ED01 → ED02).
    `WnbCalculation` ve `Document` tabloları sadece INSERT kabul eder.
 6. **Her hesap fonksiyonu kaynağını belirtir:** `// AHM 560 s.16 §3.4`
-7. **`prepared_by ≠ checked_by`** — sistem zorunlu kılar (DB constraint).
+7. **`prepared_by ≠ checked_by`** — DB constraint. **2026-10-07'de daraldı:**
+   operatörün süreci belgeye tek hesap yazıyor — CHECKED kutusunda uçuşu işleyen
+   hesabın adı (yük planından otomatik), APPROVED kutusunda ise elle yazılan bir
+   isim (`approvedByName`, çoğu zaman sistemde hesabı olmayan biri). `checked_by`
+   artık boş bırakılabilir; **dolu olduğunda** kural aynen geçerli, veritabanı
+   `prepared_by = checked_by` olmasını hâlâ reddediyor.
 8. **Filigran anahtarı `DOCUMENTS_WATERMARK` ile kontrol edilir.**
    Kural ilk yazıldığında varsayılan `true` idi (validasyon bitene kadar her
    PDF'te `NOT FOR OPERATIONAL USE`). **2026-09-11'de operatör filigranı

@@ -472,10 +472,25 @@ model Document {
   legId String
   leg   FlightLeg @relation(fields: [legId], references: [id])
 
+  /// The account that worked the flight, read off the load plan. Printed in
+  /// the sheet's CHECKED box, which is where the operator's own system puts
+  /// the signed-in controller.
   preparedById String
   preparedBy   User    @relation("DocumentPreparedBy", fields: [preparedById], references: [id])
-  checkedById  String
-  checkedBy    User    @relation("DocumentCheckedBy", fields: [checkedById], references: [id])
+
+  /// A second account that checked the plan, when the operator works that
+  /// way. Nullable since 07/10/2026: the approver on their sheets is typed
+  /// by hand (`approvedByName`) and often has no account at all — a flight
+  /// engineer or the duty officer. Where it is set, rule #7 still holds and
+  /// the database still refuses prepared_by = checked_by.
+  checkedById  String?
+  checkedBy    User?   @relation("DocumentCheckedBy", fields: [checkedById], references: [id])
+
+  /// Typed into the generate dialog and printed in the APPROVED box. Free
+  /// text on purpose: the person who approves the sheet is named on paper,
+  /// not picked from the user list.
+  approvedByName String?
+
   approvedById String?
   approvedBy   User?   @relation("DocumentApprovedBy", fields: [approvedById], references: [id])
 

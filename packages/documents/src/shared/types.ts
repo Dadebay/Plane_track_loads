@@ -19,8 +19,12 @@ export interface DocumentHeader {
   registration: string;
   /** e.g. "01" for ED01. */
   editionNo: string;
+  /** The account that worked the flight. */
   preparedBy: string;
-  checkedBy: string;
+  /** Typed by whoever produced the sheet — the operator names their approver
+   * on paper rather than picking an account (07/10/2026). May be empty, and
+   * then the box is left blank for a signature. */
+  approvedBy: string;
 }
 
 export interface DocumentDeckCell {

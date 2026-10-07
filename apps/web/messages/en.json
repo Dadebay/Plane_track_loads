@@ -19,7 +19,8 @@
       "title": "Generate document",
       "documentType": "Document type",
       "leg": "Flight",
-      "checkedBy": "Checked by",
+      "approvedBy": "Approved by",
+      "approvedByHint": "Typed by hand and printed in the APPROVED box. The CHECKED box carries the controller who worked the flight.",
       "specialInformation": "SI (Special Information)",
       "generate": "Generate",
       "generating": "Generating…",
@@ -27,7 +28,6 @@
       "noFinalizedPlans": "No flights with a finalized load plan",
       "errors": {
         "loadPlanNotFinalized": "This flight's load plan isn't finalized yet",
-        "preparedEqualsChecked": "Prepared by and checked by must be different people",
         "notFound": "Not found",
         "validation": "Check the fields",
         "otherStation": "This flight departs from another station",

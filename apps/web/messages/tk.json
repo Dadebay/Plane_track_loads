@@ -19,7 +19,8 @@
       "title": "Belge döret",
       "documentType": "Belgäniň görnüşi",
       "leg": "Gatnaw",
-      "checkedBy": "Barlan",
+      "approvedBy": "Tassyklan",
+      "approvedByHint": "El bilen ýazylýar we APPROVED öýjüginde çap edilýär. CHECKED öýjüginde gatnawy işlän kontrolýor durýar.",
       "specialInformation": "SI (Ýörite maglumat)",
       "generate": "Döret",
       "generating": "Döredilýär…",
@@ -27,7 +28,6 @@
       "noFinalizedPlans": "Tamamlanan ýük meýilnamasy bolan gatnaw ýok",
       "errors": {
         "loadPlanNotFinalized": "Bu gatnawyň ýük meýilnamasy entek tamamlanmady",
-        "preparedEqualsChecked": "Taýýarlaýan we barlaýan üýtgeşik adamlar bolmaly",
         "notFound": "Tapylmady",
         "validation": "Meýdançalary barlaň",
         "otherStation": "Bu gatnaw başga stansiýadan uçýar",

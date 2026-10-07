@@ -34,7 +34,9 @@ import { canWorkDeparture, stationScopeOf } from "@/lib/station-scope";
 
 const generateLirSchema = z.object({
   legId: z.string().min(1),
-  checkedById: z.string().min(1),
+  /** Typed by hand — the operator names the approver on paper rather than
+   * picking an account, and that person often has none (07/10/2026). */
+  approvedByName: z.string().trim().max(60).optional(),
   specialInformation: z.string().optional(),
 });
 
@@ -161,9 +163,6 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
   if (!parsed.success) return { ok: false, error: "validation" };
   const data = parsed.data;
 
-  const checker = await db.user.findUnique({ where: { id: data.checkedById } });
-  if (!checker) return { ok: false, error: "notFound" };
-
   const leg = await db.flightLeg.findUnique({
     where: { id: data.legId },
     include: {
@@ -190,14 +189,6 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
   const preparer = await db.user.findUnique({ where: { id: loadPlan.createdById } });
   if (!preparer) return { ok: false, error: "notFound" };
 
-  // CLAUDE.md rule #7 — prepared_by <> checked_by, enforced here (a clear
-  // error before the DB CHECK constraint) and by the database itself. It is
-  // the preparer who must differ from the checker, so the comparison waits
-  // until the preparer is known.
-  if (data.checkedById === preparer.id) {
-    return { ok: false, error: "preparedEqualsChecked" };
-  }
-
   const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef);
   const draftItems = loadPlan.loadItems.map((li) => ({
     position: li.position,
@@ -220,7 +211,7 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
     registration: leg.flight.aircraft.registration,
     editionNo: String(edition).padStart(2, "0"),
     preparedBy: preparer.name,
-    checkedBy: checker.name,
+    approvedBy: data.approvedByName ?? "",
   };
 
   const pdfBuffer = await renderLirPdf({
@@ -248,7 +239,7 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
       sha256: stored.sha256,
       legId: data.legId,
       preparedById: preparer.id,
-      checkedById: data.checkedById,
+      approvedByName: data.approvedByName || null,
     },
   });
 
@@ -265,7 +256,9 @@ export async function generateLir(input: z.infer<typeof generateLirSchema>): Pro
 
 const generateLoadsheetSchema = z.object({
   legId: z.string().min(1),
-  checkedById: z.string().min(1),
+  /** Typed by hand — the operator names the approver on paper rather than
+   * picking an account, and that person often has none (07/10/2026). */
+  approvedByName: z.string().trim().max(60).optional(),
   specialInformation: z.string().optional(),
 });
 
@@ -278,9 +271,6 @@ export async function generateLoadsheet(
   const parsed = generateLoadsheetSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "validation" };
   const data = parsed.data;
-
-  const checker = await db.user.findUnique({ where: { id: data.checkedById } });
-  if (!checker) return { ok: false, error: "notFound" };
 
   const leg = await db.flightLeg.findUnique({
     where: { id: data.legId },
@@ -309,14 +299,6 @@ export async function generateLoadsheet(
   // not the work, and across a shift handover the two are different people.
   const preparer = await db.user.findUnique({ where: { id: loadPlan.createdById } });
   if (!preparer) return { ok: false, error: "notFound" };
-
-  // CLAUDE.md rule #7 — prepared_by <> checked_by, enforced here (a clear
-  // error before the DB CHECK constraint) and by the database itself. It is
-  // the preparer who must differ from the checker, so the comparison waits
-  // until the preparer is known.
-  if (data.checkedById === preparer.id) {
-    return { ok: false, error: "preparedEqualsChecked" };
-  }
   if (!leg.fuelRecord) return { ok: false, error: "notFound" };
   if (loadPlan.cockpitCrew === null || loadPlan.courierCrew === null) {
     return { ok: false, error: "notFound" };
@@ -363,7 +345,7 @@ export async function generateLoadsheet(
       registration: leg.flight.aircraft.registration,
       editionNo: String(edition).padStart(2, "0"),
       preparedBy: preparer.name,
-      checkedBy: checker.name,
+      approvedBy: data.approvedByName ?? "",
     },
     destination: leg.toStation.iata,
     time: departure.time,
@@ -443,7 +425,7 @@ export async function generateLoadsheet(
       sha256: stored.sha256,
       legId: data.legId,
       preparedById: preparer.id,
-      checkedById: data.checkedById,
+      approvedByName: data.approvedByName || null,
     },
   });
 
@@ -460,7 +442,9 @@ export async function generateLoadsheet(
 
 const generateEnvSchema = z.object({
   legId: z.string().min(1),
-  checkedById: z.string().min(1),
+  /** Typed by hand — the operator names the approver on paper rather than
+   * picking an account, and that person often has none (07/10/2026). */
+  approvedByName: z.string().trim().max(60).optional(),
   specialInformation: z.string().optional(),
 });
 
@@ -471,9 +455,6 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
   const parsed = generateEnvSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "validation" };
   const data = parsed.data;
-
-  const checker = await db.user.findUnique({ where: { id: data.checkedById } });
-  if (!checker) return { ok: false, error: "notFound" };
 
   const leg = await db.flightLeg.findUnique({
     where: { id: data.legId },
@@ -500,14 +481,6 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
   // not the work, and across a shift handover the two are different people.
   const preparer = await db.user.findUnique({ where: { id: loadPlan.createdById } });
   if (!preparer) return { ok: false, error: "notFound" };
-
-  // CLAUDE.md rule #7 — prepared_by <> checked_by, enforced here (a clear
-  // error before the DB CHECK constraint) and by the database itself. It is
-  // the preparer who must differ from the checker, so the comparison waits
-  // until the preparer is known.
-  if (data.checkedById === preparer.id) {
-    return { ok: false, error: "preparedEqualsChecked" };
-  }
 
   const wnbCalculation = await db.wnbCalculation.findFirst({
     where: { legId: data.legId, edition: loadPlan.version },
@@ -536,7 +509,7 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
       registration: leg.flight.aircraft.registration,
       editionNo: String(edition).padStart(2, "0"),
       preparedBy: preparer.name,
-      checkedBy: checker.name,
+      approvedBy: data.approvedByName ?? "",
     },
 
     zfwLimits: ahmData.cgLimits.zfw,
@@ -574,7 +547,7 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
       sha256: stored.sha256,
       legId: data.legId,
       preparedById: preparer.id,
-      checkedById: data.checkedById,
+      approvedByName: data.approvedByName || null,
     },
   });
 
@@ -591,7 +564,9 @@ export async function generateEnv(input: z.infer<typeof generateEnvSchema>): Pro
 
 const generateEdpSchema = z.object({
   legId: z.string().min(1),
-  checkedById: z.string().min(1),
+  /** Typed by hand — the operator names the approver on paper rather than
+   * picking an account, and that person often has none (07/10/2026). */
+  approvedByName: z.string().trim().max(60).optional(),
   specialInformation: z.string().optional(),
 });
 
@@ -609,9 +584,6 @@ export async function generateEdp(input: z.infer<typeof generateEdpSchema>): Pro
   const parsed = generateEdpSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "validation" };
   const data = parsed.data;
-
-  const checker = await db.user.findUnique({ where: { id: data.checkedById } });
-  if (!checker) return { ok: false, error: "notFound" };
 
   const leg = await db.flightLeg.findUnique({
     where: { id: data.legId },
@@ -640,14 +612,6 @@ export async function generateEdp(input: z.infer<typeof generateEdpSchema>): Pro
   const preparer = await db.user.findUnique({ where: { id: loadPlan.createdById } });
   if (!preparer) return { ok: false, error: "notFound" };
 
-  // CLAUDE.md rule #7 — prepared_by <> checked_by, enforced here (a clear
-  // error before the DB CHECK constraint) and by the database itself. It is
-  // the preparer who must differ from the checker, so the comparison waits
-  // until the preparer is known.
-  if (data.checkedById === preparer.id) {
-    return { ok: false, error: "preparedEqualsChecked" };
-  }
-
   const ahmData = await getLoadPlanAhmData(leg.flight.aircraft.ahmDataRef);
   const draftItems = loadPlan.loadItems.map((li) => ({
     position: li.position,
@@ -673,7 +637,7 @@ export async function generateEdp(input: z.infer<typeof generateEdpSchema>): Pro
       registration: leg.flight.aircraft.registration,
       editionNo: String(edition).padStart(2, "0"),
       preparedBy: preparer.name,
-      checkedBy: checker.name,
+      approvedBy: data.approvedByName ?? "",
     },
     // Scheduled departure in the departure station's own zone: the ramp
     // reads this sheet at that station, where local time is the only time.
@@ -700,7 +664,7 @@ export async function generateEdp(input: z.infer<typeof generateEdpSchema>): Pro
       sha256: stored.sha256,
       legId: data.legId,
       preparedById: preparer.id,
-      checkedById: data.checkedById,
+      approvedByName: data.approvedByName || null,
     },
   });
 

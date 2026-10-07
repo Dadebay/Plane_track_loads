@@ -216,7 +216,7 @@ function Masthead({ input }: { input: LirInput }) {
     ["DATE", input.header.date],
     ["A/C", input.header.registration],
     ["Prepared by", input.header.preparedBy],
-    ["Approved by", input.header.checkedBy],
+    ["Approved by", input.header.approvedBy],
     ["ED NO", input.header.editionNo],
   ];
 

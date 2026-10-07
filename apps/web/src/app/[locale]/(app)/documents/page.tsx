@@ -29,13 +29,12 @@ export default async function DocumentsPage({
 
   // The document page lists the same legs as Flight selection, through the
   // same query, so a filter means the same thing on every screen.
-  const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet, users] = await Promise.all([
+  const [{ rows, total }, stations, flightsForServiceTypes, flightsForNumbers, fleet] = await Promise.all([
     queryFlightLegs(filters, scope.departureStationId),
     db.station.findMany({ orderBy: { iata: "asc" } }),
     db.flight.findMany({ distinct: ["serviceType"], select: { serviceType: true }, orderBy: { serviceType: "asc" } }),
     db.flight.findMany({ distinct: ["flightNo"], select: { flightNo: true }, orderBy: { flightNo: "asc" } }),
     db.aircraft.findMany({ where: { active: true }, orderBy: { registration: "asc" } }),
-    db.user.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
   ]);
 
   const legIds = rows.map((r) => r.id);
@@ -82,7 +81,6 @@ export default async function DocumentsPage({
       filters={filters}
       documentsByLegId={current}
       finalizedLegIds={[...new Set(finalizedPlans.map((p) => p.legId))]}
-      users={users.map((u) => ({ id: u.id, name: u.name }))}
       stations={stations}
       serviceTypes={serviceTypeOptions(flightsForServiceTypes.map((f) => f.serviceType))}
       flightNumberPrefixes={flightNumberPrefixes}

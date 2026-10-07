@@ -374,17 +374,16 @@ function LoadsheetDocument({ input }: { input: LoadsheetInput }) {
           <At x={BAND1_X[4]!} y={BAND1.top + 2.5} width={BAND1_X[5]! - BAND1_X[4]!} align="center" variant="label">
             EDNO
           </At>
-          {/* CHECKED carries the second person on the plan; APPROVED carries
-              whoever produced this edition — the signed-in user, by operator
-              request (2026-10-02). The pair is still two different people:
-              prepared_by <> checked_by is enforced in the action and by a
-              database constraint (CLAUDE.md rule #7). Only which column each
-              name prints in changed. */}
+          {/* CHECKED carries the account that worked the flight, taken from
+              the load plan; APPROVED carries the name typed when the sheet
+              was produced. This is how the operator's own system fills the
+              two boxes (07/10/2026): the approver signs the paper and is
+              often not a user of this system at all. */}
           <At x={BAND1_X[2]!} y={BAND1.top + 18} width={BAND1_X[3]! - BAND1_X[2]!} align="center">
-            {input.header.checkedBy}
+            {input.header.preparedBy}
           </At>
           <At x={BAND1_X[3]!} y={BAND1.top + 18} width={BAND1_X[4]! - BAND1_X[3]!} align="center">
-            {input.header.preparedBy}
+            {input.header.approvedBy}
           </At>
           <At x={BAND1_X[4]!} y={BAND1.top + 18} width={BAND1_X[5]! - BAND1_X[4]!} align="center">
             {input.header.editionNo}

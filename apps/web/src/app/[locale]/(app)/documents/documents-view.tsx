@@ -34,7 +34,7 @@ type DocumentType = (typeof GENERATABLE_TYPES)[number];
 /** The ones the table shows, in the order the crew works: plan, report, check. */
 const DOCUMENT_TYPES: readonly DocumentType[] = ["LS", "LIR", "ENV"];
 
-const GENERATE_ACTIONS: Record<DocumentType, (input: { legId: string; checkedById: string; specialInformation?: string }) => Promise<{ ok: boolean; error?: string }>> = {
+const GENERATE_ACTIONS: Record<DocumentType, (input: { legId: string; approvedByName?: string; specialInformation?: string }) => Promise<{ ok: boolean; error?: string }>> = {
   LS: generateLoadsheet,
   EDP: generateEdp,
   LIR: generateLir,
@@ -67,7 +67,6 @@ export function DocumentsView({
   filters,
   documentsByLegId,
   finalizedLegIds,
-  users,
   stations,
   serviceTypes,
   flightNumberPrefixes,
@@ -78,7 +77,6 @@ export function DocumentsView({
   filters: FlightListFilters;
   documentsByLegId: Record<string, LegDocuments>;
   finalizedLegIds: string[];
-  users: UserOption[];
   stations: StationOption[];
   serviceTypes: string[];
   flightNumberPrefixes: string[];
@@ -297,7 +295,6 @@ export function DocumentsView({
         <GenerateModal
           leg={generating.leg}
           type={generating.type}
-          users={users.filter((u) => u.id !== session?.user?.id)}
           onClose={() => setGenerating(null)}
           onGenerated={() => {
             setGenerating(null);
@@ -317,19 +314,20 @@ export function DocumentsView({
 function GenerateModal({
   leg,
   type,
-  users,
   onClose,
   onGenerated,
 }: {
   leg: FlightLegRow;
   type: DocumentType;
-  users: UserOption[];
   onClose: () => void;
   onGenerated: () => void;
 }) {
   const tGen = useTranslations("documents.generate");
   const tCommon = useTranslations("common");
-  const [checkedById, setCheckedById] = useState("");
+  // Typed, not picked: the operator writes the approver's name on the sheet,
+  // and that person often has no account here (07/10/2026). The CHECKED box
+  // fills itself from the load plan's own author.
+  const [approvedByName, setApprovedByName] = useState("");
   const [si, setSi] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -338,7 +336,7 @@ function GenerateModal({
     e.preventDefault();
     setSaving(true);
     setError(null);
-    const result = await GENERATE_ACTIONS[type]({ legId: leg.id, checkedById, specialInformation: si });
+    const result = await GENERATE_ACTIONS[type]({ legId: leg.id, approvedByName, specialInformation: si });
     setSaving(false);
     if (!result.ok) {
       setError(result.error ?? "validation");
@@ -373,17 +371,15 @@ function GenerateModal({
             </p>
           ) : null}
           <label className={labelClass}>
-            {tGen("checkedBy")}
-            <select required value={checkedById} onChange={(e) => setCheckedById(e.target.value)} className={inputClass}>
-              <option value="" disabled>
-                —
-              </option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name}
-                </option>
-              ))}
-            </select>
+            {tGen("approvedBy")}
+            <input
+              value={approvedByName}
+              onChange={(e) => setApprovedByName(e.target.value)}
+              maxLength={60}
+              autoComplete="off"
+              className={inputClass}
+            />
+            <span className="text-[11px] font-normal text-fg-subtle">{tGen("approvedByHint")}</span>
           </label>
           <label className={labelClass}>
             {tGen("specialInformation")}
@@ -397,7 +393,7 @@ function GenerateModal({
           </button>
           <button
             type="submit"
-            disabled={saving || !checkedById}
+            disabled={saving}
             className="inline-flex h-9 items-center rounded-md bg-brand-500 px-4 text-sm font-semibold text-fg-on-brand disabled:opacity-50"
           >
             {saving ? tGen("generating") : tGen("generate")}

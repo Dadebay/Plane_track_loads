@@ -19,7 +19,8 @@
       "title": "Создать документ",
       "documentType": "Тип документа",
       "leg": "Рейс",
-      "checkedBy": "Проверил",
+      "approvedBy": "Утвердил",
+      "approvedByHint": "Вводится вручную и печатается в поле APPROVED. В поле CHECKED стоит диспетчер, который работал рейс.",
       "specialInformation": "SI (Особая информация)",
       "generate": "Создать",
       "generating": "Создание…",
@@ -27,7 +28,6 @@
       "noFinalizedPlans": "Нет рейсов с завершённым загрузочным планом",
       "errors": {
         "loadPlanNotFinalized": "Загрузочный план этого рейса ещё не завершён",
-        "preparedEqualsChecked": "Подготовивший и проверивший должны быть разными людьми",
         "notFound": "Не найдено",
         "validation": "Проверьте поля",
         "otherStation": "Этот рейс вылетает с другой станции",

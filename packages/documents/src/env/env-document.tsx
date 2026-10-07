@@ -159,7 +159,7 @@ function HeaderTable({ header }: { header: EnvInput["header"] }) {
     { label: "DATE", value: header.date, flex: 83 },
     { label: "A/C", value: header.registration, flex: 64 },
     { label: "Prepared by", value: header.preparedBy, flex: 66 },
-    { label: "Approved by", value: header.checkedBy, flex: 66 },
+    { label: "Approved by", value: header.approvedBy, flex: 66 },
     { label: "ED NO", value: header.editionNo, flex: 38 },
   ];
 

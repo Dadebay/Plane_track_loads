@@ -201,7 +201,7 @@ export function headerFields(header: DocumentHeader): Field[][] {
       { label: "A/C TYPE", value: header.aircraftType, flex: 1.6 },
       { label: "A/C REG", value: header.registration },
       { label: "PREPARED BY", value: header.preparedBy, flex: 1.2 },
-      { label: "CHECKED BY", value: header.checkedBy, flex: 1.2 },
+      { label: "APPROVED BY", value: header.approvedBy, flex: 1.2 },
     ],
   ];
 }
