@@ -7,6 +7,7 @@ import {
 } from "@tua/ui";
 import { PageHeader } from "@/components/page-header";
 import { useRouter } from "@/i18n/navigation";
+import { withBasePath } from "@/lib/base-path";
 
 const FILES = [
   { key: "aircraft", filename: "aircraft.json" },
@@ -52,7 +53,7 @@ export function AhmUploadView() {
     setTopError(null);
     try {
       const formData = new FormData(formRef.current);
-      const res = await fetch("/api/admin/ahm/validate", { method: "POST", body: formData });
+      const res = await fetch(withBasePath("/api/admin/ahm/validate"), { method: "POST", body: formData });
       const body = (await res.json()) as { results: FileValidationResult[]; allOk: boolean };
       setResults(body.results);
       setValidated(body.allOk);
@@ -69,7 +70,7 @@ export function AhmUploadView() {
     setTopError(null);
     try {
       const formData = new FormData(formRef.current);
-      const res = await fetch("/api/admin/ahm/confirm", { method: "POST", body: formData });
+      const res = await fetch(withBasePath("/api/admin/ahm/confirm"), { method: "POST", body: formData });
       if (res.status === 409) {
         setTopError(t("alreadyExists"));
         return;

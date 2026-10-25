@@ -2,14 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronUp, History, LogOut, User as UserIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@tua/ui";
+import { withBasePath } from "@/lib/base-path";
 
 export function UserMenu({ compact = false }: { compact?: boolean }) {
   const { data: session } = useSession();
   const t = useTranslations("account");
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +81,18 @@ export function UserMenu({ compact = false }: { compact?: boolean }) {
             <button
               type="button"
               role="menuitem"
-              onClick={() => signOut()}
+              // Sign out, then navigate here rather than letting Auth.js do
+              // it. Auth.js builds the post-sign-out URL from its own idea
+              // of the host, which is the address the server is bound to,
+              // not the one the browser asked for: bare signOut() landed on
+              // the site root (under /load, the operator's main site), and
+              // passing redirectTo still produced http://0.0.0.0:3000/... .
+              // A root-relative href has no host to get wrong.
+              onClick={() => {
+                void signOut({ redirect: false }).then(() => {
+                  window.location.href = withBasePath(`/${locale}/login`);
+                });
+              }}
               className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm text-danger hover:bg-danger-bg"
             >
               <LogOut className="h-4 w-4" aria-hidden="true" />

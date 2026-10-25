@@ -14,6 +14,7 @@ import { documentFilename } from "@/lib/document-filename";
 import type { FlightLegRow, FlightListFilters } from "@/lib/flight-queries";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { generateEdp, generateEnv, generateLir, generateLoadsheet } from "./actions";
+import { withBasePath } from "@/lib/base-path";
 
 /**
  * Flight documents.
@@ -172,7 +173,7 @@ export function DocumentsView({
                     ED{String(doc.edition).padStart(2, "0")}
                   </span>
                   <a
-                    href={`/api/documents/${doc.id}`}
+                    href={withBasePath(`/api/documents/${doc.id}`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={tDocs("preview", { name: filename })}
@@ -182,7 +183,7 @@ export function DocumentsView({
                     <Eye className="h-4 w-4" aria-hidden="true" />
                   </a>
                   <a
-                    href={`/api/documents/${doc.id}?download=1`}
+                    href={withBasePath(`/api/documents/${doc.id}?download=1`)}
                     aria-label={tDocs("downloadNamed", { name: filename })}
                     title={filename}
                     className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border text-fg-muted hover:bg-bg-muted hover:text-fg"

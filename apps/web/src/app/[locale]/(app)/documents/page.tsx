@@ -4,6 +4,7 @@ import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
 import { serviceTypeOptions } from "@/lib/service-types";
 import { DocumentsView, type LegDocuments } from "./documents-view";
 import { auth } from "@/auth";
+import { stationToday } from "@/lib/station-today";
 import { stationScopeOf } from "@/lib/station-scope";
 import { carrierPrefixes } from "@/lib/flight-number";
 
@@ -23,8 +24,8 @@ export default async function DocumentsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const filters = parseFlightListFilters(sp);
   const session = await auth();
+  const filters = parseFlightListFilters(sp, await stationToday(session?.user?.stationId));
   const scope = stationScopeOf(session?.user);
 
   // The document page lists the same legs as Flight selection, through the

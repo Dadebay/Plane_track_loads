@@ -5,6 +5,16 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Served under a sub-path on the operator's server: the TLS certificate
+  // that already works there covers akbulut.com.tm only, and that host
+  // cannot reach Let's Encrypt (the same SNI-based block that hides
+  // registry.npmjs.org), so a sub-domain could not be given HTTPS at all.
+  // Set at BUILD time — Next bakes the prefix into every asset URL, so a
+  // bundle built without it cannot be mounted under a prefix later, and a
+  // bundle built with it cannot be served at the root. Left unset for
+  // local development and for the Docker compose files, which both serve
+  // from "/".
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,
   transpilePackages: ["@tua/ui", "@tua/wnb-core", "@tua/ahm-data", "@tua/documents", "@tua/compare"],
   // @react-pdf/renderer's reconciler breaks if webpack bundles/minifies it
   // (loses internal state its reconciler depends on) — must be required

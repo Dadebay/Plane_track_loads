@@ -1,5 +1,6 @@
 import { db } from "@tua/db";
 import { auth } from "@/auth";
+import { stationToday } from "@/lib/station-today";
 import { parseFlightListFilters, queryFlightLegs } from "@/lib/flight-queries";
 import { canEditSchedule, stationScopeOf } from "@/lib/station-scope";
 import { serviceTypeOptions } from "@/lib/service-types";
@@ -23,8 +24,8 @@ export default async function SchedulePage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const filters = parseFlightListFilters(sp);
   const session = await auth();
+  const filters = parseFlightListFilters(sp, await stationToday(session?.user?.stationId));
   const scope = stationScopeOf(session?.user);
 
   // The schedule lists the same legs as Flight selection, through the same

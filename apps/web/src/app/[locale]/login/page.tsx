@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { withBasePath } from "@/lib/base-path";
 import { AuthError } from "next-auth";
 import { Plane } from "lucide-react";
 import { signIn } from "@/auth";
@@ -27,10 +28,23 @@ export default async function LoginPage({
       await signIn("credentials", {
         email,
         password,
-        redirectTo: callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : `/${locale}`,
+        // withBasePath on both branches: Auth.js redirects to this path
+        // verbatim and does not add Next's basePath, so under /load a
+        // successful sign-in landed on /en — the main site's 404 — instead
+        // of /load/en. callbackUrl arrives unprefixed from middleware.
+        redirectTo: withBasePath(
+          callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : `/${locale}`,
+        ),
       });
     } catch (err) {
       if (err instanceof AuthError) {
+        // No withBasePath here, unlike signIn's redirectTo above: next/
+        // navigation's redirect() is the one of the two that Next does
+        // prefix for us. Passing an already-prefixed path made the browser
+        // land on /load/en/load/en/login — a 404 — after every failed
+        // sign-in, while signIn's redirectTo, left unprefixed, sent a
+        // successful one to /en. The pair is asymmetric; both directions
+        // were checked against a real build before this was written.
         redirect(`/${locale}/login?error=1${callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`);
       }
       throw err;
@@ -41,7 +55,7 @@ export default async function LoginPage({
     <div
       className="relative flex min-h-dvh flex-col px-4 py-4 sm:px-6 sm:py-6"
       style={{
-        backgroundImage: "url(/login-background.png)",
+        backgroundImage: `url(${withBasePath("/login-background.png")})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

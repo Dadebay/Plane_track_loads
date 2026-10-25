@@ -53,6 +53,16 @@ do
   cp -R "$PRISMA_CLIENT_SRC/." "$dest/"
 done
 
+# The darwin engine is copied along with the Linux ones above (cp -R takes
+# the whole directory) and is 18 MB in each of the three locations. It can
+# never load on the server — wrong OS — so it is 54 MB of a bundle that has
+# to be carried over a slow link to Turkmenistan. The Linux engines stay,
+# both OpenSSL variants: schema.prisma asks for 1.1.x and 3.0.x because the
+# server's exact version was never confirmed, and guessing here would trade
+# 21 MB for a "Query engine not found" on a host we cannot rebuild on.
+find "$STAGE" -name "*darwin*" -name "*.node" -delete
+find "$STAGE" -name "*darwin*.dylib.node" -delete
+
 # --- argon2 -------------------------------------------------------------
 # Next's tracing copies only the prebuild for the platform it built on, so a
 # macOS build ships darwin-arm64 alone and the server dies with
@@ -95,12 +105,39 @@ if ! find "$STAGE" -name "*.node" | grep -q 'linux'; then
   exit 1
 fi
 
+# Each of the three paths @prisma/client probes must still hold a Linux
+# engine after the darwin sweep above — losing one is a 500 on whichever
+# routes were bundled the other way, which is the hardest kind of this
+# bug to spot because most pages keep working.
+for d in \
+  "$STAGE/apps/web/.prisma/client" \
+  "$STAGE/apps/web/.next/server" \
+  "$STAGE/node_modules/.pnpm/$(ls node_modules/.pnpm | grep -m1 '^@prisma+client@')/node_modules/.prisma/client"
+do
+  ls "$d"/libquery_engine-debian-openssl-*.so.node >/dev/null 2>&1 \
+    || { echo "FAIL: no Linux query engine left in $d" >&2; exit 1; }
+done
+
 for required in apps/web/server.js apps/web/server-guard.mjs packages/documents/assets/airline-logo.png; do
   [ -f "$STAGE/$required" ] || { echo "FAIL: $required missing from the bundle." >&2; exit 1; }
 done
 
 if [ -e "$STAGE/apps/web/.data" ]; then
   echo "FAIL: apps/web/.data is runtime state and must not ship." >&2
+  exit 1
+fi
+
+# The mount prefix is baked in at build time and cannot be added or removed
+# afterwards: a bundle built for the root 404s every asset when nginx mounts
+# it under /load, and one built for /load 404s everything when served from
+# the root. Both failures look like "the site is broken" with nothing in the
+# logs, so the prefix the bundle actually carries is printed and checked
+# against what was asked for.
+BUNDLE_BASE_PATH="$(sed -n 's/.*"basePath":"\([^"]*\)".*/\1/p' "$STAGE/apps/web/.next/routes-manifest.json" 2>/dev/null | head -1)"
+echo "==> basePath in bundle: '${BUNDLE_BASE_PATH}'  (NEXT_PUBLIC_BASE_PATH='${NEXT_PUBLIC_BASE_PATH:-}')"
+if [ "${BUNDLE_BASE_PATH}" != "${NEXT_PUBLIC_BASE_PATH:-}" ]; then
+  echo "FAIL: bundle basePath '${BUNDLE_BASE_PATH}' does not match NEXT_PUBLIC_BASE_PATH '${NEXT_PUBLIC_BASE_PATH:-}'." >&2
+  echo "      A stale turbo cache entry does this; turbo.json must list NEXT_PUBLIC_BASE_PATH in globalEnv." >&2
   exit 1
 fi
 

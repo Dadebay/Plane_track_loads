@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import createMiddleware from "next-intl/middleware";
 import { authConfig } from "./auth.config";
 import { routing } from "./i18n/routing";
+import { withBasePath } from "./lib/base-path";
 
 // Edge-safe auth() built from the lightweight config — see auth.config.ts.
 const { auth } = NextAuth(authConfig);
@@ -31,6 +32,28 @@ function stripLocale(pathname: string): string {
   return pathname;
 }
 
+/**
+ * The origin to build redirects against: what the browser actually asked
+ * for, not what the server thinks it is.
+ *
+ * req.nextUrl.origin is wrong behind the reverse proxy. The app binds to
+ * 127.0.0.1 (HOSTNAME in .env, so nginx is the only way in) and Next
+ * composes nextUrl's origin from that bind address, giving
+ * "https://localhost:3000" — a Location header pointing at the visitor's
+ * own machine. Verified in production: /load/en answered
+ * 302 -> https://localhost:3000/load/en/login and the login form was
+ * unreachable. The forwarded headers carry the real public origin; nginx
+ * sets all three on every proxied request (tools/nginx/load.conf), and the
+ * app is never exposed directly, so they cannot be spoofed by a client.
+ * The nextUrl fallback is for local development, where there is no proxy.
+ */
+function publicOrigin(req: { headers: Headers; nextUrl: { origin: string } }): string {
+  const first = (v: string | null) => v?.split(",")[0]?.trim() || undefined;
+  const proto = first(req.headers.get("x-forwarded-proto"));
+  const host = first(req.headers.get("x-forwarded-host")) ?? first(req.headers.get("host"));
+  return proto && host ? `${proto}://${host}` : req.nextUrl.origin;
+}
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const localeStripped = stripLocale(pathname) || "/";
@@ -41,7 +64,11 @@ export default auth((req) => {
     const locale = (routing.locales as readonly string[]).includes(segments[1] ?? "")
       ? segments[1]
       : routing.defaultLocale;
-    const loginUrl = new URL(`/${locale}/login`, req.url);
+    // withBasePath, because Next does not add the mount prefix to a
+    // redirect built in middleware — see lib/base-path.ts. callbackUrl
+    // keeps the unprefixed pathname: it is consumed by the app, which
+    // prefixes it again when it navigates there.
+    const loginUrl = new URL(withBasePath(`/${locale}/login`), publicOrigin(req));
     loginUrl.searchParams.set("callbackUrl", pathname);
     return Response.redirect(loginUrl);
   }
@@ -55,7 +82,7 @@ export default auth((req) => {
       const locale = (routing.locales as readonly string[]).includes(segments[1] ?? "")
         ? segments[1]
         : routing.defaultLocale;
-      return Response.redirect(new URL(`/${locale}`, req.url));
+      return Response.redirect(new URL(withBasePath(`/${locale}`), publicOrigin(req)));
     }
   }
 

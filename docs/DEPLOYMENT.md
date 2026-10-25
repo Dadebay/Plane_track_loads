@@ -211,6 +211,108 @@ Sütunları ararken kolon adlarının **camelCase** olduğuna dikkat edin
 (`"cockpitCrew"`, `"tareWeight"`) — snake_case arayan bir sorgu "yok" der ve
 yanlış baseline'a yol açar.
 
+## akbulut'a geçiş (2026-10-07)
+
+Pilot, alybabanew'dan (1 çekirdek, 957 MB RAM, swap yok, 29 GB boş) akbulut'a
+taşındı: 2 çekirdek, 1.9 GB RAM + 2 GB swap, 103 GB boş, nginx 1.28.0.
+Adres `https://akbulut.com.tm/load` — ana sitenin hâlihazırda kullandığı
+Sectigo sertifikasının altında, alt yol olarak. Alt alan adı
+(`load.akbulut.com.tm`) daha temiz şekildi ama `akbulut.com.tm`'in DNS'i
+Türkmentelekom'da (`webns1/webns2.telecom.tm`) ve operatör oraya kayıt
+ekleyemiyor — A kaydı yoksa alt alan adı yok. Gerekçenin tam kaydı:
+`tools/nginx/README.md`.
+
+İki sunucunun **ortak** kısıtı: `registry.npmjs.org`, `github.com` ve
+`binaries.prisma.sh` ikisinde de engelli. Yani paket yine geliştirme
+makinesinde üretilip taşınıyor, `build-bundle.sh` yolu değişmiyor. Paket
+**`NEXT_PUBLIC_BASE_PATH=/load` ile** derleniyor — prefix derleme zamanında
+her varlık URL'sine gömülür, sonradan takılamaz.
+
+Taşımada dikkat edilen üç nokta:
+
+| Konu | alybabanew | akbulut | Sonuç |
+|---|---|---|---|
+| Postgres | 15.5 | **14.24** | `apt.postgresql.org` akbulut'ta engelli, 15'e çıkılamıyor. Döküm 15'ten 14'e yükleniyor; PG16'nın `\restrict` sorunu burada yok ama yükleme sonrası sayımlar doğrulanmalı. |
+| Node | `/home/ubuntu/node22/bin/node` | sistemde 18.18.0 | `nodejs.org` engelli. node22 dizini alybabanew'dan kopyalanıyor — ikisi de Ubuntu 22.04 x86-64, ikili uyumlu. |
+| Boş port | 8080 (next-server, 0.0.0.0) | 8080 **nginx'te dolu** | Uygulama `127.0.0.1:3000`. Loopback bağlama kasıtlı: eski kurulumda 8080 dışarıya açıktı ve TLS'i tamamen atlıyordu. |
+
+### Sıra
+
+```bash
+# 1. node22'yi taşı (alybabanew'da)
+tar czf ~/node22.tar.gz -C /home/ubuntu node22
+scp ~/node22.tar.gz ubuntu@216.250.11.77:~/ && ssh ubuntu@216.250.11.77 'tar xzf ~/node22.tar.gz -C /home/ubuntu && /home/ubuntu/node22/bin/node -v'
+
+# 3. Veritabanı dökümü (alybabanew'da) — operasyonel veri dahil, 9 MB
+set -a; . /home/ubuntu/tua-20261005/.env; set +a; U="${DATABASE_URL%%\?*}"
+pg_dump --no-owner --no-privileges "$U" > ~/tua-akbulut-$(date +%F).sql
+
+# 4. Üretilmiş PDF'ler (9 dosya, 788 KB) — postgres yedeği bunları kapsamaz
+tar czf ~/tua-documents.tar.gz -C /home/ubuntu tua-documents
+```
+
+```bash
+# 5. akbulut'ta: veritabanını kur ve dökümü yükle
+sudo -u postgres createuser tua --pwprompt
+sudo -u postgres createdb -O tua tua_load_control
+psql "postgresql://tua:<sifre>@127.0.0.1:5432/tua_load_control" \
+  -v ON_ERROR_STOP=1 -f ~/tua-akbulut-<tarih>.sql
+
+# 6. Paketi aç ve .env'i yaz
+mkdir -p ~/tua-20261007 && tar xzf ~/tua-deploy-akbulut.tar.gz -C ~/tua-20261007
+tar xzf ~/tua-documents.tar.gz -C /home/ubuntu
+```
+
+`.env`. AUTH_SECRET **yeniden üretilir**, eski kurulumdan kopyalanmaz: taşıma
+sırasında eski değer bir sohbet geçmişine düştü, o yüzden yakılmış sayılıyor.
+Tek maliyeti herkesin bir kez yeniden giriş yapması:
+
+```bash
+DATABASE_URL="postgresql://tua:<sifre>@127.0.0.1:5432/tua_load_control?schema=public"
+AUTH_SECRET="$(openssl rand -base64 32)"
+NEXT_PUBLIC_APP_URL="https://akbulut.com.tm/load"
+NEXT_PUBLIC_DEFAULT_LOCALE="en"
+DOCUMENTS_WATERMARK="false"
+DOCUMENTS_STORAGE_PATH="/home/ubuntu/tua-documents"
+NODE_ENV="production"
+PORT=3000
+HOSTNAME=127.0.0.1
+```
+
+`start.sh` — `HOSTNAME` şart, yoksa Next 0.0.0.0'a bağlanır ve 3000 dışarıya
+açılır:
+
+```bash
+#!/bin/bash
+set -a; . /home/ubuntu/tua-20261007/.env; set +a
+exec /home/ubuntu/node22/bin/node /home/ubuntu/tua-20261007/apps/web/server-guard.mjs
+```
+
+```bash
+# 7. pm2 — --cwd şart (bu dosyanın üstündeki pm2 notuna bak)
+chmod +x ~/tua-20261007/start.sh
+cd ~/tua-20261007 && pm2 start start.sh --name tua-web --interpreter bash \
+  --cwd /home/ubuntu/tua-20261007
+pm2 save && pm2 startup   # yazdırdığı sudo komutunu çalıştır
+
+# 8. nginx: tools/nginx/README.md — sertifika adımı yok, ana sitenin
+#    sertifikası kullanılıyor
+```
+
+### Doğrulama (alybabanew kapatılmadan önce)
+
+```bash
+curl -s localhost:3000/api/health; curl -s localhost:3000/api/health/db
+curl -sI https://akbulut.com.tm/load/en | head -3
+psql "$DATABASE_URL" -t -c "select 'wnb='||(select count(*) from wnb_calculations)||' doc='||(select count(*) from documents)||' plan='||(select count(*) from load_plans)||' user='||(select count(*) from users);"
+```
+
+alybabanew'daki sayımlar: `wnb=20 doc=15 plan=24 user=5`, 9 PDF. Üçü de
+eşleşmeli. Ardından tarayıcıdan giriş, bir belge üretimi ve altın test
+vakasının (T5 692) ekrandaki değerleri — `MACZFW 26,4` · `MACTOW 26,7` ·
+`TTL 35 278` — kontrol edilir. Hepsi geçtikten sonra alybabanew'da
+`pm2 delete tua-web && pm2 save`.
+
 ## Sağlık kontrolü
 
 | Uç nokta | Ne kontrol eder | Kimlik doğrulama |

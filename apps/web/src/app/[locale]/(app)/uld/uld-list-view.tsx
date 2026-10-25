@@ -20,6 +20,7 @@ import { bulkUpdateUldStatus, deleteUld } from "./actions";
 import { UldFormModal, type EditingUld, type StationOption, type UldTypeInfo } from "./uld-form-modal";
 import { UldMovementModal, type FlightOption } from "./uld-movement-modal";
 import { UldScanButton } from "./uld-scan-button";
+import { withBasePath } from "@/lib/base-path";
 
 const ULD_STATUSES = ["AVAILABLE", "ASSIGNED", "DAMAGED", "LOST"] as const;
 const ULD_CONDITIONS = ["SERVICEABLE", "DAMAGED", "UNSERVICEABLE"] as const;
@@ -269,7 +270,7 @@ export function UldListView({
               {t("namingConvention")}
             </button>
             <a
-              href="/api/uld/pdf"
+              href={withBasePath("/api/uld/pdf")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium text-fg hover:bg-bg-muted"

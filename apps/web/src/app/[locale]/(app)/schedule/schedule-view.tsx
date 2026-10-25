@@ -12,6 +12,7 @@ import type { FlightLegRow, FlightListFilters } from "@/lib/flight-queries";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { formatDateTimePartsInZone } from "@/lib/format-date";
 import { FlightFormModal, type AircraftOption, type EditingFlight, type StationOption } from "./flight-form-modal";
+import { withBasePath } from "@/lib/base-path";
 
 /** A flight as the edit modal needs it: whole flight, every leg. */
 export type EditableFlight = EditingFlight;
@@ -183,7 +184,7 @@ export function ScheduleView({
         actions={
           <>
             <a
-              href="/api/schedule/pdf"
+              href={withBasePath("/api/schedule/pdf")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium text-fg hover:bg-bg-muted"
