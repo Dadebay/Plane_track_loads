@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -27,6 +28,20 @@ import { LoadPlanSidebar } from "./load-plan-sidebar";
 import { SaveBar } from "./save-bar";
 import { AmendingNotice, FinalizedBar } from "./finalized-bar";
 import { TrimButton } from "./trim-button";
+
+const Aircraft3DView = dynamic(() => import("./aircraft-3d-view"), {
+  ssr: false,
+  loading: ThreeDLoading,
+});
+
+function ThreeDLoading() {
+  const t = useTranslations("loadPlan.threeD");
+  return (
+    <div role="status" className="flex min-h-80 items-center justify-center rounded-xl border border-border bg-bg-subtle text-sm text-fg-subtle">
+      {t("loading")}
+    </div>
+  );
+}
 
 function LoadPlanContent({
   legId,
@@ -55,6 +70,7 @@ function LoadPlanContent({
 }) {
   const t = useTranslations("loadPlan");
   const [tab, setTab] = useState<"positions" | "fuelCrew">("positions");
+  const [view, setView] = useState<"plan" | "3d">("plan");
   // Which cell was opened, not just which code: a code published on two
   // mutually exclusive configuration rows would otherwise open on the
   // wrong row (see pickVariant).
@@ -186,34 +202,61 @@ function LoadPlanContent({
 
             {tab === "positions" ? (
               <>
-                <div className="sticky top-0 z-10 -mx-4 bg-bg px-4 pb-2 sm:hidden">
-                  <AircraftDiagram positions={ahmData.positions} overloaded={overloadedPositions} onSelect={(code) => openCell(code)} compact />
+                <div role="group" aria-label={t("threeD.viewMode")} className="flex flex-wrap gap-2">
+                  {(["plan", "3d"] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      aria-pressed={view === mode}
+                      onClick={() => setView(mode)}
+                      className={`min-h-11 rounded-md border px-4 text-sm font-medium ${view === mode ? "border-brand-500 bg-brand-50 text-brand-800 dark:bg-brand-950 dark:text-brand-200" : "border-border bg-bg text-fg-subtle"}`}
+                    >
+                      {t(mode === "plan" ? "threeD.planView" : "threeD.threeDView")}
+                    </button>
+                  ))}
                 </div>
-                {/* Desktop gets the full configuration-row workspace; the
-                    phone keeps the compact mini-map above plus the position
-                    list below, which is the readable shape at 375 px. */}
-                <div className="hidden sm:block">
-                  <PositionWorkspace
+                {view === "3d" ? (
+                  <Aircraft3DView
                     ahmData={ahmData}
                     overloaded={overloadedPositions}
                     readOnly={isFinalized}
+                    registration={registration}
                     onSelect={openCell}
                     onBlocked={setBlocked}
-                    highlight={
-                      blocked
-                        ? { blockedKey: blocked.key, blockerKeys: blocked.blockedBy.map((b) => b.key) }
-                        : null
-                    }
+                    onReturnToPlan={() => setView("plan")}
                   />
-                </div>
-                <div className="sm:hidden">
-                  <PositionList
-                    positions={ahmData.positions}
-                    overloaded={overloadedPositions}
-                    indexRows={result.positionIndexes.rows}
-                    onSelect={(code) => openCell(code)}
-                  />
-                </div>
+                ) : (
+                  <>
+                    <div className="sticky top-0 z-10 -mx-4 bg-bg px-4 pb-2 sm:hidden">
+                      <AircraftDiagram positions={ahmData.positions} overloaded={overloadedPositions} onSelect={(code) => openCell(code)} compact />
+                    </div>
+                    {/* Desktop gets the full configuration-row workspace; the
+                        phone keeps the compact mini-map above plus the position
+                        list below, which is the readable shape at 375 px. */}
+                    <div className="hidden sm:block">
+                      <PositionWorkspace
+                        ahmData={ahmData}
+                        overloaded={overloadedPositions}
+                        readOnly={isFinalized}
+                        onSelect={openCell}
+                        onBlocked={setBlocked}
+                        highlight={
+                          blocked
+                            ? { blockedKey: blocked.key, blockerKeys: blocked.blockedBy.map((b) => b.key) }
+                            : null
+                        }
+                      />
+                    </div>
+                    <div className="sm:hidden">
+                      <PositionList
+                        positions={ahmData.positions}
+                        overloaded={overloadedPositions}
+                        indexRows={result.positionIndexes.rows}
+                        onSelect={(code) => openCell(code)}
+                      />
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <FuelCrewForm cockpitMaxSeats={ahmData.cockpitMaxSeats} courierMaxSeats={ahmData.courierMaxSeats} />
